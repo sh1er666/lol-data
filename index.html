@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H·武道会·单局数据展示</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body { background-color: #1a1d24; color: #eee; font-family: 'Microsoft YaHei', sans-serif; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { width: 100%; max-width: 1300px; background: #15181e; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
+        .title { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; padding: 10px 0; border-bottom: 1px solid #2f3540; }
+        .main-area { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+        
+        .left-panel { width: 25%; display: flex; flex-direction: column; gap: 10px; }
+        .hero-pool-title { background: #7a3df0; color: #fff; text-align: center; padding: 8px 0; border-radius: 20px; font-weight: bold; font-size: 15px; letter-spacing: 1px; }
+        .hero-pool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .hero-item { display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+        .hero-games { position: absolute; top: -5px; left: 5px; color: #fff; font-weight: 800; font-size: 14px; }
+        .hero-icon { width: 70px; height: 70px; border-radius: 10px; margin-bottom: 5px; background: #2a2f38; border: 2px solid #333a45; }
+        .hero-win { color: #ccc; font-size: 12px; font-weight: bold; }
+        .hero-kda { color: #888; font-size: 11px; margin-top: 2px; }
+
+        .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .player-name { font-size: 42px; font-weight: 800; margin-top: 5px; }
+        .player-total-kda { font-size: 20px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
+
+        .right-panel { width: 55%; position: relative; height: 560px; display: flex; justify-content: center; align-items: center; }
+        #radarChart { width: 520px; height: 520px; }
+        .stats-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 520px; height: 520px; pointer-events: none; }
+        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.5; width: 180px; white-space: nowrap; }
+        .stat-rank { color: #fcd34d; font-size: 13px; font-weight: bold; }
+        .stat-val-blue { color: #00bcd4; font-weight: 800; font-size: 14px; }
+        .stat-name { color: #eee; font-weight: 600; font-size: 14px; }
+        .stat-val-red { color: #ff5252; font-size: 13px; }
+        .pos-top { top: 5%; left: 50%; } .pos-topright { top: 20%; left: 85%; } .pos-right { top: 50%; left: 96%; }
+        .pos-bottomright { bottom: 5%; left: 85%; } .pos-bottom { bottom: -8%; left: 50%; } .pos-bottomleft { bottom: 5%; left: 15%; }
+        .pos-left { top: 50%; left: 4%; } .pos-topleft { top: 20%; left: 15%; }
+        .avg-note { position: absolute; right: 10px; top: 10px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">H·武道会·单局中单数据展示</div>
+    <div class="main-area">
+        <div class="left-panel">
+            <div class="hero-pool-title">英雄池 (本局)</div>
+            <div class="hero-pool-grid" id="heroPool"></div>
+        </div>
+        <div class="player-info">
+            <img class="player-avatar" src="https://q1.qlogo.cn/g?b=qq&nk=854265242&s=640" onerror="this.src='https://via.placeholder.com/200'">
+            <div class="player-name" id="playerName">加载中...</div>
+            <div class="player-total-kda" id="totalKda">--</div>
+        </div>
+        <div class="right-panel">
+            <div id="radarChart"></div>
+            <div class="stats-wrapper">
+                <div class="stat-item pos-top"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-kda">--</div><div class="stat-name">KDA</div><div class="stat-val-red" id="avg-kda">--</div></div>
+                <div class="stat-item pos-topright"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-cs">--</div><div class="stat-name">分均补刀</div><div class="stat-val-red" id="avg-cs">--</div></div>
+                <div class="stat-item pos-right"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-dmg">--</div><div class="stat-name">分均伤害</div><div class="stat-val-red" id="avg-dmg">--</div></div>
+                <div class="stat-item pos-bottomright"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-participation">--</div><div class="stat-name">参与击杀</div><div class="stat-val-red" id="avg-participation">--</div></div>
+                <div class="stat-item pos-bottom"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-gold">--</div><div class="stat-name">分均经济</div><div class="stat-val-red" id="avg-gold">--</div></div>
+                <div class="stat-item pos-bottomleft"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-share">--</div><div class="stat-name">伤害占比</div><div class="stat-val-red" id="avg-share">--</div></div>
+                <div class="stat-item pos-left"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-convert">--</div><div class="stat-name">伤转</div><div class="stat-val-red" id="avg-convert">--</div></div>
+                <div class="stat-item pos-topleft"><div class="stat-rank">#Rank</div><div class="stat-val-blue" id="stat-survival">--</div><div class="stat-name">生存</div><div class="stat-val-red" id="avg-survival">--</div></div>
+            </div>
+            <div class="avg-note"><span style="color:#ff5252;">红色</span> 为全队平均值</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 请求外部的 JSON 数据
+    // 注意：请将 'data.json' 改为你实际上传的 JSON 文件名称（如果是“新建文本文档.json”需改名为 data.json 或者修改这里）
+    fetch('./data.json')
+        .then(response => response.json())
+        .then(data => {
+            // 1. 找出中单玩家（如果展示前要展示某个特定玩家，可以在数组里查找）
+            const midPlayer = data.find(player => player.position === 'MIDDLE');
+            
+            // 2. 计算全队的平均值（作为红色基准线）
+            const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+            const minutes = midPlayer.timePlayed / 60; // 游戏时长（分钟）1554秒 ≈ 25.9分钟
+
+            const stats = {
+                kda: (midPlayer.kills + midPlayer.assists) / midPlayer.deaths,
+                cs: midPlayer.minionsKilled / minutes,
+                dmg: midPlayer.totalDamageDealt / minutes,
+                gold: midPlayer.goldEarned / minutes,
+                convert: (midPlayer.totalDamageDealt / midPlayer.goldEarned) * 100,
+                survival: (midPlayer.longestTimeSpentLiving / 1000) // 用存活时间做个代替指标
+            };
+            
+            // 计算伤害占比等复杂指标需要全队总和，这里取全队平均值
+            const allKda = data.map(p => (p.kills + p.assists) / p.deaths);
+            const allCs = data.map(p => p.minionsKilled / (p.timePlayed / 60));
+            const allDmg = data.map(p => p.totalDamageDealt / (p.timePlayed / 60));
+            const allGold = data.map(p => p.goldEarned / (p.timePlayed / 60));
+            const allConvert = data.map(p => (p.totalDamageDealt / p.goldEarned) * 100);
+            const allSurvival = data.map(p => p.longestTimeSpentLiving / 1000);
+            const allShare = data.map(p => (p.totalDamageDealt / data.reduce((sum, p) => sum + p.totalDamageDealt, 0)) * 100);
+
+            const avgStats = {
+                kda: avg(allKda), cs: avg(allCs), dmg: avg(allDmg), gold: avg(allGold), convert: avg(allConvert), survival: avg(allSurvival), share: avg(allShare)
+            };
+
+            // 3. 绑定显示文字
+            document.getElementById('playerName').textContent = midPlayer.player.replace(/#\d+$/, '');
+            document.getElementById('totalKda').textContent = `${midPlayer.kills}/${midPlayer.deaths}/${midPlayer.assists}`;
+            
+            document.getElementById('stat-kda').textContent = stats.kda.toFixed(2);
+            document.getElementById('avg-kda').textContent = avgStats.kda.toFixed(2);
+            document.getElementById('stat-cs').textContent = stats.cs.toFixed(2);
+            document.getElementById('avg-cs').textContent = avgStats.cs.toFixed(2);
+            document.getElementById('stat-dmg').textContent = stats.dmg.toFixed(2);
+            document.getElementById('avg-dmg').textContent = avgStats.dmg.toFixed(2);
+            document.getElementById('stat-gold').textContent = stats.gold.toFixed(2);
+            document.getElementById('avg-gold').textContent = avgStats.gold.toFixed(2);
+            document.getElementById('stat-convert').textContent = stats.convert.toFixed(2);
+            document.getElementById('avg-convert').textContent = avgStats.convert.toFixed(2);
+            document.getElementById('stat-survival').textContent = stats.survival.toFixed(2);
+            document.getElementById('avg-survival').textContent = avgStats.survival.toFixed(2);
+            document.getElementById('stat-share').textContent = (avgStats.share).toFixed(2) + '%'; // 伤害占比这里用平均值显示
+            document.getElementById('avg-share').textContent = '全场';
+
+            // 4. 渲染英雄池（显示本局所有玩家的英雄）
+            const poolEl = document.getElementById('heroPool');
+            poolEl.innerHTML = data.map(p => `
+                <div class="hero-item">
+                    <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${p.champion}.png" onerror="this.style.background='#333'">
+                    <div class="hero-win">${p.position}</div>
+                    <div class="hero-kda">${p.kills}/${p.deaths}/${p.assists}</div>
+                </div>
+            `).join('');
+
+            // 5. 渲染雷达图
+            const chartDom = document.getElementById('radarChart');
+            const myChart = echarts.init(chartDom);
+            const option = {
+                backgroundColor: 'transparent',
+                radar: {
+                    indicator: [
+                        { name: '', max: 5 },   // KDA
+                        { name: '', max: 10 },  // 分均补刀
+                        { name: '', max: 1000 },// 分均伤害
+                        { name: '', max: 10 },  // 参与击杀
+                        { name: '', max: 500 }, // 分均经济
+                        { name: '', max: 40 },  // 伤害占比
+                        { name: '', max: 200 }, // 伤转
+                        { name: '', max: 6 }    // 生存
+                    ],
+                    center: ['50%', '50%'], radius: '68%', splitNumber: 4, shape: 'polygon',
+                    splitArea: { areaStyle: { color: ['rgba(30,30,30,0.25)', 'rgba(30,30,30,0.08)'] } },
+                    axisLine: { show: false }, splitLine: { lineStyle: { color: '#fff', opacity: 0.2 } }, name: { show: false }
+                },
+                series: [{
+                    type: 'radar',
+                    data: [
+                        { value: [stats.kda, stats.cs, stats.dmg, 0, stats.gold, avgStats.share, stats.convert, stats.survival], itemStyle: { color: '#00bcd4' }, areaStyle: { color: 'rgba(0,188,212,0.4)' }, lineStyle: { color: '#00bcd4', width: 3 }, symbol: 'none' },
+                        { value: [avgStats.kda, avgStats.cs, avgStats.dmg, 0, avgStats.gold, avgStats.share, avgStats.convert, avgStats.survival], itemStyle: { color: '#ff5252' }, areaStyle: { color: 'transparent' }, lineStyle: { color: '#ff5252', width: 2, type: 'dashed' }, symbol: 'none' }
+                    ]
+                }]
+            };
+            myChart.setOption(option);
+            window.addEventListener('resize', () => myChart.resize());
+        })
+        .catch(error => {
+            console.error('加载数据失败:', error);
+            document.getElementById('playerName').textContent = '加载失败，请检查JSON文件名';
+        });
+</script>
+</body>
+</html>
