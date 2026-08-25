@@ -10,13 +10,16 @@
         .container { width: 100%; max-width: 1300px; background: #15181e; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
         .title { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; padding: 10px 0; border-bottom: 1px solid #2f3540; }
         
-        /* 位置选择器样式 */
-        .position-selector { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-        .pos-btn { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
-        .pos-btn:hover { background: #3a3f4a; color: #fff; }
-        .pos-btn.active { background: #7a3df0; color: #fff; border-color: #7a3df0; }
+        /* 选择器样式 */
+        .selector-group { display: flex; justify-content: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .pos-btn, .team-btn { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .pos-btn:hover, .team-btn:hover { background: #3a3f4a; color: #fff; }
+        .pos-btn.active, .team-btn.active { background: #7a3df0; color: #fff; border-color: #7a3df0; }
+        .separator { border-left: 2px solid #333; margin: 0 5px; }
 
         .main-area { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+        
+        /* 左侧英雄池 */
         .left-panel { width: 25%; display: flex; flex-direction: column; gap: 10px; }
         .hero-pool-title { background: #7a3df0; color: #fff; text-align: center; padding: 8px 0; border-radius: 20px; font-weight: bold; font-size: 15px; letter-spacing: 1px; }
         .hero-pool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
@@ -26,11 +29,13 @@
         .hero-win { color: #ccc; font-size: 12px; font-weight: bold; }
         .hero-kda { color: #888; font-size: 11px; margin-top: 2px; }
 
+        /* 中间单人选手信息 */
         .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
         .player-avatar { width: 200px; height: 200px; object-fit: cover; border-radius: 8px; }
         .player-name { font-size: 42px; font-weight: 800; margin-top: 5px; }
         .player-total-kda { font-size: 20px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
 
+        /* 右侧雷达图 */
         .right-panel { width: 55%; position: relative; height: 720px; display: flex; justify-content: center; align-items: center; }
         #radarChart { width: 520px; height: 520px; }
         .stats-wrapper { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 520px; height: 520px; pointer-events: none; }
@@ -63,8 +68,12 @@
 <div class="container">
     <div class="title">H·武道会·中单数据展示</div>
     
-    <!-- 位置选择器 -->
-    <div class="position-selector" id="positionSelector">
+    <!-- 战队筛选 + 位置选择器 -->
+    <div class="selector-group">
+        <button class="team-btn active" data-team="ALL">全部</button>
+        <button class="team-btn" data-team="EDG">EDG</button>
+        <button class="team-btn" data-team="RNG">RNG</button>
+        <div class="separator"></div>
         <button class="pos-btn" data-pos="TOP">上单</button>
         <button class="pos-btn" data-pos="JUNGLE">打野</button>
         <button class="pos-btn active" data-pos="MIDDLE">中单</button>
@@ -77,11 +86,14 @@
             <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>只)</div>
             <div class="hero-pool-grid" id="heroPool"></div>
         </div>
+        
+        <!-- 单人卡片区 -->
         <div class="player-info">
             <img class="player-avatar" id="playerAvatar" src="https://q1.qlogo.cn/g?b=qq&nk=854265242&s=640" onerror="this.src='https://via.placeholder.com/200'">
             <div class="player-name" id="playerName">加载中...</div>
             <div class="player-total-kda" id="totalKda">0/0/0</div>
         </div>
+        
         <div class="right-panel">
             <div id="radarChart"></div>
             <div class="stats-wrapper">
@@ -95,52 +107,21 @@
                 <div class="stat-item pos-topleft"><div class="stat-rank" id="rank-surv">#-</div><div class="stat-val-blue" id="stat-surv">--</div><div class="stat-name">生存</div><div class="stat-val-red" id="avg-surv">--</div></div>
             </div>
 
-            <!-- 底部柱形图容器 -->
             <div class="bottom-stats">
-                <!-- 第一列 -->
                 <div class="stat-col">
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">POM</span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">单杀</span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">一血参与率</span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div>
-                    </div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">POM</span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div></div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">单杀</span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div></div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">一血参与率</span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div></div>
                 </div>
-                <!-- 第二列 -->
                 <div class="stat-col">
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">对位等级差</span><span class="mini-stat-val blue" id="stat-lane">--</span><span class="mini-stat-rank" id="rank-lane">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-lane"></div></div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">对位经济差</span><span class="mini-stat-val blue" id="stat-gdiff">--</span><span class="mini-stat-rank" id="rank-gdiff">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-gdiff"></div></div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">对线期经济差</span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div>
-                    </div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">对位等级差</span><span class="mini-stat-val blue" id="stat-lane">--</span><span class="mini-stat-rank" id="rank-lane">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-lane"></div></div></div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">对位经济差</span><span class="mini-stat-val blue" id="stat-gdiff">--</span><span class="mini-stat-rank" id="rank-gdiff">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-gdiff"></div></div></div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">对线期经济差</span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div></div>
                 </div>
-                <!-- 第三列 -->
                 <div class="stat-col">
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">参团率</span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">承伤占比</span><span class="mini-stat-val blue" id="stat-taken">--</span><span class="mini-stat-rank" id="rank-taken">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-taken"></div></div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-top"><span class="mini-stat-name">分均视野</span><span class="mini-stat-val blue" id="stat-vision">--</span><span class="mini-stat-rank" id="rank-vision">#-</span></div>
-                        <div class="bar-bg"><div class="bar-fill" id="bar-vision"></div></div>
-                    </div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">参团率</span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div></div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">承伤占比</span><span class="mini-stat-val blue" id="stat-taken">--</span><span class="mini-stat-rank" id="rank-taken">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-taken"></div></div></div>
+                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">分均视野</span><span class="mini-stat-val blue" id="stat-vision">--</span><span class="mini-stat-rank" id="rank-vision">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-vision"></div></div></div>
                 </div>
             </div>
 
@@ -153,6 +134,7 @@
     let currentData = []; 
     let avgStats = {}; 
     let currentPosition = 'MIDDLE'; 
+    let currentTeam = 'ALL'; 
     let myChart = null;
 
     async function loadData() {
@@ -162,6 +144,17 @@
             avgStats = json.find(item => item.avg_kda !== undefined);
             currentData = json.filter(item => item.avg_kda === undefined);
 
+            // 绑定战队按钮事件
+            document.querySelectorAll('.team-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentTeam = e.target.dataset.team;
+                    updateView();
+                });
+            });
+
+            // 绑定位置按钮事件
             document.querySelectorAll('.pos-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
@@ -179,17 +172,42 @@
     }
 
     function updateView() {
-        const player = currentData.find(p => p.position === currentPosition);
-        if (!player) {
-            document.getElementById('playerName').textContent = '该位置暂无数据';
+        // 1. 先按位置筛选
+        let filteredPlayers = currentData.filter(p => p.position === currentPosition);
+        
+        // 2. 如果当前选了EDG或RNG，再按战队前缀筛选
+        if (currentTeam !== 'ALL') {
+            filteredPlayers = filteredPlayers.filter(p => p.player.startsWith(currentTeam));
+        }
+
+        // 如果没有找到选手
+        if (filteredPlayers.length === 0) {
+            document.getElementById('playerName').textContent = '该位置暂无此战队选手';
+            document.getElementById('totalKda').textContent = '0/0/0';
+            document.getElementById('heroPool').innerHTML = '';
+            document.getElementById('heroCount').textContent = 0;
             return;
         }
 
+        // 3. 选择筛选后的第一个选手（单人视图）
+        const player = filteredPlayers[0];
+
+        // 渲染中间信息
         document.getElementById('playerName').textContent = player.player;
         document.getElementById('totalKda').textContent = `${player.kills}/${player.deaths}/${player.assists}`;
         
-        renderHeroPool(player);
+        // 渲染英雄池
+        document.getElementById('heroCount').textContent = 1;
+        document.getElementById('heroPool').innerHTML = `
+            <div class="hero-item">
+                <div class="hero-games">1</div>
+                <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${player.champion}.png" onerror="this.style.background='#333'">
+                <div class="hero-win">本局</div>
+                <div class="hero-kda">${player.kills}/${player.deaths}/${player.assists}</div>
+            </div>
+        `;
 
+        // 更新上方指标
         updateStat('kda', player.kda, avgStats.avg_kda, player.rank_kda);
         updateStat('cs', player.cspm, avgStats.avg_cspm, player.rank_cspm);
         updateStat('dmg', player.dpm, avgStats.avg_dpm, player.rank_dpm);
@@ -210,6 +228,7 @@
         updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
         updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
 
+        // 渲染单人雷达图
         renderRadar(player);
     }
 
@@ -219,7 +238,6 @@
         document.getElementById(`rank-${key}`).textContent = '#' + rank;
     }
 
-    // 更新底部柱形图
     function updateBarStat(key, val, rank, maxVal) {
         document.getElementById(`stat-${key}`).textContent = val;
         document.getElementById(`rank-${key}`).textContent = '#' + rank;
@@ -228,19 +246,6 @@
             width = Math.max(0, Math.min(100, (Math.abs(val) / maxVal) * 100));
         }
         document.getElementById(`bar-${key}`).style.width = width + '%';
-    }
-
-    function renderHeroPool(currentPlayer) {
-        const poolEl = document.getElementById('heroPool');
-        document.getElementById('heroCount').textContent = 1; 
-        poolEl.innerHTML = `
-            <div class="hero-item">
-                <div class="hero-games">1</div>
-                <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${currentPlayer.champion}.png" onerror="this.style.background='#333'">
-                <div class="hero-win">本局</div>
-                <div class="hero-kda">${currentPlayer.kills}/${currentPlayer.deaths}/${currentPlayer.assists}</div>
-            </div>
-        `;
     }
 
     function renderRadar(player) {
