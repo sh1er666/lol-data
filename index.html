@@ -1,8 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H·武道会·数据展示</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body { background-color: #1a1d24; color: #eee; font-family: 'Microsoft YaHei', sans-serif; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .container { width: 100%; max-width: 1300px; background: #15181e; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
+        .title { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; padding: 10px 0; border-bottom: 1px solid #2f3540; }
+        
+        /* 位置选择器样式 */
+        .position-selector { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+        .pos-btn { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .pos-btn:hover { background: #3a3f4a; color: #fff; }
+        .pos-btn.active { background: #7a3df0; color: #fff; border-color: #7a3df0; }
+
+        .main-area { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+        .left-panel { width: 25%; display: flex; flex-direction: column; gap: 10px; }
+        .hero-pool-title { background: #7a3df0; color: #fff; text-align: center; padding: 8px 0; border-radius: 20px; font-weight: bold; font-size: 15px; letter-spacing: 1px; }
+        .hero-pool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .hero-item { display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+        .hero-games { position: absolute; top: -5px; left: 5px; color: #fff; font-weight: 800; font-size: 14px; }
+        .hero-icon { width: 70px; height: 70px; border-radius: 10px; margin-bottom: 5px; background: #2a2f38; border: 2px solid #333a45; }
+        .hero-win { color: #ccc; font-size: 12px; font-weight: bold; }
+        .hero-kda { color: #888; font-size: 11px; margin-top: 2px; }
+
+        .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .player-avatar { width: 200px; height: 200px; object-fit: cover; border-radius: 8px; }
+        .player-name { font-size: 42px; font-weight: 800; margin-top: 5px; }
+        .player-total-kda { font-size: 20px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
+
+        .right-panel { width: 55%; position: relative; height: 560px; display: flex; justify-content: center; align-items: center; }
+        #radarChart { width: 520px; height: 520px; }
+        .stats-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 520px; height: 520px; pointer-events: none; }
+        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.5; width: 180px; white-space: nowrap; }
+        .stat-rank { color: #fcd34d; font-size: 13px; font-weight: bold; }
+        .stat-val-blue { color: #00bcd4; font-weight: 800; font-size: 14px; }
+        .stat-name { color: #eee; font-weight: 600; font-size: 14px; }
+        .stat-val-red { color: #ff5252; font-size: 13px; }
+        .pos-top { top: 5%; left: 50%; } .pos-topright { top: 20%; left: 85%; } .pos-right { top: 50%; left: 96%; }
+        .pos-bottomright { bottom: 5%; left: 85%; } .pos-bottom { bottom: -8%; left: 50%; } .pos-bottomleft { bottom: 5%; left: 15%; }
+        .pos-left { top: 50%; left: 4%; } .pos-topleft { top: 20%; left: 15%; }
+        .avg-note { position: absolute; right: 10px; top: 10px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">H·武道会·中单数据展示</div>
+    
+    <!-- 位置选择器 -->
+    <div class="position-selector" id="positionSelector">
+        <button class="pos-btn" data-pos="TOP">上单</button>
+        <button class="pos-btn" data-pos="JUNGLE">打野</button>
+        <button class="pos-btn active" data-pos="MIDDLE">中单</button>
+        <button class="pos-btn" data-pos="BOTTOM">下路</button>
+        <button class="pos-btn" data-pos="UTILITY">辅助</button>
+    </div>
+
+    <div class="main-area">
+        <div class="left-panel">
+            <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>只)</div>
+            <div class="hero-pool-grid" id="heroPool"></div>
+        </div>
+        <div class="player-info">
+            <img class="player-avatar" id="playerAvatar" src="https://q1.qlogo.cn/g?b=qq&nk=854265242&s=640" onerror="this.src='https://via.placeholder.com/200'">
+            <div class="player-name" id="playerName">加载中...</div>
+            <div class="player-total-kda" id="totalKda">0/0/0</div>
+        </div>
+        <div class="right-panel">
+            <div id="radarChart"></div>
+            <div class="stats-wrapper">
+                <div class="stat-item pos-top"><div class="stat-rank" id="rank-kda">#-</div><div class="stat-val-blue" id="stat-kda">--</div><div class="stat-name">KDA</div><div class="stat-val-red" id="avg-kda">--</div></div>
+                <div class="stat-item pos-topright"><div class="stat-rank" id="rank-cs">#-</div><div class="stat-val-blue" id="stat-cs">--</div><div class="stat-name">分均补刀</div><div class="stat-val-red" id="avg-cs">--</div></div>
+                <div class="stat-item pos-right"><div class="stat-rank" id="rank-dmg">#-</div><div class="stat-val-blue" id="stat-dmg">--</div><div class="stat-name">分均伤害</div><div class="stat-val-red" id="avg-dmg">--</div></div>
+                <div class="stat-item pos-bottomright"><div class="stat-rank" id="rank-part">#-</div><div class="stat-val-blue" id="stat-part">--</div><div class="stat-name">参与击杀</div><div class="stat-val-red" id="avg-part">--</div></div>
+                <div class="stat-item pos-bottom"><div class="stat-rank" id="rank-gold">#-</div><div class="stat-val-blue" id="stat-gold">--</div><div class="stat-name">分均经济</div><div class="stat-val-red" id="avg-gold">--</div></div>
+                <div class="stat-item pos-bottomleft"><div class="stat-rank" id="rank-share">#-</div><div class="stat-val-blue" id="stat-share">--</div><div class="stat-name">伤害占比</div><div class="stat-val-red" id="avg-share">--</div></div>
+                <div class="stat-item pos-left"><div class="stat-rank" id="rank-conv">#-</div><div class="stat-val-blue" id="stat-conv">--</div><div class="stat-name">伤转</div><div class="stat-val-red" id="avg-conv">--</div></div>
+                <div class="stat-item pos-topleft"><div class="stat-rank" id="rank-surv">#-</div><div class="stat-val-blue" id="stat-surv">--</div><div class="stat-name">生存</div><div class="stat-val-red" id="avg-surv">--</div></div>
+            </div>
+            <div class="avg-note"><span style="color:#ff5252;">红色</span> 为全队平均值</div>
+        </div>
+    </div>
+</div>
+
 <script>
-    let currentData = []; // 原始数据
+    let currentData = []; // 玩家数据数组
+    let avgStats = {}; // 平均值
     let currentPosition = 'MIDDLE'; // 默认位置
     let myChart = null;
-    let avgStats = {}; // 存储全队平均值
 
     // 1. 加载数据
     async function loadData() {
@@ -10,12 +97,12 @@
             const res = await fetch('./data.json');
             const json = await res.json();
             
-            // 将最后一个平均值对象单独提取出来
+            // 将带有 avg_ 前缀的最后一个对象分离出来作为平均值
             avgStats = json.find(item => item.avg_kda !== undefined);
-            // 移除平均值对象，只留下玩家数组
+            // 移除平均值，剩下的全是玩家数据
             currentData = json.filter(item => item.avg_kda === undefined);
 
-            // 初始化按钮事件
+            // 绑定位置按钮事件
             document.querySelectorAll('.pos-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
@@ -25,7 +112,6 @@
                 });
             });
 
-            // 默认渲染
             updateView();
         } catch (error) {
             console.error('加载数据失败:', error);
@@ -35,7 +121,7 @@
 
     // 2. 更新视图
     function updateView() {
-        // 直接找对应当前位置的人
+        // 找到当前选择的玩家
         const player = currentData.find(p => p.position === currentPosition);
 
         if (!player) {
@@ -43,41 +129,40 @@
             return;
         }
 
-        // 渲染基本信息（直接读取JSON里的字段）
+        // 渲染中间信息
         document.getElementById('playerName').textContent = player.player;
         document.getElementById('totalKda').textContent = `${player.kills}/${player.deaths}/${player.assists}`;
         
-        // 渲染英雄池（这里因为是一局，直接显示本局英雄即可，以后可以改逻辑）
+        // 渲染英雄池
         renderHeroPool(player);
 
-        // 更新页面数值 - 直接取你Excel计算好的值
-        updateStat('kda', player.kda, avgStats.avg_kda);
-        updateStat('cs', player.cspm, avgStats.avg_cspm);
-        updateStat('dmg', player.dpm, avgStats.avg_dpm);
-        updateStat('part', player.kpart, avgStats.avg_kpart);
-        updateStat('gold', player.goldpm, avgStats.avg_goldpm);
-        updateStat('share', player.dmgshare + '%', avgStats.avg_dmgshare + '%');
-        updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold);
-        updateStat('surv', player.survival, avgStats.avg_survival);
+        // 直接渲染顶部数值和排名（完全读取EXCEL算好的 JSON）
+        updateStat('kda', player.kda, avgStats.avg_kda, player.rank_kda);
+        updateStat('cs', player.cspm, avgStats.avg_cspm, player.rank_cspm);
+        updateStat('dmg', player.dpm, avgStats.avg_dpm, player.rank_dpm);
+        updateStat('part', player.kpart, avgStats.avg_kpart, player.rank_kpart);
+        updateStat('gold', player.goldpm, avgStats.avg_goldpm, player.rank_goldpm);
+        updateStat('share', player.dmgshare + '%', avgStats.avg_dmgshare + '%', player.rank_dmgshare);
+        updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold, player.rank_dmgtoGold);
+        updateStat('surv', player.survival, avgStats.avg_survival, player.rank_survival);
 
         // 渲染雷达图
         renderRadar(player);
     }
 
-    // 辅助函数：更新单个指标
-    function updateStat(key, val, avgVal) {
-        // 用toFixed(2)控制小数位，避免出现原图中的极长小数
-        document.getElementById(`stat-${key}`).textContent = parseFloat(val).toFixed ? parseFloat(val).toFixed(2) : val;
-        document.getElementById(`avg-${key}`).textContent = parseFloat(avgVal).toFixed ? parseFloat(avgVal).toFixed(2) : avgVal;
-        // 排名如果你也在Excel里算好，可以在JSON里加个 rank_kda 这样的字段，直接读取。目前暂时隐藏
-        document.getElementById(`rank-${key}`).textContent = '#-'; 
+    // 3. 直接替换文本的函数
+    function updateStat(key, val, avgVal, rank) {
+        // 格式化两位小数
+        document.getElementById(`stat-${key}`).textContent = parseFloat(val).toFixed(2);
+        document.getElementById(`avg-${key}`).textContent = parseFloat(avgVal).toFixed(2);
+        // 直接显示排名 (保留原图带 # 号的样式)
+        document.getElementById(`rank-${key}`).textContent = '#' + rank;
     }
 
-    // 渲染英雄池
+    // 4. 渲染英雄池（单局）
     function renderHeroPool(currentPlayer) {
         const poolEl = document.getElementById('heroPool');
         document.getElementById('heroCount').textContent = 1; 
-        // 展示该位置玩家本局使用的英雄
         poolEl.innerHTML = `
             <div class="hero-item">
                 <div class="hero-games">1</div>
@@ -88,7 +173,7 @@
         `;
     }
 
-    // 渲染雷达图 (直接使用JSON里的数据)
+    // 5. 渲染雷达图 (直接读取虚拟数据)
     function renderRadar(player) {
         const chartDom = document.getElementById('radarChart');
         if (!myChart) myChart = echarts.init(chartDom);
@@ -97,7 +182,7 @@
             backgroundColor: 'transparent',
             radar: {
                 indicator: [
-                    { name: '', max: 10 },   // KDA (根据你的实际数值调整这里的max)
+                    { name: '', max: 10 },   // KDA
                     { name: '', max: 15 },   // 分均补刀
                     { name: '', max: 2000 }, // 分均伤害
                     { name: '', max: 30 },   // 参与击杀
@@ -113,14 +198,8 @@
             series: [{
                 type: 'radar',
                 data: [
-                    { 
-                        value: [player.kda, player.cspm, player.dpm, player.kpart, player.goldpm, player.dmgshare, player.dmgtoGold, player.survival], 
-                        itemStyle: { color: '#00bcd4' }, areaStyle: { color: 'rgba(0,188,212,0.4)' }, lineStyle: { color: '#00bcd4', width: 3 }, symbol: 'none' 
-                    },
-                    { 
-                        value: [avgStats.avg_kda, avgStats.avg_cspm, avgStats.avg_dpm, avgStats.avg_kpart, avgStats.avg_goldpm, avgStats.avg_dmgshare, avgStats.avg_dmgtoGold, avgStats.avg_survival], 
-                        itemStyle: { color: '#ff5252' }, areaStyle: { color: 'transparent' }, lineStyle: { color: '#ff5252', width: 2, type: 'dashed' }, symbol: 'none' 
-                    }
+                    { value: [player.kda, player.cspm, player.dpm, player.kpart, player.goldpm, player.dmgshare, player.dmgtoGold, player.survival], itemStyle: { color: '#00bcd4' }, areaStyle: { color: 'rgba(0,188,212,0.4)' }, lineStyle: { color: '#00bcd4', width: 3 }, symbol: 'none' },
+                    { value: [avgStats.avg_kda, avgStats.avg_cspm, avgStats.avg_dpm, avgStats.avg_kpart, avgStats.avg_goldpm, avgStats.avg_dmgshare, avgStats.avg_dmgtoGold, avgStats.avg_survival], itemStyle: { color: '#ff5252' }, areaStyle: { color: 'transparent' }, lineStyle: { color: '#ff5252', width: 2, type: 'dashed' }, symbol: 'none' }
                 ]
             }]
         };
@@ -130,3 +209,5 @@
 
     loadData();
 </script>
+</body>
+</html>
