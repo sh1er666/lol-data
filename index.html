@@ -10,12 +10,18 @@
         .container { width: 100%; max-width: 1300px; background: #15181e; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
         .title { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; padding: 10px 0; border-bottom: 1px solid #2f3540; }
         
-        /* 选择器样式 */
-        .selector-group { display: flex; justify-content: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-        .pos-btn, .team-btn { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
-        .pos-btn:hover, .team-btn:hover { background: #3a3f4a; color: #fff; }
-        .pos-btn.active, .team-btn.active { background: #7a3df0; color: #fff; border-color: #7a3df0; }
-        .separator { border-left: 2px solid #333; margin: 0 5px; }
+        /* 顶部控制器布局 */
+        .control-bar { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+        
+        /* 下拉框样式 */
+        .team-select { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; outline: none; appearance: none; text-align: center; }
+        .team-select:hover { background: #3a3f4a; color: #fff; }
+        .team-select option { background: #1a1d24; color: #eee; }
+
+        /* 位置选择器样式 */
+        .pos-btn { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+        .pos-btn:hover { background: #3a3f4a; color: #fff; }
+        .pos-btn.active { background: #7a3df0; color: #fff; border-color: #7a3df0; }
 
         .main-area { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
         
@@ -29,28 +35,39 @@
         .hero-win { color: #ccc; font-size: 12px; font-weight: bold; }
         .hero-kda { color: #888; font-size: 11px; margin-top: 2px; }
 
-        /* 中间单人选手信息 */
+        /* 中间单个选手信息（名字和KDA同排） */
         .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
-        .player-avatar { width: 200px; height: 200px; object-fit: cover; border-radius: 8px; }
-        .player-name { font-size: 42px; font-weight: 800; margin-top: 5px; }
-        .player-total-kda { font-size: 20px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
+        .player-avatar { width: 160px; height: 160px; object-fit: cover; border-radius: 8px; }
+        .player-meta { display: flex; align-items: baseline; gap: 15px; margin-top: 5px; }
+        .player-name { font-size: 24px; font-weight: 800; }
+        .player-total-kda { font-size: 18px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
 
-        /* 右侧雷达图 */
-        .right-panel { width: 55%; position: relative; height: 720px; display: flex; justify-content: center; align-items: center; }
-        #radarChart { width: 520px; height: 520px; }
-        .stats-wrapper { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 520px; height: 520px; pointer-events: none; }
-        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.5; width: 180px; white-space: nowrap; }
+        /* 右侧雷达图（中心上移，保持饱满） */
+        .right-panel { width: 55%; position: relative; height: 760px; display: flex; justify-content: center; align-items: center; }
+        #radarChart, .stats-wrapper { width: 520px; height: 520px; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); }
+        .stats-wrapper { pointer-events: none; }
+        
+        /* 位置布局（贴近雷达点） */
+        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.5; width: 150px; white-space: nowrap; }
         .stat-rank { color: #fcd34d; font-size: 13px; font-weight: bold; }
         .stat-val-blue { color: #00bcd4; font-weight: 800; font-size: 14px; }
         .stat-name { color: #eee; font-weight: 600; font-size: 14px; }
         .stat-val-red { color: #ff5252; font-size: 13px; }
-        .pos-top { top: 5%; left: 50%; } .pos-topright { top: 20%; left: 85%; } .pos-right { top: 50%; left: 96%; }
-        .pos-bottomright { bottom: 5%; left: 85%; } .pos-bottom { bottom: -8%; left: 50%; } .pos-bottomleft { bottom: 5%; left: 15%; }
-        .pos-left { top: 50%; left: 4%; } .pos-topleft { top: 20%; left: 15%; }
+        
+        /* 极坐标定位（根据中心 45% 推算出的贴近位置） */
+        .pos-top { top: 5%; left: 50%; }
+        .pos-topright { top: 15%; left: 85%; }
+        .pos-right { top: 45%; left: 96%; }
+        .pos-bottomright { bottom: 20%; left: 85%; }
+        .pos-bottom { bottom: 8%; left: 50%; }
+        .pos-bottomleft { bottom: 20%; left: 15%; }
+        .pos-left { top: 45%; left: 4%; }
+        .pos-topleft { top: 15%; left: 15%; }
+
         .avg-note { position: absolute; right: 10px; top: 20px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
 
-        /* 底部柱形图样式 */
-        .bottom-stats { position: absolute; bottom: 0; width: 100%; display: flex; justify-content: space-between; gap: 15px; padding: 0 10px; }
+        /* 底部柱形图样式（固定在下方） */
+        .bottom-stats { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: space-between; gap: 15px; padding: 0 10px; }
         .stat-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .mini-stat { background: rgba(255,255,255,0.03); border: 1px solid #333a45; border-radius: 6px; padding: 6px 10px; position: relative; overflow: hidden; }
         .mini-stat-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
@@ -68,17 +85,16 @@
 <div class="container">
     <div class="title">H·武道会·中单数据展示</div>
     
-    <!-- 战队筛选 + 位置选择器 -->
-    <div class="selector-group">
-        <button class="team-btn active" data-team="ALL">全部</button>
-        <button class="team-btn" data-team="EDG">EDG</button>
-        <button class="team-btn" data-team="RNG">RNG</button>
-        <div class="separator"></div>
-        <button class="pos-btn" data-pos="TOP">上单</button>
-        <button class="pos-btn" data-pos="JUNGLE">打野</button>
-        <button class="pos-btn active" data-pos="MIDDLE">中单</button>
-        <button class="pos-btn" data-pos="BOTTOM">下路</button>
-        <button class="pos-btn" data-pos="UTILITY">辅助</button>
+    <!-- 控制区：战队下拉框 + 位置按钮 -->
+    <div class="control-bar">
+        <select class="team-select" id="teamSelect"></select>
+        <div class="position-selector" id="positionSelector">
+            <button class="pos-btn" data-pos="TOP">上单</button>
+            <button class="pos-btn" data-pos="JUNGLE">打野</button>
+            <button class="pos-btn active" data-pos="MIDDLE">中单</button>
+            <button class="pos-btn" data-pos="BOTTOM">下路</button>
+            <button class="pos-btn" data-pos="UTILITY">辅助</button>
+        </div>
     </div>
 
     <div class="main-area">
@@ -87,11 +103,13 @@
             <div class="hero-pool-grid" id="heroPool"></div>
         </div>
         
-        <!-- 单人卡片区 -->
+        <!-- 中间选手信息 -->
         <div class="player-info">
             <img class="player-avatar" id="playerAvatar" src="https://q1.qlogo.cn/g?b=qq&nk=854265242&s=640" onerror="this.src='https://via.placeholder.com/200'">
-            <div class="player-name" id="playerName">加载中...</div>
-            <div class="player-total-kda" id="totalKda">0/0/0</div>
+            <div class="player-meta">
+                <div class="player-name" id="playerName">加载中...</div>
+                <div class="player-total-kda" id="totalKda">0/0/0</div>
+            </div>
         </div>
         
         <div class="right-panel">
@@ -134,7 +152,6 @@
     let currentData = []; 
     let avgStats = {}; 
     let currentPosition = 'MIDDLE'; 
-    let currentTeam = 'ALL'; 
     let myChart = null;
 
     async function loadData() {
@@ -144,14 +161,18 @@
             avgStats = json.find(item => item.avg_kda !== undefined);
             currentData = json.filter(item => item.avg_kda === undefined);
 
-            // 绑定战队按钮事件
-            document.querySelectorAll('.team-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    currentTeam = e.target.dataset.team;
-                    updateView();
-                });
+            // 动态生成战队下拉框（自动识别所有队伍，包括EDG/RNG）
+            const teamSet = new Set(currentData.map(p => p.player.split(' ')[0]));
+            const teamSelect = document.getElementById('teamSelect');
+            let optionsHtml = `<option value="ALL">全部战队</option>`;
+            teamSet.forEach(team => {
+                optionsHtml += `<option value="${team}">${team}</option>`;
+            });
+            teamSelect.innerHTML = optionsHtml;
+
+            // 下拉框切换事件
+            teamSelect.addEventListener('change', () => {
+                updateView();
             });
 
             // 绑定位置按钮事件
@@ -172,15 +193,13 @@
     }
 
     function updateView() {
-        // 1. 先按位置筛选
+        const selectedTeam = document.getElementById('teamSelect').value;
         let filteredPlayers = currentData.filter(p => p.position === currentPosition);
         
-        // 2. 如果当前选了EDG或RNG，再按战队前缀筛选
-        if (currentTeam !== 'ALL') {
-            filteredPlayers = filteredPlayers.filter(p => p.player.startsWith(currentTeam));
+        if (selectedTeam !== 'ALL') {
+            filteredPlayers = filteredPlayers.filter(p => p.player.startsWith(selectedTeam));
         }
 
-        // 如果没有找到选手
         if (filteredPlayers.length === 0) {
             document.getElementById('playerName').textContent = '该位置暂无此战队选手';
             document.getElementById('totalKda').textContent = '0/0/0';
@@ -189,10 +208,9 @@
             return;
         }
 
-        // 3. 选择筛选后的第一个选手（单人视图）
         const player = filteredPlayers[0];
 
-        // 渲染中间信息
+        // 渲染中间信息（名字和KDA同排）
         document.getElementById('playerName').textContent = player.player;
         document.getElementById('totalKda').textContent = `${player.kills}/${player.deaths}/${player.assists}`;
         
@@ -228,7 +246,7 @@
         updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
         updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
 
-        // 渲染单人雷达图
+        // 渲染单人雷达图（中心点调成 45% 左右，雷达图饱满）
         renderRadar(player);
     }
 
@@ -265,8 +283,8 @@
                     { name: '', max: 300 },  // 伤转
                     { name: '', max: 5 }     // 生存
                 ],
-                center: ['50%', '45%'], 
-                radius: '58%',
+                center: ['50%', '45%'],   // 核心调整！中心上移
+                radius: '65%',             // 核心调整！恢复饱满大小
                 splitNumber: 4, shape: 'polygon',
                 splitArea: { areaStyle: { color: ['rgba(30,30,30,0.25)', 'rgba(30,30,30,0.08)'] } },
                 axisLine: { show: false }, splitLine: { lineStyle: { color: '#fff', opacity: 0.2 } }, name: { show: false }
