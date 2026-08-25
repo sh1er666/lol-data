@@ -31,9 +31,9 @@
         .player-name { font-size: 42px; font-weight: 800; margin-top: 5px; }
         .player-total-kda { font-size: 20px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
 
-        .right-panel { width: 55%; position: relative; height: 560px; display: flex; justify-content: center; align-items: center; }
+        .right-panel { width: 55%; position: relative; height: 720px; display: flex; justify-content: center; align-items: center; }
         #radarChart { width: 520px; height: 520px; }
-        .stats-wrapper { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 520px; height: 520px; pointer-events: none; }
+        .stats-wrapper { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 520px; height: 520px; pointer-events: none; }
         .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.5; width: 180px; white-space: nowrap; }
         .stat-rank { color: #fcd34d; font-size: 13px; font-weight: bold; }
         .stat-val-blue { color: #00bcd4; font-weight: 800; font-size: 14px; }
@@ -42,7 +42,21 @@
         .pos-top { top: 5%; left: 50%; } .pos-topright { top: 20%; left: 85%; } .pos-right { top: 50%; left: 96%; }
         .pos-bottomright { bottom: 5%; left: 85%; } .pos-bottom { bottom: -8%; left: 50%; } .pos-bottomleft { bottom: 5%; left: 15%; }
         .pos-left { top: 50%; left: 4%; } .pos-topleft { top: 20%; left: 15%; }
-        .avg-note { position: absolute; right: 10px; top: 10px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
+        .avg-note { position: absolute; right: 10px; top: 20px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
+
+        /* 底部柱形图样式 */
+        .bottom-stats { position: absolute; bottom: 0; width: 100%; display: flex; justify-content: space-between; gap: 15px; padding: 0 10px; }
+        .stat-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .mini-stat { background: rgba(255,255,255,0.03); border: 1px solid #333a45; border-radius: 6px; padding: 6px 10px; position: relative; overflow: hidden; }
+        .mini-stat-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+        .mini-stat-name { color: #888; }
+        .mini-stat-val { color: #fff; font-weight: bold; }
+        .mini-stat-val.blue { color: #00bcd4; }
+        .mini-stat-val.red { color: #ff5252; }
+        .mini-stat-rank { color: #fcd34d; font-size: 12px; font-weight: bold; }
+        .bar-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #333; }
+        .bar-fill { height: 100%; width: 0%; background: #00bcd4; }
+        .bar-fill.red { background: #ff5252; }
     </style>
 </head>
 <body>
@@ -80,29 +94,74 @@
                 <div class="stat-item pos-left"><div class="stat-rank" id="rank-conv">#-</div><div class="stat-val-blue" id="stat-conv">--</div><div class="stat-name">伤转</div><div class="stat-val-red" id="avg-conv">--</div></div>
                 <div class="stat-item pos-topleft"><div class="stat-rank" id="rank-surv">#-</div><div class="stat-val-blue" id="stat-surv">--</div><div class="stat-name">生存</div><div class="stat-val-red" id="avg-surv">--</div></div>
             </div>
+
+            <!-- 底部柱形图容器 -->
+            <div class="bottom-stats">
+                <!-- 第一列 -->
+                <div class="stat-col">
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">POM</span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">单杀</span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">一血参与率</span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div>
+                    </div>
+                </div>
+                <!-- 第二列 -->
+                <div class="stat-col">
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">对位等级差</span><span class="mini-stat-val blue" id="stat-lane">--</span><span class="mini-stat-rank" id="rank-lane">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-lane"></div></div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">对位经济差</span><span class="mini-stat-val blue" id="stat-gdiff">--</span><span class="mini-stat-rank" id="rank-gdiff">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-gdiff"></div></div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">对线期经济差</span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div>
+                    </div>
+                </div>
+                <!-- 第三列 -->
+                <div class="stat-col">
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">参团率</span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">承伤占比</span><span class="mini-stat-val blue" id="stat-taken">--</span><span class="mini-stat-rank" id="rank-taken">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-taken"></div></div>
+                    </div>
+                    <div class="mini-stat">
+                        <div class="mini-stat-top"><span class="mini-stat-name">分均视野</span><span class="mini-stat-val blue" id="stat-vision">--</span><span class="mini-stat-rank" id="rank-vision">#-</span></div>
+                        <div class="bar-bg"><div class="bar-fill" id="bar-vision"></div></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="avg-note"><span style="color:#ff5252;">红色</span> 为全队平均值</div>
         </div>
     </div>
 </div>
 
 <script>
-    let currentData = []; // 玩家数据数组
-    let avgStats = {}; // 平均值
-    let currentPosition = 'MIDDLE'; // 默认位置
+    let currentData = []; 
+    let avgStats = {}; 
+    let currentPosition = 'MIDDLE'; 
     let myChart = null;
 
-    // 1. 加载数据
     async function loadData() {
         try {
             const res = await fetch('./data.json');
             const json = await res.json();
-            
-            // 将带有 avg_ 前缀的最后一个对象分离出来作为平均值
             avgStats = json.find(item => item.avg_kda !== undefined);
-            // 移除平均值，剩下的全是玩家数据
             currentData = json.filter(item => item.avg_kda === undefined);
 
-            // 绑定位置按钮事件
             document.querySelectorAll('.pos-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
@@ -119,24 +178,18 @@
         }
     }
 
-    // 2. 更新视图
     function updateView() {
-        // 找到当前选择的玩家
         const player = currentData.find(p => p.position === currentPosition);
-
         if (!player) {
             document.getElementById('playerName').textContent = '该位置暂无数据';
             return;
         }
 
-        // 渲染中间信息
         document.getElementById('playerName').textContent = player.player;
         document.getElementById('totalKda').textContent = `${player.kills}/${player.deaths}/${player.assists}`;
         
-        // 渲染英雄池
         renderHeroPool(player);
 
-        // 直接渲染顶部数值和排名（完全读取EXCEL算好的 JSON）
         updateStat('kda', player.kda, avgStats.avg_kda, player.rank_kda);
         updateStat('cs', player.cspm, avgStats.avg_cspm, player.rank_cspm);
         updateStat('dmg', player.dpm, avgStats.avg_dpm, player.rank_dpm);
@@ -146,20 +199,37 @@
         updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold, player.rank_dmgtoGold);
         updateStat('surv', player.survival, avgStats.avg_survival, player.rank_survival);
 
-        // 渲染雷达图
+        // 更新底部柱形图
+        updateBarStat('pom', player.pom, player.rank_pom, 10);
+        updateBarStat('solo', player.solo_kills, player.rank_solo_kills, 5);
+        updateBarStat('fb', player.fb_participation + '%', player.rank_fb, 60);
+        updateBarStat('lane', player.lane_diff, player.rank_lane_diff, 2);
+        updateBarStat('gdiff', player.gold_diff, player.rank_gold_diff, 2000);
+        updateBarStat('early', player.early_gold, player.rank_early_gold, 800);
+        updateBarStat('partrate', player.participation + '%', player.rank_participation, 80);
+        updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
+        updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
+
         renderRadar(player);
     }
 
-    // 3. 直接替换文本的函数
     function updateStat(key, val, avgVal, rank) {
-        // 格式化两位小数
         document.getElementById(`stat-${key}`).textContent = parseFloat(val).toFixed(2);
         document.getElementById(`avg-${key}`).textContent = parseFloat(avgVal).toFixed(2);
-        // 直接显示排名 (保留原图带 # 号的样式)
         document.getElementById(`rank-${key}`).textContent = '#' + rank;
     }
 
-    // 4. 渲染英雄池（单局）
+    // 更新底部柱形图
+    function updateBarStat(key, val, rank, maxVal) {
+        document.getElementById(`stat-${key}`).textContent = val;
+        document.getElementById(`rank-${key}`).textContent = '#' + rank;
+        let width = 0;
+        if (typeof val === 'number' && !isNaN(val)) {
+            width = Math.max(0, Math.min(100, (Math.abs(val) / maxVal) * 100));
+        }
+        document.getElementById(`bar-${key}`).style.width = width + '%';
+    }
+
     function renderHeroPool(currentPlayer) {
         const poolEl = document.getElementById('heroPool');
         document.getElementById('heroCount').textContent = 1; 
@@ -173,7 +243,6 @@
         `;
     }
 
-    // 5. 渲染雷达图 (直接读取虚拟数据)
     function renderRadar(player) {
         const chartDom = document.getElementById('radarChart');
         if (!myChart) myChart = echarts.init(chartDom);
@@ -191,7 +260,9 @@
                     { name: '', max: 300 },  // 伤转
                     { name: '', max: 5 }     // 生存
                 ],
-                center: ['50%', '50%'], radius: '68%', splitNumber: 4, shape: 'polygon',
+                center: ['50%', '45%'], 
+                radius: '58%',
+                splitNumber: 4, shape: 'polygon',
                 splitArea: { areaStyle: { color: ['rgba(30,30,30,0.25)', 'rgba(30,30,30,0.08)'] } },
                 axisLine: { show: false }, splitLine: { lineStyle: { color: '#fff', opacity: 0.2 } }, name: { show: false }
             },
