@@ -198,6 +198,8 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            /* 防止内容溢出 */
+            min-height: 0;
         }
         .hero-pool-title {
             background: linear-gradient(135deg, #7a3df0, #5a2db0);
@@ -217,13 +219,33 @@
             padding: 0 8px;
             border-radius: 12px;
         }
+
+        /* 核心修复：英雄池网格 + 滚动条，防止布局被撑爆 */
         .hero-pool-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
-            flex: 1;
+            flex: 1 1 auto;
             align-content: start;
+            /* 限制最大高度，超出滚动 */
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 4px;
+            /* 自定义滚动条样式 */
+            scrollbar-width: thin;
+            scrollbar-color: #7a3df0 transparent;
         }
+        .hero-pool-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .hero-pool-grid::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .hero-pool-grid::-webkit-scrollbar-thumb {
+            background: #7a3df0;
+            border-radius: 8px;
+        }
+
         .hero-item {
             display: flex;
             flex-direction: column;
@@ -279,7 +301,7 @@
             margin-top: 1px;
         }
 
-        /* --- 左侧底部进度条 --- */
+        /* --- 左侧底部进度条（固定不压缩） --- */
         .left-bottom-stats {
             flex-shrink: 0;
             display: flex;
@@ -451,7 +473,7 @@
             transform: translate(-50%, -50%);
         }
 
-        /* --- 八维指标标签（优化后） --- */
+        /* --- 八维指标标签 --- */
         .stats-wrapper {
             width: 520px;
             height: 520px;
@@ -509,7 +531,7 @@
             margin-top: 1px;
         }
 
-        /* 八个方位（微调让分布更均匀） */
+        /* 八个方位 */
         .pos-top {
             top: 2%;
             left: 50%;
@@ -568,7 +590,7 @@
             font-weight: 600;
         }
 
-        /* ===== 响应式 ===== */
+        /* ===== 响应式适配 ===== */
         @media (max-width: 1100px) {
             .container {
                 padding: 20px;
@@ -580,16 +602,10 @@
             .left-panel {
                 width: 100%;
                 min-width: unset;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .hero-pool-title {
-                width: 100%;
             }
             .hero-pool-grid {
+                max-height: 260px;
                 grid-template-columns: repeat(6, 1fr);
-                width: 100%;
             }
             .left-bottom-stats {
                 width: 100%;
@@ -690,6 +706,7 @@
                 font-size: 12px;
             }
             .hero-pool-grid {
+                max-height: 200px;
                 grid-template-columns: repeat(4, 1fr);
                 gap: 6px;
             }
@@ -806,13 +823,11 @@
 <body>
 
     <div class="container">
-        <!-- 标题（无图标） -->
         <div class="title">
             H·武道会
             <span class="sub">SEASON DATA</span>
         </div>
 
-        <!-- 控制栏（无图标） -->
         <div class="control-bar">
             <select class="team-select" id="teamSelect"></select>
             <div class="position-selector" id="positionSelector">
@@ -824,14 +839,12 @@
             </div>
         </div>
 
-        <!-- 主区域 -->
         <div class="main-area">
             <!-- 左侧 -->
             <div class="left-panel">
                 <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>)</div>
                 <div class="hero-pool-grid" id="heroPool"></div>
 
-                <!-- 进度条数据 -->
                 <div class="left-bottom-stats">
                     <div class="stat-row">
                         <div class="mini-stat">
@@ -905,7 +918,7 @@
                 </div>
             </div>
 
-            <!-- 中间：选手信息 -->
+            <!-- 中间 -->
             <div class="player-info">
                 <div class="player-avatar-wrap">
                     <img class="player-avatar" id="playerAvatar" src="" onerror="this.src='https://via.placeholder.com/160'" alt="avatar" />
@@ -918,11 +931,10 @@
                 </div>
             </div>
 
-            <!-- 右侧：雷达图 + 指标 -->
+            <!-- 右侧 -->
             <div class="right-panel">
                 <div id="radarChart"></div>
 
-                <!-- 八维指标（无重复，雷达图上已隐藏轴名称） -->
                 <div class="stats-wrapper">
                     <div class="stat-item pos-top">
                         <div class="stat-name">KDA</div>
@@ -975,7 +987,7 @@
 
     <script>
         // ============================================================
-        //  数据加载 & 渲染
+        //  数据加载 & 渲染（逻辑不变，仅保留功能）
         // ============================================================
         let currentData = [];
         let avgStats = {};
@@ -1148,7 +1160,6 @@
                 window.addEventListener('resize', () => myChart && myChart.resize());
             }
 
-            // 指标定义（与外部标签一一对应，但不在雷达图上显示名称）
             const indicator = [
                 { name: '', max: 10 },
                 { name: '', max: 15 },
@@ -1180,7 +1191,6 @@
                     splitLine: {
                         lineStyle: { color: 'rgba(255,255,255,0.06)', width: 1 }
                     },
-                    // 关键：隐藏轴名称，避免与外部标签重复
                     axisName: {
                         show: false
                     }
