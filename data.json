@@ -8,6 +8,7 @@
     "pom": 8, "rank_pom": 2, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 25.0, "rank_fb": 4, 
     "lane_diff": 1.10, "rank_lane_diff": 1, "gold_diff": 1500, "rank_gold_diff": 3, "early_gold": 450, "rank_early_gold": 2,
     "participation": 66.5, "rank_participation": 3, "damage_taken_share": 18.0, "rank_damage_taken": 5, "vision_per_min": 0.80, "rank_vision": 6,
+    "damage_taken_per_death": 5200, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Vayne", "games": 5, "wins": 3}, {"champion": "Ezreal", "games": 2, "wins": 1}, {"champion": "Jinx", "games": 1, "wins": 0}]
   },
   {
@@ -19,6 +20,7 @@
     "pom": 7, "rank_pom": 4, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 55.0, "rank_fb": 1, 
     "lane_diff": 0.80, "rank_lane_diff": 2, "gold_diff": 800, "rank_gold_diff": 5, "early_gold": 500, "rank_early_gold": 2,
     "participation": 78.0, "rank_participation": 2, "damage_taken_share": 24.0, "rank_damage_taken": 2, "vision_per_min": 1.85, "rank_vision": 1,
+    "damage_taken_per_death": 3000, "rank_damage_taken_per_death": 8,
     "heroes": [{"champion": "Lulu", "games": 6, "wins": 4}, {"champion": "Yuumi", "games": 2, "wins": 1}, {"champion": "Thresh", "games": 1, "wins": 0}]
   },
   {
@@ -30,6 +32,7 @@
     "pom": 10, "rank_pom": 1, "solo_kills": 4, "rank_solo_kills": 1, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 1.50, "rank_lane_diff": 1, "gold_diff": 2200, "rank_gold_diff": 2, "early_gold": 650, "rank_early_gold": 1,
     "participation": 70.2, "rank_participation": 2, "damage_taken_share": 16.5, "rank_damage_taken": 7, "vision_per_min": 0.95, "rank_vision": 4,
+    "damage_taken_per_death": 8000, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Orianna", "games": 8, "wins": 5}, {"champion": "Ahri", "games": 3, "wins": 2}, {"champion": "Syndra", "games": 1, "wins": 0}]
   },
   {
@@ -41,6 +44,7 @@
     "pom": 6, "rank_pom": 5, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 33.0, "rank_fb": 2, 
     "lane_diff": 0.90, "rank_lane_diff": 2, "gold_diff": 1300, "rank_gold_diff": 4, "early_gold": 400, "rank_early_gold": 3,
     "participation": 65.8, "rank_participation": 3, "damage_taken_share": 20.5, "rank_damage_taken": 4, "vision_per_min": 1.10, "rank_vision": 3,
+    "damage_taken_per_death": 7500, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Vi", "games": 4, "wins": 2}, {"champion": "Lee Sin", "games": 2, "wins": 1}, {"champion": "Kha'Zix", "games": 1, "wins": 1}]
   },
   {
@@ -52,6 +56,7 @@
     "pom": 4, "rank_pom": 7, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 18.0, "rank_fb": 6, 
     "lane_diff": 0.20, "rank_lane_diff": 4, "gold_diff": 300, "rank_gold_diff": 7, "early_gold": 150, "rank_early_gold": 6,
     "participation": 58.0, "rank_participation": 4, "damage_taken_share": 25.8, "rank_damage_taken": 2, "vision_per_min": 0.75, "rank_vision": 7,
+    "damage_taken_per_death": 11000, "rank_damage_taken_per_death": 1,
     "heroes": [{"champion": "Renekton", "games": 7, "wins": 4}, {"champion": "Ornn", "games": 2, "wins": 1}, {"champion": "Sett", "games": 1, "wins": 0}]
   },
   {
@@ -63,6 +68,7 @@
     "pom": 5, "rank_pom": 6, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 1.30, "rank_lane_diff": 2, "gold_diff": 1600, "rank_gold_diff": 2, "early_gold": 550, "rank_early_gold": 1,
     "participation": 56.0, "rank_participation": 5, "damage_taken_share": 19.0, "rank_damage_taken": 4, "vision_per_min": 0.85, "rank_vision": 5,
+    "damage_taken_per_death": 6000, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Jinx", "games": 4, "wins": 3}, {"champion": "Caitlyn", "games": 3, "wins": 1}, {"champion": "Samira", "games": 1, "wins": 0}]
   },
   {
@@ -74,6 +80,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 5, "rank_solo_kills": 1, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 1.60, "rank_lane_diff": 1, "gold_diff": 2400, "rank_gold_diff": 1, "early_gold": 650, "rank_early_gold": 1,
     "participation": 68.0, "rank_participation": 3, "damage_taken_share": 17.5, "rank_damage_taken": 5, "vision_per_min": 0.95, "rank_vision": 4,
+    "damage_taken_per_death": 9500, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Ahri", "games": 6, "wins": 4}, {"champion": "Yasuo", "games": 2, "wins": 1}, {"champion": "Fizz", "games": 1, "wins": 1}]
   },
   {
@@ -85,6 +92,7 @@
     "pom": 3, "rank_pom": 7, "solo_kills": 1, "rank_solo_kills": 6, "fb_participation": 18.0, "rank_fb": 6, 
     "lane_diff": 0.60, "rank_lane_diff": 3, "gold_diff": 450, "rank_gold_diff": 6, "early_gold": 200, "rank_early_gold": 5,
     "participation": 50.0, "rank_participation": 6, "damage_taken_share": 26.4, "rank_damage_taken": 2, "vision_per_min": 0.80, "rank_vision": 6,
+    "damage_taken_per_death": 10500, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Gnar", "games": 5, "wins": 3}, {"champion": "Jayce", "games": 3, "wins": 2}, {"champion": "Gwen", "games": 1, "wins": 0}]
   },
   {
@@ -96,6 +104,7 @@
     "pom": 7, "rank_pom": 3, "solo_kills": 3, "rank_solo_kills": 3, "fb_participation": 30.0, "rank_fb": 3, 
     "lane_diff": 0.30, "rank_lane_diff": 3, "gold_diff": 800, "rank_gold_diff": 4, "early_gold": 300, "rank_early_gold": 4,
     "participation": 62.0, "rank_participation": 4, "damage_taken_share": 20.1, "rank_damage_taken": 4, "vision_per_min": 1.20, "rank_vision": 3,
+    "damage_taken_per_death": 6800, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Kha'Zix", "games": 4, "wins": 2}, {"champion": "Diana", "games": 3, "wins": 2}, {"champion": "Nidalee", "games": 1, "wins": 0}]
   },
   {
@@ -107,6 +116,7 @@
     "pom": 6, "rank_pom": 5, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 50.0, "rank_fb": 2, 
     "lane_diff": 0.80, "rank_lane_diff": 1, "gold_diff": 700, "rank_gold_diff": 5, "early_gold": 350, "rank_early_gold": 3,
     "participation": 80.0, "rank_participation": 1, "damage_taken_share": 22.5, "rank_damage_taken": 2, "vision_per_min": 2.00, "rank_vision": 1,
+    "damage_taken_per_death": 2800, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Nautilus", "games": 6, "wins": 4}, {"champion": "Rakan", "games": 2, "wins": 1}, {"champion": "Lulu", "games": 1, "wins": 1}]
   },
   {
@@ -118,6 +128,7 @@
     "pom": 5, "rank_pom": 5, "solo_kills": 0, "rank_solo_kills": 6, "fb_participation": 45.0, "rank_fb": 1, 
     "lane_diff": 0.70, "rank_lane_diff": 2, "gold_diff": 600, "rank_gold_diff": 5, "early_gold": 320, "rank_early_gold": 4,
     "participation": 75.0, "rank_participation": 2, "damage_taken_share": 23.0, "rank_damage_taken": 2, "vision_per_min": 1.80, "rank_vision": 1,
+    "damage_taken_per_death": 3600, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Thresh", "games": 4, "wins": 3}, {"champion": "Nautilus", "games": 3, "wins": 1}, {"champion": "Braum", "games": 1, "wins": 0}]
   },
   {
@@ -129,6 +140,7 @@
     "pom": 7, "rank_pom": 3, "solo_kills": 4, "rank_solo_kills": 1, "fb_participation": 25.0, "rank_fb": 4, 
     "lane_diff": 1.20, "rank_lane_diff": 2, "gold_diff": 1800, "rank_gold_diff": 2, "early_gold": 480, "rank_early_gold": 2,
     "participation": 60.0, "rank_participation": 4, "damage_taken_share": 17.0, "rank_damage_taken": 5, "vision_per_min": 0.90, "rank_vision": 5,
+    "damage_taken_per_death": 7000, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Ezreal", "games": 7, "wins": 5}, {"champion": "Zeri", "games": 2, "wins": 1}, {"champion": "Vayne", "games": 1, "wins": 1}]
   },
   {
@@ -140,6 +152,7 @@
     "pom": 5, "rank_pom": 6, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 18.0, "rank_fb": 6, 
     "lane_diff": 0.50, "rank_lane_diff": 3, "gold_diff": 900, "rank_gold_diff": 4, "early_gold": 300, "rank_early_gold": 5,
     "participation": 57.0, "rank_participation": 5, "damage_taken_share": 18.5, "rank_damage_taken": 4, "vision_per_min": 0.85, "rank_vision": 5,
+    "damage_taken_per_death": 6800, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Zeri", "games": 5, "wins": 3}, {"champion": "Jinx", "games": 3, "wins": 1}, {"champion": "Kai'Sa", "games": 2, "wins": 1}]
   },
   {
@@ -151,6 +164,7 @@
     "pom": 4, "rank_pom": 7, "solo_kills": 1, "rank_solo_kills": 6, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 0.20, "rank_lane_diff": 5, "gold_diff": 100, "rank_gold_diff": 6, "early_gold": 100, "rank_early_gold": 7,
     "participation": 50.0, "rank_participation": 7, "damage_taken_share": 21.0, "rank_damage_taken": 3, "vision_per_min": 0.70, "rank_vision": 7,
+    "damage_taken_per_death": 4000, "rank_damage_taken_per_death": 8,
     "heroes": [{"champion": "Lucian", "games": 4, "wins": 2}, {"champion": "Kalista", "games": 2, "wins": 1}, {"champion": "Ashe", "games": 1, "wins": 1}]
   },
   {
@@ -162,6 +176,7 @@
     "pom": 6, "rank_pom": 5, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 30.0, "rank_fb": 3, 
     "lane_diff": 0.40, "rank_lane_diff": 4, "gold_diff": 600, "rank_gold_diff": 5, "early_gold": 250, "rank_early_gold": 6,
     "participation": 62.0, "rank_participation": 4, "damage_taken_share": 21.5, "rank_damage_taken": 3, "vision_per_min": 1.25, "rank_vision": 3,
+    "damage_taken_per_death": 8200, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Diana", "games": 5, "wins": 3}, {"champion": "Lillia", "games": 3, "wins": 2}, {"champion": "Gragas", "games": 1, "wins": 1}]
   },
   {
@@ -173,6 +188,7 @@
     "pom": 3, "rank_pom": 7, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 12.0, "rank_fb": 8, 
     "lane_diff": -0.20, "rank_lane_diff": 6, "gold_diff": -500, "rank_gold_diff": 7, "early_gold": -200, "rank_early_gold": 7,
     "participation": 45.0, "rank_participation": 7, "damage_taken_share": 24.0, "rank_damage_taken": 2, "vision_per_min": 0.75, "rank_vision": 6,
+    "damage_taken_per_death": 9800, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Jax", "games": 4, "wins": 2}, {"champion": "Fiora", "games": 3, "wins": 1}, {"champion": "Gangplank", "games": 2, "wins": 0}]
   },
   {
@@ -184,6 +200,7 @@
     "pom": 6, "rank_pom": 4, "solo_kills": 3, "rank_solo_kills": 3, "fb_participation": 15.0, "rank_fb": 7, 
     "lane_diff": 0.80, "rank_lane_diff": 3, "gold_diff": 1100, "rank_gold_diff": 4, "early_gold": 320, "rank_early_gold": 5,
     "participation": 52.0, "rank_participation": 6, "damage_taken_share": 15.0, "rank_damage_taken": 6, "vision_per_min": 0.85, "rank_vision": 5,
+    "damage_taken_per_death": 7000, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Akali", "games": 6, "wins": 4}, {"champion": "Sylas", "games": 3, "wins": 1}, {"champion": "Viktor", "games": 1, "wins": 1}]
   },
   {
@@ -195,6 +212,7 @@
     "pom": 8, "rank_pom": 2, "solo_kills": 4, "rank_solo_kills": 2, "fb_participation": 30.0, "rank_fb": 3, 
     "lane_diff": 1.20, "rank_lane_diff": 1, "gold_diff": 1500, "rank_gold_diff": 2, "early_gold": 500, "rank_early_gold": 2,
     "participation": 75.0, "rank_participation": 2, "damage_taken_share": 20.0, "rank_damage_taken": 4, "vision_per_min": 1.20, "rank_vision": 3,
+    "damage_taken_per_death": 8000, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Lee Sin", "games": 8, "wins": 5}, {"champion": "Vi", "games": 2, "wins": 2}, {"champion": "Xin Zhao", "games": 1, "wins": 0}]
   },
   {
@@ -206,6 +224,7 @@
     "pom": 5, "rank_pom": 6, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 40.0, "rank_fb": 2, 
     "lane_diff": 0.60, "rank_lane_diff": 2, "gold_diff": 500, "rank_gold_diff": 6, "early_gold": 280, "rank_early_gold": 5,
     "participation": 72.0, "rank_participation": 2, "damage_taken_share": 21.0, "rank_damage_taken": 3, "vision_per_min": 1.85, "rank_vision": 1,
+    "damage_taken_per_death": 3200, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Rakan", "games": 4, "wins": 3}, {"champion": "Leona", "games": 2, "wins": 1}, {"champion": "Thresh", "games": 1, "wins": 1}]
   },
   {
@@ -217,6 +236,7 @@
     "pom": 4, "rank_pom": 7, "solo_kills": 1, "rank_solo_kills": 6, "fb_participation": 15.0, "rank_fb": 7, 
     "lane_diff": -0.10, "rank_lane_diff": 5, "gold_diff": 100, "rank_gold_diff": 7, "early_gold": -100, "rank_early_gold": 7,
     "participation": 42.0, "rank_participation": 7, "damage_taken_share": 22.0, "rank_damage_taken": 4, "vision_per_min": 0.60, "rank_vision": 8,
+    "damage_taken_per_death": 3800, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Aphelios", "games": 3, "wins": 1}, {"champion": "Lucian", "games": 2, "wins": 1}, {"champion": "Miss Fortune", "games": 1, "wins": 0}]
   },
   {
@@ -228,6 +248,7 @@
     "pom": 2, "rank_pom": 7, "solo_kills": 1, "rank_solo_kills": 6, "fb_participation": 14.0, "rank_fb": 7,
     "lane_diff": -0.50, "rank_lane_diff": 6, "gold_diff": -700, "rank_gold_diff": 7, "early_gold": -200, "rank_early_gold": 7,
     "participation": 45.0, "rank_participation": 7, "damage_taken_share": 25.0, "rank_damage_taken": 2, "vision_per_min": 0.70, "rank_vision": 7,
+    "damage_taken_per_death": 9500, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Aatrox", "games": 3, "wins": 1}, {"champion": "Sett", "games": 2, "wins": 1}, {"champion": "Renekton", "games": 1, "wins": 0}]
   },
   {
@@ -239,6 +260,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 4, "rank_solo_kills": 1, "fb_participation": 28.0, "rank_fb": 2,
     "lane_diff": 1.30, "rank_lane_diff": 1, "gold_diff": 1700, "rank_gold_diff": 2, "early_gold": 550, "rank_early_gold": 1,
     "participation": 72.0, "rank_participation": 2, "damage_taken_share": 18.0, "rank_damage_taken": 5, "vision_per_min": 1.25, "rank_vision": 3,
+    "damage_taken_per_death": 9800, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Nidalee", "games": 4, "wins": 3}, {"champion": "Graves", "games": 2, "wins": 1}, {"champion": "Kha'Zix", "games": 2, "wins": 0}]
   },
   {
@@ -250,6 +272,7 @@
     "pom": 6, "rank_pom": 4, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 45.0, "rank_fb": 1,
     "lane_diff": 0.70, "rank_lane_diff": 2, "gold_diff": 650, "rank_gold_diff": 5, "early_gold": 320, "rank_early_gold": 4,
     "participation": 78.0, "rank_participation": 1, "damage_taken_share": 22.5, "rank_damage_taken": 3, "vision_per_min": 1.90, "rank_vision": 1,
+    "damage_taken_per_death": 4200, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Braum", "games": 3, "wins": 2}, {"champion": "Leona", "games": 2, "wins": 1}, {"champion": "Nautilus", "games": 1, "wins": 0}]
   },
   {
@@ -261,6 +284,7 @@
     "pom": 7, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 20.0, "rank_fb": 5,
     "lane_diff": 1.10, "rank_lane_diff": 2, "gold_diff": 1600, "rank_gold_diff": 3, "early_gold": 450, "rank_early_gold": 2,
     "participation": 60.0, "rank_participation": 5, "damage_taken_share": 17.0, "rank_damage_taken": 6, "vision_per_min": 0.80, "rank_vision": 5,
+    "damage_taken_per_death": 7500, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Kalista", "games": 5, "wins": 3}, {"champion": "Lucian", "games": 3, "wins": 2}, {"champion": "Vayne", "games": 1, "wins": 0}]
   },
   {
@@ -272,6 +296,7 @@
     "pom": 5, "rank_pom": 5, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 15.0, "rank_fb": 6,
     "lane_diff": 0.40, "rank_lane_diff": 4, "gold_diff": 500, "rank_gold_diff": 6, "early_gold": 150, "rank_early_gold": 6,
     "participation": 50.0, "rank_participation": 6, "damage_taken_share": 19.5, "rank_damage_taken": 4, "vision_per_min": 0.65, "rank_vision": 8,
+    "damage_taken_per_death": 4500, "rank_damage_taken_per_death": 8,
     "heroes": [{"champion": "Zed", "games": 4, "wins": 2}, {"champion": "Yasuo", "games": 3, "wins": 1}, {"champion": "Fizz", "games": 1, "wins": 0}]
   },
   {
@@ -283,6 +308,7 @@
     "pom": 2, "rank_pom": 8, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 18.0, "rank_fb": 5,
     "lane_diff": 0.10, "rank_lane_diff": 4, "gold_diff": -100, "rank_gold_diff": 6, "early_gold": -50, "rank_early_gold": 6,
     "participation": 50.0, "rank_participation": 6, "damage_taken_share": 26.0, "rank_damage_taken": 1, "vision_per_min": 0.75, "rank_vision": 6,
+    "damage_taken_per_death": 8500, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Ornn", "games": 3, "wins": 1}, {"champion": "Sion", "games": 1, "wins": 1}, {"champion": "Malphite", "games": 1, "wins": 0}]
   },
   {
@@ -294,6 +320,7 @@
     "pom": 4, "rank_pom": 6, "solo_kills": 1, "rank_solo_kills": 6, "fb_participation": 15.0, "rank_fb": 6,
     "lane_diff": 0.50, "rank_lane_diff": 3, "gold_diff": 400, "rank_gold_diff": 5, "early_gold": 200, "rank_early_gold": 5,
     "participation": 46.0, "rank_participation": 7, "damage_taken_share": 24.5, "rank_damage_taken": 2, "vision_per_min": 0.82, "rank_vision": 5,
+    "damage_taken_per_death": 9000, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Sett", "games": 4, "wins": 2}, {"champion": "Aatrox", "games": 2, "wins": 2}, {"champion": "Jax", "games": 2, "wins": 1}]
   },
   {
@@ -305,6 +332,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 4, "rank_solo_kills": 1, "fb_participation": 25.0, "rank_fb": 3,
     "lane_diff": 1.40, "rank_lane_diff": 1, "gold_diff": 1800, "rank_gold_diff": 1, "early_gold": 600, "rank_early_gold": 1,
     "participation": 74.0, "rank_participation": 2, "damage_taken_share": 19.0, "rank_damage_taken": 4, "vision_per_min": 1.25, "rank_vision": 3,
+    "damage_taken_per_death": 10000, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Graves", "games": 6, "wins": 4}, {"champion": "Xin Zhao", "games": 2, "wins": 1}, {"champion": "Lee Sin", "games": 1, "wins": 0}]
   },
   {
@@ -316,6 +344,7 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 36.0, "rank_fb": 2,
     "lane_diff": 0.80, "rank_lane_diff": 2, "gold_diff": 800, "rank_gold_diff": 3, "early_gold": 260, "rank_early_gold": 3,
     "participation": 80.0, "rank_participation": 1, "damage_taken_share": 21.0, "rank_damage_taken": 3, "vision_per_min": 1.95, "rank_vision": 1,
+    "damage_taken_per_death": 4000, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Lux", "games": 4, "wins": 3}, {"champion": "Karma", "games": 2, "wins": 1}, {"champion": "Nami", "games": 1, "wins": 1}]
   },
   {
@@ -327,6 +356,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 22.0, "rank_fb": 4,
     "lane_diff": 1.00, "rank_lane_diff": 2, "gold_diff": 1300, "rank_gold_diff": 2, "early_gold": 400, "rank_early_gold": 2,
     "participation": 60.0, "rank_participation": 5, "damage_taken_share": 16.0, "rank_damage_taken": 5, "vision_per_min": 0.70, "rank_vision": 7,
+    "damage_taken_per_death": 8000, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Ashe", "games": 5, "wins": 3}, {"champion": "Jinx", "games": 2, "wins": 1}, {"champion": "Varus", "games": 1, "wins": 1}]
   },
   {
@@ -338,6 +368,7 @@
     "pom": 5, "rank_pom": 3, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 48.0, "rank_fb": 1,
     "lane_diff": 0.90, "rank_lane_diff": 1, "gold_diff": 900, "rank_gold_diff": 3, "early_gold": 380, "rank_early_gold": 2,
     "participation": 85.0, "rank_participation": 1, "damage_taken_share": 18.5, "rank_damage_taken": 5, "vision_per_min": 2.10, "rank_vision": 1,
+    "damage_taken_per_death": 5500, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Yuumi", "games": 6, "wins": 4}, {"champion": "Sona", "games": 2, "wins": 1}, {"champion": "Soraka", "games": 1, "wins": 1}]
   },
   {
@@ -349,6 +380,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 20.0, "rank_fb": 5,
     "lane_diff": 0.60, "rank_lane_diff": 3, "gold_diff": 600, "rank_gold_diff": 5, "early_gold": 200, "rank_early_gold": 6,
     "participation": 48.0, "rank_participation": 7, "damage_taken_share": 23.0, "rank_damage_taken": 2, "vision_per_min": 0.75, "rank_vision": 6,
+    "damage_taken_per_death": 8800, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Gwen", "games": 4, "wins": 2}, {"champion": "Camille", "games": 2, "wins": 2}, {"champion": "Darius", "games": 1, "wins": 0}]
   },
   {
@@ -360,6 +392,7 @@
     "pom": 8, "rank_pom": 1, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 22.0, "rank_fb": 4,
     "lane_diff": 1.20, "rank_lane_diff": 1, "gold_diff": 2000, "rank_gold_diff": 1, "early_gold": 550, "rank_early_gold": 1,
     "participation": 62.0, "rank_participation": 5, "damage_taken_share": 17.5, "rank_damage_taken": 6, "vision_per_min": 0.85, "rank_vision": 5,
+    "damage_taken_per_death": 9800, "rank_damage_taken_per_death": 1,
     "heroes": [{"champion": "Miss Fortune", "games": 7, "wins": 5}, {"champion": "Tristana", "games": 3, "wins": 2}, {"champion": "Samira", "games": 2, "wins": 1}]
   },
   {
@@ -371,6 +404,7 @@
     "pom": 7, "rank_pom": 2, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 15.0, "rank_fb": 7,
     "lane_diff": 1.00, "rank_lane_diff": 2, "gold_diff": 1500, "rank_gold_diff": 2, "early_gold": 400, "rank_early_gold": 3,
     "participation": 65.0, "rank_participation": 4, "damage_taken_share": 15.0, "rank_damage_taken": 7, "vision_per_min": 0.90, "rank_vision": 4,
+    "damage_taken_per_death": 6000, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Corki", "games": 6, "wins": 4}, {"champion": "Azir", "games": 2, "wins": 1}, {"champion": "Orianna", "games": 1, "wins": 1}]
   },
   {
@@ -382,6 +416,7 @@
     "pom": 3, "rank_pom": 6, "solo_kills": 1, "rank_solo_kills": 6, "fb_participation": 25.0, "rank_fb": 3,
     "lane_diff": 0.30, "rank_lane_diff": 4, "gold_diff": 450, "rank_gold_diff": 6, "early_gold": 150, "rank_early_gold": 5,
     "participation": 55.0, "rank_participation": 6, "damage_taken_share": 20.5, "rank_damage_taken": 4, "vision_per_min": 1.15, "rank_vision": 4,
+    "damage_taken_per_death": 5600, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Hecarim", "games": 5, "wins": 3}, {"champion": "Diana", "games": 2, "wins": 1}, {"champion": "Shyvana", "games": 1, "wins": 0}]
   },
   {
@@ -393,6 +428,7 @@
     "pom": 3, "rank_pom": 5, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 40.0, "rank_fb": 2,
     "lane_diff": 0.50, "rank_lane_diff": 3, "gold_diff": 400, "rank_gold_diff": 6, "early_gold": 150, "rank_early_gold": 6,
     "participation": 70.0, "rank_participation": 3, "damage_taken_share": 19.0, "rank_damage_taken": 5, "vision_per_min": 1.80, "rank_vision": 2,
+    "damage_taken_per_death": 4800, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Sona", "games": 4, "wins": 2}, {"champion": "Nami", "games": 2, "wins": 1}, {"champion": "Lulu", "games": 1, "wins": 1}]
   },
   {
@@ -404,6 +440,7 @@
     "pom": 6, "rank_pom": 2, "solo_kills": 3, "rank_solo_kills": 3, "fb_participation": 22.0, "rank_fb": 4,
     "lane_diff": 0.80, "rank_lane_diff": 2, "gold_diff": 1100, "rank_gold_diff": 3, "early_gold": 350, "rank_early_gold": 3,
     "participation": 72.0, "rank_participation": 2, "damage_taken_share": 19.5, "rank_damage_taken": 4, "vision_per_min": 1.20, "rank_vision": 3,
+    "damage_taken_per_death": 6200, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Lillia", "games": 6, "wins": 4}, {"champion": "Elise", "games": 2, "wins": 1}, {"champion": "Lee Sin", "games": 1, "wins": 0}]
   },
   {
@@ -415,6 +452,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 5, "rank_solo_kills": 1, "fb_participation": 15.0, "rank_fb": 7,
     "lane_diff": 1.20, "rank_lane_diff": 1, "gold_diff": 1800, "rank_gold_diff": 1, "early_gold": 500, "rank_early_gold": 2,
     "participation": 62.0, "rank_participation": 5, "damage_taken_share": 16.0, "rank_damage_taken": 6, "vision_per_min": 0.85, "rank_vision": 5,
+    "damage_taken_per_death": 7500, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Sylas", "games": 8, "wins": 5}, {"champion": "LeBlanc", "games": 2, "wins": 2}, {"champion": "Zed", "games": 1, "wins": 0}]
   },
   {
@@ -426,6 +464,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 5, "fb_participation": 20.0, "rank_fb": 5,
     "lane_diff": 1.00, "rank_lane_diff": 2, "gold_diff": 1400, "rank_gold_diff": 2, "early_gold": 450, "rank_early_gold": 2,
     "participation": 55.0, "rank_participation": 6, "damage_taken_share": 18.0, "rank_damage_taken": 5, "vision_per_min": 0.75, "rank_vision": 6,
+    "damage_taken_per_death": 8200, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Kai'Sa", "games": 6, "wins": 4}, {"champion": "Zeri", "games": 2, "wins": 1}, {"champion": "Ashe", "games": 1, "wins": 1}]
   },
   {
@@ -437,6 +476,7 @@
     "pom": 2, "rank_pom": 7, "solo_kills": 1, "rank_solo_kills": 7, "fb_participation": 12.0, "rank_fb": 8,
     "lane_diff": -0.80, "rank_lane_diff": 6, "gold_diff": -1200, "rank_gold_diff": 7, "early_gold": -300, "rank_early_gold": 7,
     "participation": 40.0, "rank_participation": 8, "damage_taken_share": 15.5, "rank_damage_taken": 7, "vision_per_min": 0.65, "rank_vision": 8,
+    "damage_taken_per_death": 3500, "rank_damage_taken_per_death": 8,
     "heroes": [{"champion": "Viktor", "games": 3, "wins": 1}, {"champion": "Vex", "games": 2, "wins": 0}, {"champion": "Anivia", "games": 1, "wins": 0}]
   },
     {
@@ -448,6 +488,7 @@
     "pom": 8, "rank_pom": 2, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 18.0, "rank_fb": 5, 
     "lane_diff": 1.10, "rank_lane_diff": 1, "gold_diff": 1300, "rank_gold_diff": 2, "early_gold": 420, "rank_early_gold": 2,
     "participation": 58.0, "rank_participation": 4, "damage_taken_share": 16.5, "rank_damage_taken": 6, "vision_per_min": 0.95, "rank_vision": 4,
+    "damage_taken_per_death": 7600, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Yasuo", "games": 6, "wins": 4}, {"champion": "Zed", "games": 2, "wins": 1}, {"champion": "Qiyana", "games": 1, "wins": 0}]
   },
   {
@@ -459,6 +500,7 @@
     "pom": 6, "rank_pom": 4, "solo_kills": 4, "rank_solo_kills": 1, "fb_participation": 15.0, "rank_fb": 6, 
     "lane_diff": 1.30, "rank_lane_diff": 1, "gold_diff": 1600, "rank_gold_diff": 2, "early_gold": 500, "rank_early_gold": 1,
     "participation": 46.0, "rank_participation": 7, "damage_taken_share": 22.0, "rank_damage_taken": 2, "vision_per_min": 0.72, "rank_vision": 7,
+    "damage_taken_per_death": 9000, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Fiora", "games": 7, "wins": 5}, {"champion": "Jax", "games": 2, "wins": 1}, {"champion": "Irelia", "games": 1, "wins": 0}]
   },
   {
@@ -470,6 +512,7 @@
     "pom": 5, "rank_pom": 5, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 30.0, "rank_fb": 2, 
     "lane_diff": 0.60, "rank_lane_diff": 3, "gold_diff": 600, "rank_gold_diff": 4, "early_gold": 280, "rank_early_gold": 3,
     "participation": 62.0, "rank_participation": 3, "damage_taken_share": 24.0, "rank_damage_taken": 2, "vision_per_min": 1.15, "rank_vision": 3,
+    "damage_taken_per_death": 5000, "rank_damage_taken_per_death": 8,
     "heroes": [{"champion": "Nunu", "games": 5, "wins": 3}, {"champion": "Amumu", "games": 2, "wins": 1}, {"champion": "Zac", "games": 1, "wins": 0}]
   },
   {
@@ -481,6 +524,7 @@
     "pom": 3, "rank_pom": 6, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 42.0, "rank_fb": 2, 
     "lane_diff": 0.40, "rank_lane_diff": 3, "gold_diff": 400, "rank_gold_diff": 6, "early_gold": 200, "rank_early_gold": 5,
     "participation": 68.0, "rank_participation": 2, "damage_taken_share": 20.5, "rank_damage_taken": 3, "vision_per_min": 1.90, "rank_vision": 1,
+    "damage_taken_per_death": 4500, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Thresh", "games": 6, "wins": 4}, {"champion": "Rakan", "games": 2, "wins": 1}, {"champion": "Alistar", "games": 1, "wins": 0}]
   },
   {
@@ -492,6 +536,7 @@
     "pom": 7, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 22.0, "rank_fb": 4, 
     "lane_diff": 0.90, "rank_lane_diff": 2, "gold_diff": 1200, "rank_gold_diff": 2, "early_gold": 350, "rank_early_gold": 3,
     "participation": 56.0, "rank_participation": 4, "damage_taken_share": 18.5, "rank_damage_taken": 5, "vision_per_min": 0.80, "rank_vision": 5,
+    "damage_taken_per_death": 6800, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Kai'Sa", "games": 6, "wins": 4}, {"champion": "Xayah", "games": 2, "wins": 1}, {"champion": "Lucian", "games": 1, "wins": 0}]
   },
   {
@@ -503,6 +548,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 4, "rank_solo_kills": 1, "fb_participation": 28.0, "rank_fb": 2, 
     "lane_diff": 1.40, "rank_lane_diff": 1, "gold_diff": 1700, "rank_gold_diff": 1, "early_gold": 520, "rank_early_gold": 1,
     "participation": 72.0, "rank_participation": 2, "damage_taken_share": 19.0, "rank_damage_taken": 4, "vision_per_min": 1.25, "rank_vision": 3,
+    "damage_taken_per_death": 9200, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Kha'Zix", "games": 7, "wins": 5}, {"champion": "Nidalee", "games": 2, "wins": 1}, {"champion": "Rengar", "games": 1, "wins": 0}]
   },
   {
@@ -514,6 +560,7 @@
     "pom": 8, "rank_pom": 2, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 20.0, "rank_fb": 4, 
     "lane_diff": 1.20, "rank_lane_diff": 2, "gold_diff": 1500, "rank_gold_diff": 1, "early_gold": 400, "rank_early_gold": 2,
     "participation": 65.0, "rank_participation": 3, "damage_taken_share": 15.5, "rank_damage_taken": 6, "vision_per_min": 0.90, "rank_vision": 5,
+    "damage_taken_per_death": 7000, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Ahri", "games": 8, "wins": 5}, {"champion": "Lissandra", "games": 2, "wins": 2}, {"champion": "Zoe", "games": 1, "wins": 0}]
   },
   {
@@ -525,6 +572,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 22.0, "rank_fb": 4, 
     "lane_diff": 1.00, "rank_lane_diff": 2, "gold_diff": 1300, "rank_gold_diff": 2, "early_gold": 380, "rank_early_gold": 2,
     "participation": 50.0, "rank_participation": 5, "damage_taken_share": 16.0, "rank_damage_taken": 5, "vision_per_min": 0.72, "rank_vision": 7,
+    "damage_taken_per_death": 7900, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Ezreal", "games": 7, "wins": 4}, {"champion": "Jhin", "games": 2, "wins": 1}, {"champion": "Draven", "games": 1, "wins": 1}]
   },
   {
@@ -536,6 +584,7 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 45.0, "rank_fb": 1, 
     "lane_diff": 0.90, "rank_lane_diff": 1, "gold_diff": 900, "rank_gold_diff": 3, "early_gold": 350, "rank_early_gold": 3,
     "participation": 80.0, "rank_participation": 1, "damage_taken_share": 12.0, "rank_damage_taken": 8, "vision_per_min": 2.00, "rank_vision": 1,
+    "damage_taken_per_death": 5800, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Yuumi", "games": 8, "wins": 6}, {"champion": "Soraka", "games": 2, "wins": 1}, {"champion": "Nami", "games": 1, "wins": 1}]
   },
   {
@@ -547,6 +596,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 16.0, "rank_fb": 5, 
     "lane_diff": 0.10, "rank_lane_diff": 4, "gold_diff": 100, "rank_gold_diff": 5, "early_gold": 50, "rank_early_gold": 5,
     "participation": 62.0, "rank_participation": 4, "damage_taken_share": 26.0, "rank_damage_taken": 1, "vision_per_min": 0.78, "rank_vision": 6,
+    "damage_taken_per_death": 8500, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Ornn", "games": 6, "wins": 4}, {"champion": "Shen", "games": 2, "wins": 1}, {"champion": "Malphite", "games": 1, "wins": 0}]
   },
   {
@@ -558,6 +608,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 0.70, "rank_lane_diff": 2, "gold_diff": 800, "rank_gold_diff": 4, "early_gold": 260, "rank_early_gold": 4,
     "participation": 54.0, "rank_participation": 5, "damage_taken_share": 18.0, "rank_damage_taken": 5, "vision_per_min": 0.68, "rank_vision": 7,
+    "damage_taken_per_death": 5200, "rank_damage_taken_per_death": 8,
     "heroes": [{"champion": "Samira", "games": 5, "wins": 3}, {"champion": "Vayne", "games": 3, "wins": 1}, {"champion": "Jinx", "games": 1, "wins": 0}]
   },
   {
@@ -569,6 +620,7 @@
     "pom": 7, "rank_pom": 2, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 22.0, "rank_fb": 3, 
     "lane_diff": 0.80, "rank_lane_diff": 3, "gold_diff": 900, "rank_gold_diff": 3, "early_gold": 300, "rank_early_gold": 3,
     "participation": 60.0, "rank_participation": 4, "damage_taken_share": 20.5, "rank_damage_taken": 4, "vision_per_min": 1.30, "rank_vision": 2,
+    "damage_taken_per_death": 7200, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Lee Sin", "games": 6, "wins": 4}, {"champion": "Wukong", "games": 2, "wins": 1}, {"champion": "Viego", "games": 1, "wins": 0}]
   },
   {
@@ -580,6 +632,7 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 18.0, "rank_fb": 6, 
     "lane_diff": 1.00, "rank_lane_diff": 1, "gold_diff": 1200, "rank_gold_diff": 1, "early_gold": 400, "rank_early_gold": 1,
     "participation": 52.0, "rank_participation": 6, "damage_taken_share": 14.0, "rank_damage_taken": 7, "vision_per_min": 0.90, "rank_vision": 4,
+    "damage_taken_per_death": 8800, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Orianna", "games": 7, "wins": 4}, {"champion": "Syndra", "games": 2, "wins": 1}, {"champion": "Viktor", "games": 1, "wins": 0}]
   },
   {
@@ -591,6 +644,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 35.0, "rank_fb": 2, 
     "lane_diff": 0.50, "rank_lane_diff": 3, "gold_diff": 500, "rank_gold_diff": 5, "early_gold": 180, "rank_early_gold": 6,
     "participation": 72.0, "rank_participation": 2, "damage_taken_share": 23.5, "rank_damage_taken": 2, "vision_per_min": 1.85, "rank_vision": 1,
+    "damage_taken_per_death": 4300, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Nautilus", "games": 5, "wins": 4}, {"champion": "Leona", "games": 2, "wins": 1}, {"champion": "Alistar", "games": 1, "wins": 0}]
   },
   {
@@ -602,6 +656,7 @@
     "pom": 2, "rank_pom": 7, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 10.0, "rank_fb": 7, 
     "lane_diff": -0.20, "rank_lane_diff": 5, "gold_diff": -300, "rank_gold_diff": 6, "early_gold": -100, "rank_early_gold": 6,
     "participation": 38.0, "rank_participation": 7, "damage_taken_share": 25.0, "rank_damage_taken": 1, "vision_per_min": 0.72, "rank_vision": 6,
+    "damage_taken_per_death": 7800, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Renekton", "games": 4, "wins": 2}, {"champion": "Aatrox", "games": 3, "wins": 1}, {"champion": "Sett", "games": 2, "wins": 0}]
   },
   {
@@ -613,6 +668,7 @@
     "pom": 8, "rank_pom": 2, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 24.0, "rank_fb": 4, 
     "lane_diff": 1.10, "rank_lane_diff": 1, "gold_diff": 1600, "rank_gold_diff": 1, "early_gold": 450, "rank_early_gold": 2,
     "participation": 65.0, "rank_participation": 3, "damage_taken_share": 20.0, "rank_damage_taken": 4, "vision_per_min": 1.20, "rank_vision": 3,
+    "damage_taken_per_death": 8600, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Graves", "games": 7, "wins": 5}, {"champion": "Diana", "games": 2, "wins": 1}, {"champion": "Kha'Zix", "games": 1, "wins": 0}]
   },
   {
@@ -624,6 +680,7 @@
     "pom": 7, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 12.0, "rank_fb": 7, 
     "lane_diff": 1.30, "rank_lane_diff": 1, "gold_diff": 1400, "rank_gold_diff": 2, "early_gold": 500, "rank_early_gold": 1,
     "participation": 55.0, "rank_participation": 5, "damage_taken_share": 14.5, "rank_damage_taken": 7, "vision_per_min": 0.95, "rank_vision": 4,
+    "damage_taken_per_death": 9000, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Azir", "games": 8, "wins": 6}, {"champion": "Taliyah", "games": 2, "wins": 1}, {"champion": "Corki", "games": 1, "wins": 0}]
   },
   {
@@ -635,6 +692,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 40.0, "rank_fb": 1, 
     "lane_diff": 0.60, "rank_lane_diff": 3, "gold_diff": 600, "rank_gold_diff": 4, "early_gold": 250, "rank_early_gold": 4,
     "participation": 72.0, "rank_participation": 2, "damage_taken_share": 25.5, "rank_damage_taken": 1, "vision_per_min": 1.80, "rank_vision": 1,
+    "damage_taken_per_death": 4000, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Leona", "games": 6, "wins": 4}, {"champion": "Thresh", "games": 2, "wins": 1}, {"champion": "Nautilus", "games": 1, "wins": 1}]
   },
   {
@@ -646,6 +704,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 22.0, "rank_fb": 4, 
     "lane_diff": 1.10, "rank_lane_diff": 2, "gold_diff": 1500, "rank_gold_diff": 1, "early_gold": 420, "rank_early_gold": 2,
     "participation": 55.0, "rank_participation": 4, "damage_taken_share": 17.0, "rank_damage_taken": 5, "vision_per_min": 0.75, "rank_vision": 6,
+    "damage_taken_per_death": 7500, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Jinx", "games": 7, "wins": 5}, {"champion": "Caitlyn", "games": 2, "wins": 1}, {"champion": "Miss Fortune", "games": 1, "wins": 0}]
   },
   {
@@ -657,6 +716,7 @@
     "pom": 3, "rank_pom": 6, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 0.40, "rank_lane_diff": 4, "gold_diff": 400, "rank_gold_diff": 5, "early_gold": 150, "rank_early_gold": 5,
     "participation": 42.0, "rank_participation": 7, "damage_taken_share": 24.0, "rank_damage_taken": 2, "vision_per_min": 0.80, "rank_vision": 5,
+    "damage_taken_per_death": 7200, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Sett", "games": 6, "wins": 4}, {"champion": "Riven", "games": 2, "wins": 1}, {"champion": "Darius", "games": 1, "wins": 0}]
   },
     {
@@ -668,6 +728,7 @@
     "pom": 6, "rank_pom": 4, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 25.0, "rank_fb": 3, 
     "lane_diff": 0.80, "rank_lane_diff": 2, "gold_diff": 800, "rank_gold_diff": 3, "early_gold": 300, "rank_early_gold": 3,
     "participation": 65.0, "rank_participation": 3, "damage_taken_share": 22.0, "rank_damage_taken": 3, "vision_per_min": 1.10, "rank_vision": 3,
+    "damage_taken_per_death": 6200, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Viego", "games": 6, "wins": 4}, {"champion": "Jarvan IV", "games": 2, "wins": 1}, {"champion": "Shaco", "games": 1, "wins": 0}]
   },
   {
@@ -679,6 +740,7 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 50.0, "rank_fb": 1, 
     "lane_diff": 0.70, "rank_lane_diff": 2, "gold_diff": 800, "rank_gold_diff": 4, "early_gold": 300, "rank_early_gold": 4,
     "participation": 85.0, "rank_participation": 1, "damage_taken_share": 18.0, "rank_damage_taken": 5, "vision_per_min": 2.10, "rank_vision": 1,
+    "damage_taken_per_death": 5600, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Janna", "games": 6, "wins": 5}, {"champion": "Milio", "games": 2, "wins": 1}, {"champion": "Soraka", "games": 1, "wins": 0}]
   },
   {
@@ -690,6 +752,7 @@
     "pom": 7, "rank_pom": 2, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 20.0, "rank_fb": 4, 
     "lane_diff": 1.20, "rank_lane_diff": 1, "gold_diff": 1600, "rank_gold_diff": 1, "early_gold": 450, "rank_early_gold": 2,
     "participation": 58.0, "rank_participation": 4, "damage_taken_share": 17.5, "rank_damage_taken": 5, "vision_per_min": 0.90, "rank_vision": 4,
+    "damage_taken_per_death": 8500, "rank_damage_taken_per_death": 3,
     "heroes": [{"champion": "Zeri", "games": 7, "wins": 5}, {"champion": "Kai'Sa", "games": 3, "wins": 1}, {"champion": "Nilah", "games": 1, "wins": 0}]
   },
   {
@@ -701,6 +764,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 18.0, "rank_fb": 6, 
     "lane_diff": 1.00, "rank_lane_diff": 2, "gold_diff": 1200, "rank_gold_diff": 2, "early_gold": 350, "rank_early_gold": 2,
     "participation": 60.0, "rank_participation": 4, "damage_taken_share": 15.0, "rank_damage_taken": 6, "vision_per_min": 0.95, "rank_vision": 4,
+    "damage_taken_per_death": 7800, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Sylas", "games": 7, "wins": 4}, {"champion": "Corki", "games": 2, "wins": 1}, {"champion": "Kassadin", "games": 1, "wins": 0}]
   },
   {
@@ -712,6 +776,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 14.0, "rank_fb": 7, 
     "lane_diff": 0.10, "rank_lane_diff": 5, "gold_diff": 200, "rank_gold_diff": 5, "early_gold": 100, "rank_early_gold": 5,
     "participation": 45.0, "rank_participation": 7, "damage_taken_share": 25.0, "rank_damage_taken": 2, "vision_per_min": 0.75, "rank_vision": 6,
+    "damage_taken_per_death": 8200, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Sion", "games": 5, "wins": 3}, {"champion": "K'Sante", "games": 3, "wins": 1}, {"champion": "Poppy", "games": 1, "wins": 0}]
   },
   {
@@ -723,6 +788,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 18.0, "rank_fb": 5, 
     "lane_diff": 0.60, "rank_lane_diff": 3, "gold_diff": 700, "rank_gold_diff": 3, "early_gold": 250, "rank_early_gold": 4,
     "participation": 55.0, "rank_participation": 5, "damage_taken_share": 18.5, "rank_damage_taken": 4, "vision_per_min": 0.70, "rank_vision": 7,
+    "damage_taken_per_death": 6200, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Kalista", "games": 6, "wins": 4}, {"champion": "Aphelios", "games": 2, "wins": 1}, {"champion": "Varus", "games": 1, "wins": 0}]
   },
   {
@@ -734,6 +800,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 4, "rank_solo_kills": 1, "fb_participation": 28.0, "rank_fb": 2, 
     "lane_diff": 1.30, "rank_lane_diff": 1, "gold_diff": 1600, "rank_gold_diff": 1, "early_gold": 500, "rank_early_gold": 1,
     "participation": 75.0, "rank_participation": 1, "damage_taken_share": 18.0, "rank_damage_taken": 5, "vision_per_min": 1.25, "rank_vision": 3,
+    "damage_taken_per_death": 9400, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Kha'Zix", "games": 8, "wins": 5}, {"champion": "Graves", "games": 2, "wins": 2}, {"champion": "Evelynn", "games": 1, "wins": 0}]
   },
   {
@@ -745,6 +812,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 20.0, "rank_fb": 4, 
     "lane_diff": 0.50, "rank_lane_diff": 3, "gold_diff": 500, "rank_gold_diff": 4, "early_gold": 200, "rank_early_gold": 5,
     "participation": 50.0, "rank_participation": 6, "damage_taken_share": 24.0, "rank_damage_taken": 2, "vision_per_min": 0.80, "rank_vision": 5,
+    "damage_taken_per_death": 7800, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Jayce", "games": 7, "wins": 4}, {"champion": "Gnar", "games": 2, "wins": 1}, {"champion": "Vayne", "games": 1, "wins": 0}]
   },
   {
@@ -756,6 +824,7 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 2, "rank_solo_kills": 4, "fb_participation": 22.0, "rank_fb": 4, 
     "lane_diff": 1.00, "rank_lane_diff": 2, "gold_diff": 1200, "rank_gold_diff": 2, "early_gold": 400, "rank_early_gold": 2,
     "participation": 55.0, "rank_participation": 5, "damage_taken_share": 17.5, "rank_damage_taken": 5, "vision_per_min": 0.75, "rank_vision": 6,
+    "damage_taken_per_death": 7000, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Caitlyn", "games": 6, "wins": 4}, {"champion": "Jinx", "games": 2, "wins": 1}, {"champion": "Aphelios", "games": 1, "wins": 1}]
   },
   {
@@ -767,6 +836,7 @@
     "pom": 3, "rank_pom": 6, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 42.0, "rank_fb": 2, 
     "lane_diff": 0.60, "rank_lane_diff": 3, "gold_diff": 600, "rank_gold_diff": 4, "early_gold": 250, "rank_early_gold": 4,
     "participation": 68.0, "rank_participation": 2, "damage_taken_share": 21.0, "rank_damage_taken": 3, "vision_per_min": 1.85, "rank_vision": 1,
+    "damage_taken_per_death": 4600, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Lulu", "games": 5, "wins": 3}, {"champion": "Lux", "games": 3, "wins": 2}, {"champion": "Morgana", "games": 1, "wins": 0}]
   },
   {
@@ -778,6 +848,7 @@
     "pom": 3, "rank_pom": 6, "solo_kills": 0, "rank_solo_kills": 7, "fb_participation": 12.0, "rank_fb": 6, 
     "lane_diff": -0.10, "rank_lane_diff": 5, "gold_diff": 100, "rank_gold_diff": 5, "early_gold": 50, "rank_early_gold": 5,
     "participation": 42.0, "rank_participation": 7, "damage_taken_share": 26.0, "rank_damage_taken": 1, "vision_per_min": 0.72, "rank_vision": 6,
+    "damage_taken_per_death": 6000, "rank_damage_taken_per_death": 8,
     "heroes": [{"champion": "Sett", "games": 5, "wins": 2}, {"champion": "Olaf", "games": 3, "wins": 1}, {"champion": "Aatrox", "games": 1, "wins": 0}]
   },
   {
@@ -789,6 +860,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 5, "rank_solo_kills": 1, "fb_participation": 25.0, "rank_fb": 3, 
     "lane_diff": 1.30, "rank_lane_diff": 1, "gold_diff": 1800, "rank_gold_diff": 1, "early_gold": 550, "rank_early_gold": 1,
     "participation": 74.0, "rank_participation": 1, "damage_taken_share": 17.0, "rank_damage_taken": 5, "vision_per_min": 1.20, "rank_vision": 3,
+    "damage_taken_per_death": 9800, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Bel'Veth", "games": 7, "wins": 5}, {"champion": "Lillia", "games": 2, "wins": 2}, {"champion": "Hecarim", "games": 1, "wins": 0}]
   },
   {
@@ -800,6 +872,7 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 45.0, "rank_fb": 1, 
     "lane_diff": 0.70, "rank_lane_diff": 2, "gold_diff": 700, "rank_gold_diff": 3, "early_gold": 280, "rank_early_gold": 4,
     "participation": 74.0, "rank_participation": 2, "damage_taken_share": 22.0, "rank_damage_taken": 3, "vision_per_min": 1.95, "rank_vision": 1,
+    "damage_taken_per_death": 5400, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Nautilus", "games": 6, "wins": 4}, {"champion": "Rakan", "games": 2, "wins": 1}, {"champion": "Braum", "games": 1, "wins": 1}]
   },
   {
@@ -811,6 +884,7 @@
     "pom": 6, "rank_pom": 3, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 18.0, "rank_fb": 5, 
     "lane_diff": 1.10, "rank_lane_diff": 2, "gold_diff": 1400, "rank_gold_diff": 2, "early_gold": 420, "rank_early_gold": 2,
     "participation": 60.0, "rank_participation": 4, "damage_taken_share": 15.0, "rank_damage_taken": 6, "vision_per_min": 0.95, "rank_vision": 4,
+    "damage_taken_per_death": 8000, "rank_damage_taken_per_death": 4,
     "heroes": [{"champion": "Taliyah", "games": 7, "wins": 5}, {"champion": "Azir", "games": 2, "wins": 1}, {"champion": "Ryze", "games": 1, "wins": 0}]
   },
   {
@@ -822,6 +896,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 2, "rank_solo_kills": 3, "fb_participation": 15.0, "rank_fb": 6, 
     "lane_diff": 0.40, "rank_lane_diff": 3, "gold_diff": 500, "rank_gold_diff": 4, "early_gold": 150, "rank_early_gold": 5,
     "participation": 48.0, "rank_participation": 6, "damage_taken_share": 20.0, "rank_damage_taken": 4, "vision_per_min": 0.68, "rank_vision": 7,
+    "damage_taken_per_death": 5200, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Lucian", "games": 6, "wins": 4}, {"champion": "Tristana", "games": 2, "wins": 1}, {"champion": "Ezreal", "games": 1, "wins": 0}]
   },
   {
@@ -833,6 +908,7 @@
     "pom": 9, "rank_pom": 1, "solo_kills": 5, "rank_solo_kills": 1, "fb_participation": 22.0, "rank_fb": 4, 
     "lane_diff": 1.50, "rank_lane_diff": 1, "gold_diff": 2000, "rank_gold_diff": 1, "early_gold": 600, "rank_early_gold": 1,
     "participation": 65.0, "rank_participation": 3, "damage_taken_share": 14.5, "rank_damage_taken": 6, "vision_per_min": 1.00, "rank_vision": 4,
+    "damage_taken_per_death": 9800, "rank_damage_taken_per_death": 2,
     "heroes": [{"champion": "Akali", "games": 7, "wins": 5}, {"champion": "Yone", "games": 2, "wins": 2}, {"champion": "Qiyana", "games": 1, "wins": 0}]
   },
   {
@@ -844,6 +920,7 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 0.80, "rank_lane_diff": 2, "gold_diff": 800, "rank_gold_diff": 3, "early_gold": 300, "rank_early_gold": 3,
     "participation": 50.0, "rank_participation": 6, "damage_taken_share": 24.0, "rank_damage_taken": 2, "vision_per_min": 0.80, "rank_vision": 5,
+    "damage_taken_per_death": 8400, "rank_damage_taken_per_death": 5,
     "heroes": [{"champion": "Renekton", "games": 6, "wins": 4}, {"champion": "Gangplank", "games": 2, "wins": 1}, {"champion": "Ornn", "games": 1, "wins": 0}]
   },
   {
@@ -855,6 +932,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 0, "rank_solo_kills": 8, "fb_participation": 38.0, "rank_fb": 2, 
     "lane_diff": 0.50, "rank_lane_diff": 4, "gold_diff": 600, "rank_gold_diff": 4, "early_gold": 280, "rank_early_gold": 5,
     "participation": 68.0, "rank_participation": 2, "damage_taken_share": 23.0, "rank_damage_taken": 3, "vision_per_min": 1.80, "rank_vision": 1,
+    "damage_taken_per_death": 4200, "rank_damage_taken_per_death": 6,
     "heroes": [{"champion": "Thresh", "games": 6, "wins": 4}, {"champion": "Karma", "games": 2, "wins": 1}, {"champion": "Rell", "games": 1, "wins": 0}]
   },
   {
@@ -866,6 +944,7 @@
     "pom": 4, "rank_pom": 5, "solo_kills": 1, "rank_solo_kills": 5, "fb_participation": 14.0, "rank_fb": 6, 
     "lane_diff": 0.30, "rank_lane_diff": 4, "gold_diff": 300, "rank_gold_diff": 5, "early_gold": 100, "rank_early_gold": 6,
     "participation": 46.0, "rank_participation": 7, "damage_taken_share": 19.5, "rank_damage_taken": 4, "vision_per_min": 0.65, "rank_vision": 7,
+    "damage_taken_per_death": 4800, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Samira", "games": 5, "wins": 3}, {"champion": "Zeri", "games": 3, "wins": 1}, {"champion": "Aphelios", "games": 1, "wins": 0}]
   },
   {
@@ -877,15 +956,18 @@
     "pom": 5, "rank_pom": 4, "solo_kills": 3, "rank_solo_kills": 2, "fb_participation": 20.0, "rank_fb": 5, 
     "lane_diff": 0.80, "rank_lane_diff": 2, "gold_diff": 900, "rank_gold_diff": 3, "early_gold": 280, "rank_early_gold": 3,
     "participation": 62.0, "rank_participation": 3, "damage_taken_share": 20.0, "rank_damage_taken": 4, "vision_per_min": 1.15, "rank_vision": 3,
+    "damage_taken_per_death": 6400, "rank_damage_taken_per_death": 7,
     "heroes": [{"champion": "Viego", "games": 6, "wins": 4}, {"champion": "Sejuani", "games": 2, "wins": 1}, {"champion": "Fiddlesticks", "games": 1, "wins": 0}]
   },
   {
     "avg_kda": 4.96, "avg_cspm": 6.10, "avg_dpm": 700.00, "avg_kpart": 19.00, "avg_goldpm": 450.00, "avg_dmgshare": 16.00, "avg_dmgtoGold": 141.00, "avg_survival": 0.55,
+    "avg_kills_assists": 19.20, "avg_damage_taken_per_death": 6800.00, "avg_vision_per_min": 1.15,
     "avg_pom": 5.50, "avg_solo_kills": 1.80, "avg_fb": 27.00, "avg_lane_diff": 0.80, "avg_gold_diff": 1200.00, "avg_early_gold": 350.00,
     "avg_participation": 60.00, "avg_damage_taken": 20.00, "avg_vision": 1.15
   },
   {
     "avg_kda": 5.02, "avg_cspm": 6.02, "avg_dpm": 780.00, "avg_kpart": 22.00, "avg_goldpm": 465.00, "avg_dmgshare": 18.50, "avg_dmgtoGold": 152.50, "avg_survival": 0.55,
+    "avg_kills_assists": 20.50, "avg_damage_taken_per_death": 7200.00, "avg_vision_per_min": 1.18,
     "avg_pom": 6.00, "avg_solo_kills": 2.00, "avg_fb": 27.00, "avg_lane_diff": 0.75, "avg_gold_diff": 1150.00, "avg_early_gold": 350.00,
     "avg_participation": 62.00, "avg_damage_taken": 20.50, "avg_vision": 1.18
   }
