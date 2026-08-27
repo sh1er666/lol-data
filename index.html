@@ -6,26 +6,20 @@
     <title>H·武道会·数据展示</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
+        /* 此处样式保持原样，无需修改 */
         body { background-color: #1a1d24; color: #eee; font-family: 'Microsoft YaHei', sans-serif; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
         .container { width: 100%; max-width: 1300px; background: #15181e; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
         .title { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; padding: 10px 0; border-bottom: 1px solid #2f3540; }
         
-        /* 顶部控制器布局 */
         .control-bar { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
-        
-        /* 下拉框样式 */
         .team-select { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; outline: none; appearance: none; text-align: center; }
         .team-select:hover { background: #3a3f4a; color: #fff; }
         .team-select option { background: #1a1d24; color: #eee; }
-
-        /* 位置选择器样式 */
         .pos-btn { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
         .pos-btn:hover { background: #3a3f4a; color: #fff; }
         .pos-btn.active { background: #7a3df0; color: #fff; border-color: #7a3df0; }
 
         .main-area { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
-        
-        /* 左侧英雄池 */
         .left-panel { width: 25%; display: flex; flex-direction: column; gap: 10px; }
         .hero-pool-title { background: #7a3df0; color: #fff; text-align: center; padding: 8px 0; border-radius: 20px; font-weight: bold; font-size: 15px; letter-spacing: 1px; }
         .hero-pool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
@@ -35,37 +29,27 @@
         .hero-win { color: #ccc; font-size: 12px; font-weight: bold; }
         .hero-kda { color: #888; font-size: 11px; margin-top: 2px; }
 
-        /* 中间单个选手信息（名字和KDA同排） */
         .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
         .player-avatar { width: 160px; height: 160px; object-fit: cover; border-radius: 8px; border: 2px solid #333a45; }
         .player-meta { display: flex; align-items: baseline; gap: 15px; margin-top: 5px; }
         .player-name { font-size: 24px; font-weight: 800; }
         .player-total-kda { font-size: 18px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
 
-        /* 右侧雷达图 */
         .right-panel { width: 55%; position: relative; height: 760px; display: flex; justify-content: center; align-items: center; }
         #radarChart, .stats-wrapper { width: 520px; height: 520px; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); }
         .stats-wrapper { pointer-events: none; }
-        
-        /* 位置布局 */
         .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.5; width: 150px; white-space: nowrap; }
         .stat-rank { color: #fcd34d; font-size: 13px; font-weight: bold; }
         .stat-val-blue { color: #00bcd4; font-weight: 800; font-size: 14px; }
         .stat-name { color: #eee; font-weight: 600; font-size: 14px; }
         .stat-val-red { color: #ff5252; font-size: 13px; }
         
-        .pos-top { top: 5%; left: 50%; }
-        .pos-topright { top: 15%; left: 85%; }
-        .pos-right { top: 45%; left: 96%; }
-        .pos-bottomright { bottom: 20%; left: 85%; }
-        .pos-bottom { bottom: 8%; left: 50%; }
-        .pos-bottomleft { bottom: 20%; left: 15%; }
-        .pos-left { top: 45%; left: 4%; }
-        .pos-topleft { top: 15%; left: 15%; }
+        .pos-top { top: 5%; left: 50%; } .pos-topright { top: 15%; left: 85%; } .pos-right { top: 45%; left: 96%; }
+        .pos-bottomright { bottom: 20%; left: 85%; } .pos-bottom { bottom: 8%; left: 50%; }
+        .pos-bottomleft { bottom: 20%; left: 15%; } .pos-left { top: 45%; left: 4%; } .pos-topleft { top: 15%; left: 15%; }
 
         .avg-note { position: absolute; right: 10px; top: 20px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
 
-        /* 底部柱形图样式 */
         .bottom-stats { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: space-between; gap: 15px; padding: 0 10px; }
         .stat-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .mini-stat { background: rgba(255,255,255,0.03); border: 1px solid #333a45; border-radius: 6px; padding: 6px 10px; position: relative; overflow: hidden; }
@@ -82,9 +66,8 @@
 </head>
 <body>
 <div class="container">
-    <div class="title">H·武道会·赛季数据展示</div>
+    <div class="title">H·武道会·中单数据展示</div>
     
-    <!-- 控制区：战队下拉框 + 位置按钮 -->
     <div class="control-bar">
         <select class="team-select" id="teamSelect"></select>
         <div class="position-selector" id="positionSelector">
@@ -102,7 +85,6 @@
             <div class="hero-pool-grid" id="heroPool"></div>
         </div>
         
-        <!-- 中间选手信息 -->
         <div class="player-info">
             <img class="player-avatar" id="playerAvatar" src="" onerror="this.src='https://via.placeholder.com/160'">
             <div class="player-meta">
@@ -160,7 +142,6 @@
             avgStats = json.find(item => item.avg_kda !== undefined);
             currentData = json.filter(item => item.avg_kda === undefined);
 
-            // 动态生成战队下拉框（自动识别所有队伍）
             const teamSet = new Set(currentData.map(p => p.player.split(' ')[0]));
             const teamSelect = document.getElementById('teamSelect');
             let optionsHtml = `<option value="ALL">全部战队</option>`;
@@ -169,12 +150,8 @@
             });
             teamSelect.innerHTML = optionsHtml;
 
-            // 下拉框切换事件
-            teamSelect.addEventListener('change', () => {
-                updateView();
-            });
+            teamSelect.addEventListener('change', () => updateView());
 
-            // 绑定位置按钮事件
             document.querySelectorAll('.pos-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
@@ -210,32 +187,17 @@
 
         const player = filteredPlayers[0];
 
-        // 核心改动：根据QQ号动态加载头像
         const avatarUrl = `http://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`;
         const avatarImg = document.getElementById('playerAvatar');
         avatarImg.src = avatarUrl;
-        // 加载失败时自动切回占位图
-        avatarImg.onerror = function() {
-            this.onerror = null; 
-            this.src = 'https://via.placeholder.com/160';
-        };
+        avatarImg.onerror = function() { this.onerror = null; this.src = 'https://via.placeholder.com/160'; };
 
-        // 渲染中间信息（名字和KDA同排）
         document.getElementById('playerName').textContent = player.player;
         document.getElementById('totalKda').textContent = `${player.kills}/${player.deaths}/${player.assists}`;
         
-        // 渲染英雄池
-        document.getElementById('heroCount').textContent = 1;
-        document.getElementById('heroPool').innerHTML = `
-            <div class="hero-item">
-                <div class="hero-games">1</div>
-                <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${player.champion}.png" onerror="this.style.background='#333'">
-                <div class="hero-win">本局</div>
-                <div class="hero-kda">${player.kills}/${player.deaths}/${player.assists}</div>
-            </div>
-        `;
+        // ***** 核心修改：多英雄池渲染逻辑 *****
+        renderHeroPool(player);
 
-        // 更新上方指标
         updateStat('kda', player.kda, avgStats.avg_kda, player.rank_kda);
         updateStat('cs', player.cspm, avgStats.avg_cspm, player.rank_cspm);
         updateStat('dmg', player.dpm, avgStats.avg_dpm, player.rank_dpm);
@@ -245,7 +207,6 @@
         updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold, player.rank_dmgtoGold);
         updateStat('surv', player.survival, avgStats.avg_survival, player.rank_survival);
 
-        // 更新底部柱形图
         updateBarStat('pom', player.pom, player.rank_pom, 10);
         updateBarStat('solo', player.solo_kills, player.rank_solo_kills, 5);
         updateBarStat('fb', player.fb_participation + '%', player.rank_fb, 60);
@@ -256,8 +217,29 @@
         updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
         updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
 
-        // 渲染单人雷达图
         renderRadar(player);
+    }
+
+    // ***** 核心修改：支持多英雄池（英雄历史）的渲染函数 *****
+    function renderHeroPool(currentPlayer) {
+        const poolEl = document.getElementById('heroPool');
+        
+        // 如果有 heroes 数组，说明有历史英雄池；如果没有，则兼容之前的单英雄
+        let heroesList = currentPlayer.heroes ? currentPlayer.heroes : [{ champion: currentPlayer.champion, games: 1, wins: currentPlayer.deaths > currentPlayer.kills ? 0 : 1 }];
+        
+        document.getElementById('heroCount').textContent = heroesList.length;
+        
+        poolEl.innerHTML = heroesList.map(h => {
+            const winRate = Math.round((h.wins / h.games) * 100);
+            return `
+                <div class="hero-item">
+                    <div class="hero-games">${h.games}</div>
+                    <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${h.champion}.png" onerror="this.style.background='#333'">
+                    <div class="hero-win">胜率 ${winRate}%</div>
+                    <div class="hero-kda">${h.games}局</div>
+                </div>
+            `;
+        }).join('');
     }
 
     function updateStat(key, val, avgVal, rank) {
@@ -293,8 +275,8 @@
                     { name: '', max: 300 },  // 伤转
                     { name: '', max: 5 }     // 生存
                 ],
-                center: ['50%', '45%'],   // 中心上移
-                radius: '65%',             // 保持饱满
+                center: ['50%', '45%'], 
+                radius: '65%',
                 splitNumber: 4, shape: 'polygon',
                 splitArea: { areaStyle: { color: ['rgba(30,30,30,0.25)', 'rgba(30,30,30,0.08)'] } },
                 axisLine: { show: false }, splitLine: { lineStyle: { color: '#fff', opacity: 0.2 } }, name: { show: false }
