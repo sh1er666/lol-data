@@ -6,7 +6,6 @@
     <title>H·武道会·数据展示</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
-        /* 此处样式保持原样，无需修改 */
         body { background-color: #1a1d24; color: #eee; font-family: 'Microsoft YaHei', sans-serif; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
         .container { width: 100%; max-width: 1300px; background: #15181e; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
         .title { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; padding: 10px 0; border-bottom: 1px solid #2f3540; }
@@ -43,13 +42,11 @@
         .stat-val-blue { color: #00bcd4; font-weight: 800; font-size: 14px; }
         .stat-name { color: #eee; font-weight: 600; font-size: 14px; }
         .stat-val-red { color: #ff5252; font-size: 13px; }
-        
         .pos-top { top: 5%; left: 50%; } .pos-topright { top: 15%; left: 85%; } .pos-right { top: 45%; left: 96%; }
         .pos-bottomright { bottom: 20%; left: 85%; } .pos-bottom { bottom: 8%; left: 50%; }
         .pos-bottomleft { bottom: 20%; left: 15%; } .pos-left { top: 45%; left: 4%; } .pos-topleft { top: 15%; left: 15%; }
 
         .avg-note { position: absolute; right: 10px; top: 20px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
-
         .bottom-stats { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: space-between; gap: 15px; padding: 0 10px; }
         .stat-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .mini-stat { background: rgba(255,255,255,0.03); border: 1px solid #333a45; border-radius: 6px; padding: 6px 10px; position: relative; overflow: hidden; }
@@ -139,9 +136,24 @@
         try {
             const res = await fetch('./data.json');
             const json = await res.json();
-            avgStats = json.find(item => item.avg_kda !== undefined);
+
+            // 兼容性修改：查找平均值对象，如果找不到，则给一个全0的默认值，防止页面崩溃
+            const avgStatsObj = json.find(item => item.avg_kda !== undefined);
+            if (avgStatsObj) {
+                avgStats = avgStatsObj;
+            } else {
+                // 默认值防止报错
+                avgStats = {
+                    avg_kda: 0, avg_cspm: 0, avg_dpm: 0, avg_kpart: 0, avg_goldpm: 0,
+                    avg_dmgshare: 0, avg_dmgtoGold: 0, avg_survival: 0,
+                    avg_pom: 0, avg_solo_kills: 0, avg_fb: 0, avg_lane_diff: 0, avg_gold_diff: 0, avg_early_gold: 0,
+                    avg_participation: 0, avg_damage_taken: 0, avg_vision: 0
+                };
+            }
+
             currentData = json.filter(item => item.avg_kda === undefined);
 
+            // 动态生成战队下拉框
             const teamSet = new Set(currentData.map(p => p.player.split(' ')[0]));
             const teamSelect = document.getElementById('teamSelect');
             let optionsHtml = `<option value="ALL">全部战队</option>`;
@@ -150,8 +162,8 @@
             });
             teamSelect.innerHTML = optionsHtml;
 
+            // 绑定事件
             teamSelect.addEventListener('change', () => updateView());
-
             document.querySelectorAll('.pos-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
@@ -187,6 +199,7 @@
 
         const player = filteredPlayers[0];
 
+        // 动态头像
         const avatarUrl = `http://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`;
         const avatarImg = document.getElementById('playerAvatar');
         avatarImg.src = avatarUrl;
@@ -194,10 +207,11 @@
 
         document.getElementById('playerName').textContent = player.player;
         document.getElementById('totalKda').textContent = `${player.kills}/${player.deaths}/${player.assists}`;
-        
-        // ***** 核心修改：多英雄池渲染逻辑 *****
+
+        // 渲染多英雄池
         renderHeroPool(player);
 
+        // 渲染指标
         updateStat('kda', player.kda, avgStats.avg_kda, player.rank_kda);
         updateStat('cs', player.cspm, avgStats.avg_cspm, player.rank_cspm);
         updateStat('dmg', player.dpm, avgStats.avg_dpm, player.rank_dpm);
@@ -207,6 +221,7 @@
         updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold, player.rank_dmgtoGold);
         updateStat('surv', player.survival, avgStats.avg_survival, player.rank_survival);
 
+        // 渲染底部柱形图
         updateBarStat('pom', player.pom, player.rank_pom, 10);
         updateBarStat('solo', player.solo_kills, player.rank_solo_kills, 5);
         updateBarStat('fb', player.fb_participation + '%', player.rank_fb, 60);
@@ -217,15 +232,14 @@
         updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
         updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
 
+        // 渲染雷达图
         renderRadar(player);
     }
 
-    // ***** 核心修改：支持多英雄池（英雄历史）的渲染函数 *****
+    // 多英雄池渲染函数
     function renderHeroPool(currentPlayer) {
         const poolEl = document.getElementById('heroPool');
-        
-        // 如果有 heroes 数组，说明有历史英雄池；如果没有，则兼容之前的单英雄
-        let heroesList = currentPlayer.heroes ? currentPlayer.heroes : [{ champion: currentPlayer.champion, games: 1, wins: currentPlayer.deaths > currentPlayer.kills ? 0 : 1 }];
+        let heroesList = currentPlayer.heroes ? currentPlayer.heroes : [{ champion: currentPlayer.champion, games: 1, wins: 1 }];
         
         document.getElementById('heroCount').textContent = heroesList.length;
         
