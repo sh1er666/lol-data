@@ -1,313 +1,1252 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H·武道会·数据展示</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H·武道会 · 数据展示</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
+    </script>
     <style>
-        body { background-color: #1a1d24; color: #eee; font-family: 'Microsoft YaHei', sans-serif; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .container { width: 100%; max-width: 1300px; background: #15181e; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); }
-        .title { text-align: center; font-size: 32px; font-weight: 800; letter-spacing: 3px; color: #fff; padding: 10px 0; border-bottom: 1px solid #2f3540; }
-        
-        .control-bar { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
-        .team-select { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; outline: none; appearance: none; text-align: center; }
-        .team-select:hover { background: #3a3f4a; color: #fff; }
-        .team-select option { background: #1a1d24; color: #eee; }
-        .pos-btn { background: #2a2f38; border: 1px solid #333a45; color: #ccc; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
-        .pos-btn:hover { background: #3a3f4a; color: #fff; }
-        .pos-btn.active { background: #7a3df0; color: #fff; border-color: #7a3df0; }
+        /* ===== 全局重置 & 基础 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .main-area { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
-        .left-panel { width: 25%; display: flex; flex-direction: column; gap: 10px; }
-        .hero-pool-title { background: #7a3df0; color: #fff; text-align: center; padding: 8px 0; border-radius: 20px; font-weight: bold; font-size: 15px; letter-spacing: 1px; }
-        .hero-pool-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .hero-item { display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
-        .hero-games { position: absolute; top: -5px; left: 5px; color: #fff; font-weight: 800; font-size: 14px; }
-        .hero-icon { width: 70px; height: 70px; border-radius: 10px; margin-bottom: 5px; background: #2a2f38; border: 2px solid #333a45; }
-        .hero-win { color: #ccc; font-size: 12px; font-weight: bold; }
-        .hero-kda { color: #888; font-size: 11px; margin-top: 2px; }
+        body {
+            background: #0b0d12;
+            color: #eee;
+            font-family: 'Inter', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            /* 动态光晕背景 */
+            position: relative;
+            overflow-x: hidden;
+        }
 
-        .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
-        .player-avatar { width: 160px; height: 160px; object-fit: cover; border-radius: 8px; border: 2px solid #333a45; }
-        .player-meta { display: flex; align-items: baseline; gap: 15px; margin-top: 5px; }
-        .player-name { font-size: 24px; font-weight: 800; }
-        .player-total-kda { font-size: 18px; color: #aaa; font-weight: 600; letter-spacing: 1px; }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle at 30% 40%, rgba(122, 61, 240, 0.15) 0%, transparent 70%);
+            animation: aurora 12s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            right: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle at 70% 60%, rgba(0, 188, 212, 0.10) 0%, transparent 70%);
+            animation: aurora2 15s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-        .right-panel { width: 55%; position: relative; height: 760px; display: flex; justify-content: center; align-items: center; }
-        #radarChart, .stats-wrapper { width: 520px; height: 520px; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); }
-        .stats-wrapper { pointer-events: none; }
-        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.5; width: 150px; white-space: nowrap; }
-        .stat-rank { color: #fcd34d; font-size: 13px; font-weight: bold; }
-        .stat-val-blue { color: #00bcd4; font-weight: 800; font-size: 14px; }
-        .stat-name { color: #eee; font-weight: 600; font-size: 14px; }
-        .stat-val-red { color: #ff5252; font-size: 13px; }
-        .pos-top { top: 5%; left: 50%; } .pos-topright { top: 15%; left: 85%; } .pos-right { top: 45%; left: 96%; }
-        .pos-bottomright { bottom: 20%; left: 85%; } .pos-bottom { bottom: 8%; left: 50%; }
-        .pos-bottomleft { bottom: 20%; left: 15%; } .pos-left { top: 45%; left: 4%; } .pos-topleft { top: 15%; left: 15%; }
+        @keyframes aurora {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(5%, 5%) scale(1.2);
+            }
+        }
+        @keyframes aurora2 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(-5%, -5%) scale(1.3);
+            }
+        }
 
-        .avg-note { position: absolute; right: 10px; top: 20px; color: #888; font-size: 13px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 6px; z-index: 10; }
-        .bottom-stats { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: space-between; gap: 15px; padding: 0 10px; }
-        .stat-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-        .mini-stat { background: rgba(255,255,255,0.03); border: 1px solid #333a45; border-radius: 6px; padding: 6px 10px; position: relative; overflow: hidden; }
-        .mini-stat-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
-        .mini-stat-name { color: #888; }
-        .mini-stat-val { color: #fff; font-weight: bold; }
-        .mini-stat-val.blue { color: #00bcd4; }
-        .mini-stat-val.red { color: #ff5252; }
-        .mini-stat-rank { color: #fcd34d; font-size: 12px; font-weight: bold; }
-        .bar-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #333; }
-        .bar-fill { height: 100%; width: 0%; background: #00bcd4; }
-        .bar-fill.red { background: #ff5252; }
+        /* ===== 主容器 ===== */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1360px;
+            background: rgba(21, 24, 30, 0.75);
+            backdrop-filter: blur(24px) saturate(1.2);
+            -webkit-backdrop-filter: blur(24px) saturate(1.2);
+            border-radius: 24px;
+            padding: 28px 32px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(122, 61, 240, 0.10) inset;
+            transition: all 0.3s;
+        }
+
+        /* ===== 标题 ===== */
+        .title {
+            text-align: center;
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            padding: 8px 0 18px;
+            background: linear-gradient(135deg, #c084fc, #7a3df0, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px rgba(122, 61, 240, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #7a3df0, #00bcd4, transparent);
+            border-radius: 4px;
+        }
+
+        /* ===== 控制栏 ===== */
+        .control-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .team-select {
+            background: rgba(42, 47, 56, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ccc;
+            padding: 9px 22px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            text-align: center;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .team-select:hover {
+            background: rgba(60, 65, 80, 0.8);
+            color: #fff;
+            border-color: rgba(122, 61, 240, 0.3);
+        }
+        .team-select option {
+            background: #1a1d24;
+            color: #eee;
+        }
+
+        .position-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .pos-btn {
+            background: rgba(42, 47, 56, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #999;
+            padding: 9px 22px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+        .pos-btn:hover {
+            background: rgba(60, 65, 80, 0.8);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .pos-btn.active {
+            background: linear-gradient(135deg, #7a3df0, #6a2fd0);
+            color: #fff;
+            border-color: #7a3df0;
+            box-shadow: 0 4px 24px rgba(122, 61, 240, 0.35);
+            transform: translateY(-1px);
+        }
+        .pos-btn.active::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 40px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(192, 132, 252, 0.4), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* ===== 主区域 ===== */
+        .main-area {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: stretch;
+            margin-top: 20px;
+        }
+
+        /* --- 左侧：英雄池 --- */
+        .left-panel {
+            width: 22%;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .hero-pool-title {
+            background: linear-gradient(135deg, #7a3df0, #5a2db0);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(122, 61, 240, 0.25);
+            flex-shrink: 0;
+        }
+        .hero-pool-title span {
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0 8px;
+            border-radius: 12px;
+        }
+        .hero-pool-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            flex: 1;
+            align-content: start;
+        }
+        .hero-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 6px 4px 8px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .hero-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(122, 61, 240, 0.2);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .hero-games {
+            position: absolute;
+            top: 2px;
+            left: 6px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 0 6px;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+        }
+        .hero-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            background: #1e222a;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s;
+            object-fit: cover;
+        }
+        .hero-item:hover .hero-icon {
+            border-color: rgba(122, 61, 240, 0.4);
+            box-shadow: 0 0 20px rgba(122, 61, 240, 0.15);
+        }
+        .hero-win {
+            color: #bbb;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .hero-kda {
+            color: #777;
+            font-size: 10px;
+            margin-top: 1px;
+        }
+
+        /* --- 中间：选手信息 --- */
+        .player-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0 8px;
+            min-width: 140px;
+        }
+        .player-avatar-wrap {
+            position: relative;
+            border-radius: 16px;
+            padding: 4px;
+            background: linear-gradient(135deg, #7a3df0, #00bcd4);
+            box-shadow: 0 0 40px rgba(122, 61, 240, 0.15);
+            transition: all 0.4s;
+        }
+        .player-avatar-wrap:hover {
+            box-shadow: 0 0 60px rgba(122, 61, 240, 0.3);
+            transform: scale(1.02);
+        }
+        .player-avatar {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 13px;
+            display: block;
+            background: #1a1d24;
+        }
+        .player-meta {
+            display: flex;
+            align-items: baseline;
+            gap: 18px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .player-name {
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f0f0f0, #c0c0c0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+        .player-total-kda {
+            font-size: 20px;
+            font-weight: 700;
+            color: #aaa;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .player-total-kda .k {
+            color: #00bcd4;
+        }
+        .player-total-kda .d {
+            color: #ff5252;
+        }
+        .player-total-kda .a {
+            color: #fcd34d;
+        }
+
+        /* --- 右侧：雷达图 + 指标 --- */
+        .right-panel {
+            width: 55%;
+            position: relative;
+            height: 740px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 8px;
+        }
+
+        #radarChart,
+        .stats-wrapper {
+            width: 520px;
+            height: 520px;
+            position: absolute;
+            top: 46%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .stats-wrapper {
+            pointer-events: none;
+        }
+
+        /* --- 八维指标标签 --- */
+        .stat-item {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transform: translate(-50%, -50%);
+            line-height: 1.4;
+            width: 130px;
+            white-space: nowrap;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s;
+        }
+        .stat-item:hover {
+            background: rgba(0, 0, 0, 0.55);
+            border-color: rgba(122, 61, 240, 0.2);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+        .stat-rank {
+            color: #fcd34d;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .stat-val-blue {
+            color: #00d4e6;
+            font-weight: 800;
+            font-size: 15px;
+        }
+        .stat-name {
+            color: #ccc;
+            font-weight: 600;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        .stat-val-red {
+            color: #ff6b6b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 八个方位 */
+        .pos-top {
+            top: 4%;
+            left: 50%;
+        }
+        .pos-topright {
+            top: 14%;
+            left: 86%;
+        }
+        .pos-right {
+            top: 45%;
+            left: 97%;
+        }
+        .pos-bottomright {
+            bottom: 18%;
+            left: 86%;
+        }
+        .pos-bottom {
+            bottom: 5%;
+            left: 50%;
+        }
+        .pos-bottomleft {
+            bottom: 18%;
+            left: 14%;
+        }
+        .pos-left {
+            top: 45%;
+            left: 3%;
+        }
+        .pos-topleft {
+            top: 14%;
+            left: 14%;
+        }
+
+        /* --- 底部三列迷你统计 --- */
+        .bottom-stats {
+            position: absolute;
+            bottom: 14px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 0 16px;
+            z-index: 2;
+        }
+        .stat-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+        .mini-stat {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 6px 12px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s;
+        }
+        .mini-stat:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(122, 61, 240, 0.15);
+        }
+        .mini-stat-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 3px;
+            align-items: center;
+        }
+        .mini-stat-name {
+            color: #888;
+            font-weight: 500;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+        }
+        .mini-stat-val {
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .mini-stat-val.blue {
+            color: #00d4e6;
+        }
+        .mini-stat-val.red {
+            color: #ff6b6b;
+        }
+        .mini-stat-rank {
+            color: #fcd34d;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+        .bar-bg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2.5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #7a3df0, #00bcd4);
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 0 0 10px 10px;
+        }
+        .bar-fill.red {
+            background: linear-gradient(90deg, #ff5252, #ff6b6b);
+        }
+
+        /* --- 平均提示 --- */
+        .avg-note {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            color: #888;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            z-index: 10;
+            font-weight: 500;
+        }
+        .avg-note .red-dot {
+            color: #ff5252;
+            font-weight: 700;
+        }
+        .avg-note .blue-dot {
+            color: #00bcd4;
+            font-weight: 700;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1100px) {
+            .container {
+                padding: 20px;
+            }
+            .main-area {
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-panel {
+                width: 100%;
+                min-width: unset;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .hero-pool-title {
+                width: 100%;
+            }
+            .hero-pool-grid {
+                grid-template-columns: repeat(6, 1fr);
+                width: 100%;
+            }
+            .player-info {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            .player-avatar {
+                width: 100px;
+                height: 100px;
+            }
+            .right-panel {
+                width: 100%;
+                height: 680px;
+            }
+            #radarChart,
+            .stats-wrapper {
+                width: 420px;
+                height: 420px;
+            }
+            .stat-item {
+                width: 100px;
+                padding: 4px 8px;
+            }
+            .stat-val-blue {
+                font-size: 13px;
+            }
+            .stat-name {
+                font-size: 11px;
+            }
+            .pos-topright {
+                left: 84%;
+            }
+            .pos-bottomright {
+                left: 84%;
+            }
+            .pos-topleft {
+                left: 16%;
+            }
+            .pos-bottomleft {
+                left: 16%;
+            }
+            .pos-right {
+                left: 96%;
+            }
+            .pos-left {
+                left: 4%;
+            }
+            .bottom-stats {
+                flex-wrap: wrap;
+                gap: 6px;
+                bottom: 8px;
+                padding: 0 8px;
+            }
+            .stat-col {
+                min-width: 80px;
+                flex: 1 1 30%;
+            }
+            .mini-stat {
+                padding: 4px 8px;
+            }
+            .mini-stat-top {
+                font-size: 10px;
+            }
+            .mini-stat-val {
+                font-size: 11px;
+            }
+            .avg-note {
+                font-size: 10px;
+                right: 10px;
+                top: 10px;
+                padding: 2px 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .container {
+                padding: 14px;
+                border-radius: 16px;
+            }
+            .title {
+                font-size: 24px;
+                letter-spacing: 2px;
+                padding: 4px 0 12px;
+            }
+            .control-bar {
+                gap: 10px;
+            }
+            .pos-btn {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .team-select {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .hero-pool-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+            }
+            .hero-icon {
+                width: 48px;
+                height: 48px;
+            }
+            .hero-games {
+                font-size: 10px;
+                top: 0;
+                left: 2px;
+            }
+            .hero-win {
+                font-size: 10px;
+            }
+            .hero-kda {
+                font-size: 9px;
+            }
+            .player-avatar {
+                width: 72px;
+                height: 72px;
+            }
+            .player-name {
+                font-size: 20px;
+            }
+            .player-total-kda {
+                font-size: 16px;
+                padding: 0 12px;
+            }
+            .right-panel {
+                height: 540px;
+            }
+            #radarChart,
+            .stats-wrapper {
+                width: 320px;
+                height: 320px;
+            }
+            .stat-item {
+                width: 72px;
+                padding: 2px 6px;
+                border-radius: 8px;
+            }
+            .stat-rank {
+                font-size: 9px;
+            }
+            .stat-val-blue {
+                font-size: 11px;
+            }
+            .stat-name {
+                font-size: 9px;
+            }
+            .stat-val-red {
+                font-size: 9px;
+            }
+            .pos-top {
+                top: 2%;
+            }
+            .pos-topright {
+                top: 10%;
+                left: 82%;
+            }
+            .pos-right {
+                top: 42%;
+                left: 95%;
+            }
+            .pos-bottomright {
+                bottom: 14%;
+                left: 82%;
+            }
+            .pos-bottom {
+                bottom: 2%;
+            }
+            .pos-bottomleft {
+                bottom: 14%;
+                left: 18%;
+            }
+            .pos-left {
+                top: 42%;
+                left: 5%;
+            }
+            .pos-topleft {
+                top: 10%;
+                left: 18%;
+            }
+            .bottom-stats {
+                flex-direction: column;
+                gap: 4px;
+                bottom: 4px;
+                padding: 0 4px;
+            }
+            .stat-col {
+                flex: none;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .mini-stat {
+                flex: 1;
+                min-width: 60px;
+                padding: 3px 8px;
+            }
+            .mini-stat-top {
+                font-size: 9px;
+            }
+            .mini-stat-val {
+                font-size: 10px;
+            }
+            .mini-stat-rank {
+                font-size: 9px;
+            }
+            .avg-note {
+                font-size: 9px;
+                right: 6px;
+                top: 6px;
+                padding: 2px 8px;
+            }
+        }
+
+        /* ===== 工具类 ===== */
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="title">H·武道会·赛季数据展示</div>
-    
-    <div class="control-bar">
-        <select class="team-select" id="teamSelect"></select>
-        <div class="position-selector" id="positionSelector">
-            <button class="pos-btn" data-pos="TOP">上单</button>
-            <button class="pos-btn" data-pos="JUNGLE">打野</button>
-            <button class="pos-btn active" data-pos="MIDDLE">中单</button>
-            <button class="pos-btn" data-pos="BOTTOM">下路</button>
-            <button class="pos-btn" data-pos="UTILITY">辅助</button>
+
+    <div class="container">
+        <!-- 标题 -->
+        <div class="title">⚔ H·武道会 · 赛季数据</div>
+
+        <!-- 控制栏 -->
+        <div class="control-bar">
+            <select class="team-select" id="teamSelect"></select>
+            <div class="position-selector" id="positionSelector">
+                <button class="pos-btn" data-pos="TOP">上单</button>
+                <button class="pos-btn" data-pos="JUNGLE">打野</button>
+                <button class="pos-btn active" data-pos="MIDDLE">中单</button>
+                <button class="pos-btn" data-pos="BOTTOM">下路</button>
+                <button class="pos-btn" data-pos="UTILITY">辅助</button>
+            </div>
+        </div>
+
+        <!-- 主区域 -->
+        <div class="main-area">
+            <!-- 左侧：英雄池 -->
+            <div class="left-panel">
+                <div class="hero-pool-title">🎯 英雄池 (<span id="heroCount">0</span>)</div>
+                <div class="hero-pool-grid" id="heroPool"></div>
+            </div>
+
+            <!-- 中间：选手信息 -->
+            <div class="player-info">
+                <div class="player-avatar-wrap">
+                    <img class="player-avatar" id="playerAvatar" src="" onerror="this.src='https://via.placeholder.com/160'" alt="avatar" />
+                </div>
+                <div class="player-meta">
+                    <div class="player-name" id="playerName">加载中...</div>
+                    <div class="player-total-kda" id="totalKda">
+                        <span class="k">0</span>/<span class="d">0</span>/<span class="a">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：雷达 + 指标 -->
+            <div class="right-panel">
+                <div id="radarChart"></div>
+
+                <!-- 八维指标 -->
+                <div class="stats-wrapper">
+                    <div class="stat-item pos-top">
+                        <div class="stat-rank" id="rank-kda">#-</div>
+                        <div class="stat-val-blue" id="stat-kda">--</div>
+                        <div class="stat-name">KDA</div>
+                        <div class="stat-val-red" id="avg-kda">--</div>
+                    </div>
+                    <div class="stat-item pos-topright">
+                        <div class="stat-rank" id="rank-cs">#-</div>
+                        <div class="stat-val-blue" id="stat-cs">--</div>
+                        <div class="stat-name">分均补刀</div>
+                        <div class="stat-val-red" id="avg-cs">--</div>
+                    </div>
+                    <div class="stat-item pos-right">
+                        <div class="stat-rank" id="rank-dmg">#-</div>
+                        <div class="stat-val-blue" id="stat-dmg">--</div>
+                        <div class="stat-name">分均伤害</div>
+                        <div class="stat-val-red" id="avg-dmg">--</div>
+                    </div>
+                    <div class="stat-item pos-bottomright">
+                        <div class="stat-rank" id="rank-part">#-</div>
+                        <div class="stat-val-blue" id="stat-part">--</div>
+                        <div class="stat-name">参与击杀</div>
+                        <div class="stat-val-red" id="avg-part">--</div>
+                    </div>
+                    <div class="stat-item pos-bottom">
+                        <div class="stat-rank" id="rank-gold">#-</div>
+                        <div class="stat-val-blue" id="stat-gold">--</div>
+                        <div class="stat-name">分均经济</div>
+                        <div class="stat-val-red" id="avg-gold">--</div>
+                    </div>
+                    <div class="stat-item pos-bottomleft">
+                        <div class="stat-rank" id="rank-share">#-</div>
+                        <div class="stat-val-blue" id="stat-share">--</div>
+                        <div class="stat-name">伤害占比</div>
+                        <div class="stat-val-red" id="avg-share">--</div>
+                    </div>
+                    <div class="stat-item pos-left">
+                        <div class="stat-rank" id="rank-conv">#-</div>
+                        <div class="stat-val-blue" id="stat-conv">--</div>
+                        <div class="stat-name">伤转</div>
+                        <div class="stat-val-red" id="avg-conv">--</div>
+                    </div>
+                    <div class="stat-item pos-topleft">
+                        <div class="stat-rank" id="rank-surv">#-</div>
+                        <div class="stat-val-blue" id="stat-surv">--</div>
+                        <div class="stat-name">生存</div>
+                        <div class="stat-val-red" id="avg-surv">--</div>
+                    </div>
+                </div>
+
+                <!-- 底部迷你统计 -->
+                <div class="bottom-stats">
+                    <div class="stat-col">
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">POM</span>
+                                <span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">单杀</span>
+                                <span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">一血参与</span>
+                                <span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-col">
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">对位等级差</span>
+                                <span><span class="mini-stat-val blue" id="stat-lane">--</span><span class="mini-stat-rank" id="rank-lane">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-lane"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">对位经济差</span>
+                                <span><span class="mini-stat-val blue" id="stat-gdiff">--</span><span class="mini-stat-rank" id="rank-gdiff">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-gdiff"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">对线期经济差</span>
+                                <span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-col">
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">参团率</span>
+                                <span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">承伤占比</span>
+                                <span><span class="mini-stat-val blue" id="stat-taken">--</span><span class="mini-stat-rank" id="rank-taken">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill red" id="bar-taken"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">分均视野</span>
+                                <span><span class="mini-stat-val blue" id="stat-vision">--</span><span class="mini-stat-rank" id="rank-vision">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-vision"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图例说明 -->
+                <div class="avg-note">
+                    <span class="red-dot">●</span> 全队均值 &nbsp;·&nbsp; <span class="blue-dot">●</span> 选手值
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="main-area">
-        <div class="left-panel">
-            <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>只)</div>
-            <div class="hero-pool-grid" id="heroPool"></div>
-        </div>
-        
-        <div class="player-info">
-            <img class="player-avatar" id="playerAvatar" src="" onerror="this.src='https://via.placeholder.com/160'">
-            <div class="player-meta">
-                <div class="player-name" id="playerName">加载中...</div>
-                <div class="player-total-kda" id="totalKda">0/0/0</div>
-            </div>
-        </div>
-        
-        <div class="right-panel">
-            <div id="radarChart"></div>
-            <div class="stats-wrapper">
-                <div class="stat-item pos-top"><div class="stat-rank" id="rank-kda">#-</div><div class="stat-val-blue" id="stat-kda">--</div><div class="stat-name">KDA</div><div class="stat-val-red" id="avg-kda">--</div></div>
-                <div class="stat-item pos-topright"><div class="stat-rank" id="rank-cs">#-</div><div class="stat-val-blue" id="stat-cs">--</div><div class="stat-name">分均补刀</div><div class="stat-val-red" id="avg-cs">--</div></div>
-                <div class="stat-item pos-right"><div class="stat-rank" id="rank-dmg">#-</div><div class="stat-val-blue" id="stat-dmg">--</div><div class="stat-name">分均伤害</div><div class="stat-val-red" id="avg-dmg">--</div></div>
-                <div class="stat-item pos-bottomright"><div class="stat-rank" id="rank-part">#-</div><div class="stat-val-blue" id="stat-part">--</div><div class="stat-name">参与击杀</div><div class="stat-val-red" id="avg-part">--</div></div>
-                <div class="stat-item pos-bottom"><div class="stat-rank" id="rank-gold">#-</div><div class="stat-val-blue" id="stat-gold">--</div><div class="stat-name">分均经济</div><div class="stat-val-red" id="avg-gold">--</div></div>
-                <div class="stat-item pos-bottomleft"><div class="stat-rank" id="rank-share">#-</div><div class="stat-val-blue" id="stat-share">--</div><div class="stat-name">伤害占比</div><div class="stat-val-red" id="avg-share">--</div></div>
-                <div class="stat-item pos-left"><div class="stat-rank" id="rank-conv">#-</div><div class="stat-val-blue" id="stat-conv">--</div><div class="stat-name">伤转</div><div class="stat-val-red" id="avg-conv">--</div></div>
-                <div class="stat-item pos-topleft"><div class="stat-rank" id="rank-surv">#-</div><div class="stat-val-blue" id="stat-surv">--</div><div class="stat-name">生存</div><div class="stat-val-red" id="avg-surv">--</div></div>
-            </div>
+    <script>
+        // ============================================================
+        //  数据加载 & 渲染逻辑（完全保留原功能，只优化了视觉更新）
+        // ============================================================
+        let currentData = [];
+        let avgStats = {};
+        let currentPosition = 'MIDDLE';
+        let myChart = null;
 
-            <div class="bottom-stats">
-                <div class="stat-col">
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">POM</span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div></div>
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">单杀</span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div></div>
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">一血参与率</span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div></div>
-                </div>
-                <div class="stat-col">
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">对位等级差</span><span class="mini-stat-val blue" id="stat-lane">--</span><span class="mini-stat-rank" id="rank-lane">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-lane"></div></div></div>
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">对位经济差</span><span class="mini-stat-val blue" id="stat-gdiff">--</span><span class="mini-stat-rank" id="rank-gdiff">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-gdiff"></div></div></div>
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">对线期经济差</span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div></div>
-                </div>
-                <div class="stat-col">
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">参团率</span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div></div>
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">承伤占比</span><span class="mini-stat-val blue" id="stat-taken">--</span><span class="mini-stat-rank" id="rank-taken">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-taken"></div></div></div>
-                    <div class="mini-stat"><div class="mini-stat-top"><span class="mini-stat-name">分均视野</span><span class="mini-stat-val blue" id="stat-vision">--</span><span class="mini-stat-rank" id="rank-vision">#-</span></div><div class="bar-bg"><div class="bar-fill" id="bar-vision"></div></div></div>
-                </div>
-            </div>
+        async function loadData() {
+            try {
+                const res = await fetch('./data.json');
+                const json = await res.json();
 
-            <div class="avg-note"><span style="color:#ff5252;">红色</span> 为全队平均值</div>
-        </div>
-    </div>
-</div>
+                const avgStatsObj = json.find(item => item.avg_kda !== undefined);
+                if (avgStatsObj) {
+                    avgStats = avgStatsObj;
+                } else {
+                    avgStats = {
+                        avg_kda: 0,
+                        avg_cspm: 0,
+                        avg_dpm: 0,
+                        avg_kpart: 0,
+                        avg_goldpm: 0,
+                        avg_dmgshare: 0,
+                        avg_dmgtoGold: 0,
+                        avg_survival: 0,
+                        avg_pom: 0,
+                        avg_solo_kills: 0,
+                        avg_fb: 0,
+                        avg_lane_diff: 0,
+                        avg_gold_diff: 0,
+                        avg_early_gold: 0,
+                        avg_participation: 0,
+                        avg_damage_taken: 0,
+                        avg_vision: 0
+                    };
+                }
 
-<script>
-    let currentData = []; 
-    let avgStats = {}; 
-    let currentPosition = 'MIDDLE'; 
-    let myChart = null;
+                currentData = json.filter(item => item.avg_kda === undefined);
 
-    async function loadData() {
-        try {
-            const res = await fetch('./data.json');
-            const json = await res.json();
+                const teamSet = new Set(currentData.map(p => p.player.split(' ')[0]));
+                const teamSelect = document.getElementById('teamSelect');
+                let optionsHtml = `<option value="ALL">🏆 全部战队</option>`;
+                teamSet.forEach(team => {
+                    optionsHtml += `<option value="${team}">${team}</option>`;
+                });
+                teamSelect.innerHTML = optionsHtml;
 
-            // 兼容性修改：查找平均值对象，如果找不到，则给一个全0的默认值，防止页面崩溃
-            const avgStatsObj = json.find(item => item.avg_kda !== undefined);
-            if (avgStatsObj) {
-                avgStats = avgStatsObj;
-            } else {
-                // 默认值防止报错
-                avgStats = {
-                    avg_kda: 0, avg_cspm: 0, avg_dpm: 0, avg_kpart: 0, avg_goldpm: 0,
-                    avg_dmgshare: 0, avg_dmgtoGold: 0, avg_survival: 0,
-                    avg_pom: 0, avg_solo_kills: 0, avg_fb: 0, avg_lane_diff: 0, avg_gold_diff: 0, avg_early_gold: 0,
-                    avg_participation: 0, avg_damage_taken: 0, avg_vision: 0
-                };
+                teamSelect.addEventListener('change', () => updateView());
+                document.querySelectorAll('.pos-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        currentPosition = e.target.dataset.pos;
+                        updateView();
+                    });
+                });
+
+                updateView();
+            } catch (error) {
+                console.error('加载数据失败:', error);
+                document.getElementById('playerName').textContent = '⚠ 数据加载失败';
+            }
+        }
+
+        function updateView() {
+            const selectedTeam = document.getElementById('teamSelect').value;
+            let filteredPlayers = currentData.filter(p => p.position === currentPosition);
+
+            if (selectedTeam !== 'ALL') {
+                filteredPlayers = filteredPlayers.filter(p => p.player.startsWith(selectedTeam));
             }
 
-            currentData = json.filter(item => item.avg_kda === undefined);
+            if (filteredPlayers.length === 0) {
+                document.getElementById('playerName').textContent = '暂无选手';
+                document.getElementById('totalKda').innerHTML = '<span class="k">0</span>/<span class="d">0</span>/<span class="a">0</span>';
+                document.getElementById('playerAvatar').src = 'https://via.placeholder.com/160';
+                document.getElementById('heroPool').innerHTML = '';
+                document.getElementById('heroCount').textContent = '0';
+                return;
+            }
 
-            // 动态生成战队下拉框
-            const teamSet = new Set(currentData.map(p => p.player.split(' ')[0]));
-            const teamSelect = document.getElementById('teamSelect');
-            let optionsHtml = `<option value="ALL">全部战队</option>`;
-            teamSet.forEach(team => {
-                optionsHtml += `<option value="${team}">${team}</option>`;
-            });
-            teamSelect.innerHTML = optionsHtml;
+            const player = filteredPlayers[0];
 
-            // 绑定事件
-            teamSelect.addEventListener('change', () => updateView());
-            document.querySelectorAll('.pos-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    currentPosition = e.target.dataset.pos;
-                    updateView();
-                });
-            });
+            const avatarUrl = `http://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`;
+            const avatarImg = document.getElementById('playerAvatar');
+            avatarImg.src = avatarUrl;
+            avatarImg.onerror = function() { this.onerror = null;
+                this.src = 'https://via.placeholder.com/160'; };
 
-            updateView();
-        } catch (error) {
-            console.error('加载数据失败:', error);
-            document.getElementById('playerName').textContent = '数据加载失败';
-        }
-    }
+            document.getElementById('playerName').textContent = player.player;
+            document.getElementById('totalKda').innerHTML =
+                `<span class="k">${player.kills}</span>/<span class="d">${player.deaths}</span>/<span class="a">${player.assists}</span>`;
 
-    function updateView() {
-        const selectedTeam = document.getElementById('teamSelect').value;
-        let filteredPlayers = currentData.filter(p => p.position === currentPosition);
-        
-        if (selectedTeam !== 'ALL') {
-            filteredPlayers = filteredPlayers.filter(p => p.player.startsWith(selectedTeam));
-        }
+            renderHeroPool(player);
+            updateStat('kda', player.kda, avgStats.avg_kda, player.rank_kda);
+            updateStat('cs', player.cspm, avgStats.avg_cspm, player.rank_cspm);
+            updateStat('dmg', player.dpm, avgStats.avg_dpm, player.rank_dpm);
+            updateStat('part', player.kpart, avgStats.avg_kpart, player.rank_kpart);
+            updateStat('gold', player.goldpm, avgStats.avg_goldpm, player.rank_goldpm);
+            updateStat('share', player.dmgshare + '%', avgStats.avg_dmgshare + '%', player.rank_dmgshare);
+            updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold, player.rank_dmgtoGold);
+            updateStat('surv', player.survival, avgStats.avg_survival, player.rank_survival);
 
-        if (filteredPlayers.length === 0) {
-            document.getElementById('playerName').textContent = '该位置暂无此战队选手';
-            document.getElementById('totalKda').textContent = '0/0/0';
-            document.getElementById('playerAvatar').src = 'https://via.placeholder.com/160'; 
-            document.getElementById('heroPool').innerHTML = '';
-            document.getElementById('heroCount').textContent = 0;
-            return;
+            updateBarStat('pom', player.pom, player.rank_pom, 10);
+            updateBarStat('solo', player.solo_kills, player.rank_solo_kills, 5);
+            updateBarStat('fb', player.fb_participation + '%', player.rank_fb, 60);
+            updateBarStat('lane', player.lane_diff, player.rank_lane_diff, 2);
+            updateBarStat('gdiff', player.gold_diff, player.rank_gold_diff, 2000);
+            updateBarStat('early', player.early_gold, player.rank_early_gold, 800);
+            updateBarStat('partrate', player.participation + '%', player.rank_participation, 80);
+            updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
+            updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
+
+            renderRadar(player);
         }
 
-        const player = filteredPlayers[0];
+        function renderHeroPool(currentPlayer) {
+            const poolEl = document.getElementById('heroPool');
+            let heroesList = currentPlayer.heroes ? currentPlayer.heroes : [{ champion: currentPlayer.champion, games: 1,
+                wins: 1 }];
 
-        // 动态头像
-        const avatarUrl = `http://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`;
-        const avatarImg = document.getElementById('playerAvatar');
-        avatarImg.src = avatarUrl;
-        avatarImg.onerror = function() { this.onerror = null; this.src = 'https://via.placeholder.com/160'; };
+            document.getElementById('heroCount').textContent = heroesList.length;
 
-        document.getElementById('playerName').textContent = player.player;
-        document.getElementById('totalKda').textContent = `${player.kills}/${player.deaths}/${player.assists}`;
-
-        // 渲染多英雄池
-        renderHeroPool(player);
-
-        // 渲染指标
-        updateStat('kda', player.kda, avgStats.avg_kda, player.rank_kda);
-        updateStat('cs', player.cspm, avgStats.avg_cspm, player.rank_cspm);
-        updateStat('dmg', player.dpm, avgStats.avg_dpm, player.rank_dpm);
-        updateStat('part', player.kpart, avgStats.avg_kpart, player.rank_kpart);
-        updateStat('gold', player.goldpm, avgStats.avg_goldpm, player.rank_goldpm);
-        updateStat('share', player.dmgshare + '%', avgStats.avg_dmgshare + '%', player.rank_dmgshare);
-        updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold, player.rank_dmgtoGold);
-        updateStat('surv', player.survival, avgStats.avg_survival, player.rank_survival);
-
-        // 渲染底部柱形图
-        updateBarStat('pom', player.pom, player.rank_pom, 10);
-        updateBarStat('solo', player.solo_kills, player.rank_solo_kills, 5);
-        updateBarStat('fb', player.fb_participation + '%', player.rank_fb, 60);
-        updateBarStat('lane', player.lane_diff, player.rank_lane_diff, 2);
-        updateBarStat('gdiff', player.gold_diff, player.rank_gold_diff, 2000);
-        updateBarStat('early', player.early_gold, player.rank_early_gold, 800);
-        updateBarStat('partrate', player.participation + '%', player.rank_participation, 80);
-        updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
-        updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
-
-        // 渲染雷达图
-        renderRadar(player);
-    }
-
-    // 多英雄池渲染函数
-    function renderHeroPool(currentPlayer) {
-        const poolEl = document.getElementById('heroPool');
-        let heroesList = currentPlayer.heroes ? currentPlayer.heroes : [{ champion: currentPlayer.champion, games: 1, wins: 1 }];
-        
-        document.getElementById('heroCount').textContent = heroesList.length;
-        
-        poolEl.innerHTML = heroesList.map(h => {
-            const winRate = Math.round((h.wins / h.games) * 100);
-            return `
-                <div class="hero-item">
-                    <div class="hero-games">${h.games}</div>
-                    <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${h.champion}.png" onerror="this.style.background='#333'">
-                    <div class="hero-win">胜率 ${winRate}%</div>
-                    <div class="hero-kda">${h.games}局</div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function updateStat(key, val, avgVal, rank) {
-        document.getElementById(`stat-${key}`).textContent = parseFloat(val).toFixed(2);
-        document.getElementById(`avg-${key}`).textContent = parseFloat(avgVal).toFixed(2);
-        document.getElementById(`rank-${key}`).textContent = '#' + rank;
-    }
-
-    function updateBarStat(key, val, rank, maxVal) {
-        document.getElementById(`stat-${key}`).textContent = val;
-        document.getElementById(`rank-${key}`).textContent = '#' + rank;
-        let width = 0;
-        if (typeof val === 'number' && !isNaN(val)) {
-            width = Math.max(0, Math.min(100, (Math.abs(val) / maxVal) * 100));
+            poolEl.innerHTML = heroesList.map(h => {
+                const winRate = Math.round((h.wins / h.games) * 100);
+                return `
+                        <div class="hero-item">
+                            <div class="hero-games">${h.games}</div>
+                            <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${h.champion}.png" onerror="this.style.background='#2a2f38'">
+                            <div class="hero-win">${winRate}%</div>
+                            <div class="hero-kda">${h.games}局</div>
+                        </div>
+                    `;
+            }).join('');
         }
-        document.getElementById(`bar-${key}`).style.width = width + '%';
-    }
 
-    function renderRadar(player) {
-        const chartDom = document.getElementById('radarChart');
-        if (!myChart) myChart = echarts.init(chartDom);
-        
-        const option = {
-            backgroundColor: 'transparent',
-            radar: {
-                indicator: [
-                    { name: '', max: 10 },   // KDA
-                    { name: '', max: 15 },   // 分均补刀
-                    { name: '', max: 2000 }, // 分均伤害
-                    { name: '', max: 30 },   // 参与击杀
-                    { name: '', max: 800 },  // 分均经济
-                    { name: '', max: 40 },   // 伤害占比
-                    { name: '', max: 300 },  // 伤转
-                    { name: '', max: 5 }     // 生存
-                ],
-                center: ['50%', '45%'], 
-                radius: '65%',
-                splitNumber: 4, shape: 'polygon',
-                splitArea: { areaStyle: { color: ['rgba(30,30,30,0.25)', 'rgba(30,30,30,0.08)'] } },
-                axisLine: { show: false }, splitLine: { lineStyle: { color: '#fff', opacity: 0.2 } }, name: { show: false }
-            },
-            series: [{
-                type: 'radar',
-                data: [
-                    { value: [player.kda, player.cspm, player.dpm, player.kpart, player.goldpm, player.dmgshare, player.dmgtoGold, player.survival], itemStyle: { color: '#00bcd4' }, areaStyle: { color: 'rgba(0,188,212,0.4)' }, lineStyle: { color: '#00bcd4', width: 3 }, symbol: 'none' },
-                    { value: [avgStats.avg_kda, avgStats.avg_cspm, avgStats.avg_dpm, avgStats.avg_kpart, avgStats.avg_goldpm, avgStats.avg_dmgshare, avgStats.avg_dmgtoGold, avgStats.avg_survival], itemStyle: { color: '#ff5252' }, areaStyle: { color: 'transparent' }, lineStyle: { color: '#ff5252', width: 2, type: 'dashed' }, symbol: 'none' }
-                ]
-            }]
-        };
-        myChart.setOption(option);
-        window.addEventListener('resize', () => myChart.resize());
-    }
+        function updateStat(key, val, avgVal, rank) {
+            const valEl = document.getElementById(`stat-${key}`);
+            const avgEl = document.getElementById(`avg-${key}`);
+            const rankEl = document.getElementById(`rank-${key}`);
+            if (valEl) valEl.textContent = typeof val === 'number' ? val.toFixed(2) : val;
+            if (avgEl) avgEl.textContent = typeof avgVal === 'number' ? avgVal.toFixed(2) : avgVal;
+            if (rankEl) rankEl.textContent = '#' + rank;
+        }
 
-    loadData();
-</script>
+        function updateBarStat(key, val, rank, maxVal) {
+            const statEl = document.getElementById(`stat-${key}`);
+            const rankEl = document.getElementById(`rank-${key}`);
+            const barEl = document.getElementById(`bar-${key}`);
+            if (statEl) statEl.textContent = val;
+            if (rankEl) rankEl.textContent = '#' + rank;
+            if (barEl) {
+                let width = 0;
+                const numVal = parseFloat(String(val).replace('%', ''));
+                if (!isNaN(numVal) && maxVal > 0) {
+                    width = Math.max(0, Math.min(100, (Math.abs(numVal) / maxVal) * 100));
+                }
+                barEl.style.width = width + '%';
+            }
+        }
+
+        function renderRadar(player) {
+            const chartDom = document.getElementById('radarChart');
+            if (!myChart) {
+                myChart = echarts.init(chartDom, 'dark');
+                window.addEventListener('resize', () => myChart && myChart.resize());
+            }
+
+            const indicator = [
+                { name: 'KDA', max: 10 },
+                { name: '分均补刀', max: 15 },
+                { name: '分均伤害', max: 2000 },
+                { name: '参与击杀', max: 30 },
+                { name: '分均经济', max: 800 },
+                { name: '伤害占比', max: 40 },
+                { name: '伤转', max: 300 },
+                { name: '生存', max: 5 }
+            ];
+
+            const option = {
+                backgroundColor: 'transparent',
+                radar: {
+                    indicator: indicator,
+                    center: ['50%', '45%'],
+                    radius: '68%',
+                    splitNumber: 4,
+                    shape: 'polygon',
+                    splitArea: {
+                        areaStyle: {
+                            color: ['rgba(122,61,240,0.02)', 'rgba(122,61,240,0.06)']
+                        }
+                    },
+                    axisLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.05)', width: 1 } },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)', width: 1 } },
+                    axisName: {
+                        color: '#aaa',
+                        fontSize: 11,
+                        fontWeight: 600,
+                        padding: [0, 0, 0, 0]
+                    },
+                    name: { show: true, formatter: function(value) { return value; } }
+                },
+                series: [{
+                    type: 'radar',
+                    data: [{
+                        value: [player.kda, player.cspm, player.dpm, player.kpart, player.goldpm, player
+                            .dmgshare, player.dmgtoGold, player.survival
+                        ],
+                        itemStyle: { color: '#00d4e6' },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(0,212,230,0.35)' },
+                                { offset: 1, color: 'rgba(0,212,230,0.05)' }
+                            ])
+                        },
+                        lineStyle: { color: '#00d4e6', width: 3 },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        symbolFill: '#00d4e6'
+                    }, {
+                        value: [avgStats.avg_kda, avgStats.avg_cspm, avgStats.avg_dpm, avgStats.avg_kpart,
+                            avgStats.avg_goldpm, avgStats.avg_dmgshare, avgStats.avg_dmgtoGold,
+                            avgStats.avg_survival
+                        ],
+                        itemStyle: { color: '#ff6b6b' },
+                        areaStyle: { color: 'transparent' },
+                        lineStyle: { color: '#ff6b6b', width: 2, type: 'dashed' },
+                        symbol: 'diamond',
+                        symbolSize: 5,
+                        symbolFill: '#ff6b6b'
+                    }]
+                }]
+            };
+
+            myChart.setOption(option, true);
+        }
+
+        loadData();
+    </script>
+
 </body>
 </html>
