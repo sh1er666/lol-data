@@ -23,7 +23,6 @@
             justify-content: center;
             align-items: center;
             padding: 24px;
-            /* 动态光晕背景 */
             position: relative;
             overflow-x: hidden;
         }
@@ -202,10 +201,10 @@
             margin-top: 20px;
         }
 
-        /* --- 左侧：英雄池 --- */
+        /* --- 左侧：英雄池 + 底部进度条 --- */
         .left-panel {
-            width: 22%;
-            min-width: 180px;
+            width: 26%;
+            min-width: 210px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -290,6 +289,90 @@
             margin-top: 1px;
         }
 
+        /* --- 左侧底部：进度条数据（原右侧 bottom-stats） --- */
+        .left-bottom-stats {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 4px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .stat-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .mini-stat {
+            flex: 1;
+            min-width: 80px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 5px 10px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s;
+        }
+        .mini-stat:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(122, 61, 240, 0.15);
+        }
+        .mini-stat-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 2px;
+            align-items: center;
+        }
+        .mini-stat-name {
+            color: #888;
+            font-weight: 500;
+            font-size: 10px;
+            letter-spacing: 0.3px;
+        }
+        .mini-stat-val {
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .mini-stat-val.blue {
+            color: #00d4e6;
+        }
+        .mini-stat-val.red {
+            color: #ff6b6b;
+        }
+        .mini-stat-rank {
+            color: #fcd34d;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+        .bar-bg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2.5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #7a3df0, #00bcd4);
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 0 0 10px 10px;
+        }
+        .bar-fill.red {
+            background: linear-gradient(90deg, #ff5252, #ff6b6b);
+        }
+
         /* --- 中间：选手信息 --- */
         .player-info {
             flex: 1;
@@ -358,7 +441,7 @@
             color: #fcd34d;
         }
 
-        /* --- 右侧：雷达图 + 指标 --- */
+        /* --- 右侧：雷达图 + 八维指标 --- */
         .right-panel {
             width: 55%;
             position: relative;
@@ -465,91 +548,7 @@
             left: 14%;
         }
 
-        /* --- 底部三列迷你统计 --- */
-        .bottom-stats {
-            position: absolute;
-            bottom: 14px;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 0 16px;
-            z-index: 2;
-        }
-        .stat-col {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            min-width: 0;
-        }
-        .mini-stat {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 6px 12px;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s;
-        }
-        .mini-stat:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(122, 61, 240, 0.15);
-        }
-        .mini-stat-top {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            margin-bottom: 3px;
-            align-items: center;
-        }
-        .mini-stat-name {
-            color: #888;
-            font-weight: 500;
-            font-size: 11px;
-            letter-spacing: 0.3px;
-        }
-        .mini-stat-val {
-            color: #fff;
-            font-weight: 700;
-            font-size: 13px;
-        }
-        .mini-stat-val.blue {
-            color: #00d4e6;
-        }
-        .mini-stat-val.red {
-            color: #ff6b6b;
-        }
-        .mini-stat-rank {
-            color: #fcd34d;
-            font-size: 11px;
-            font-weight: 700;
-            margin-left: 6px;
-        }
-        .bar-bg {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 2.5px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0 0 10px 10px;
-            overflow: hidden;
-        }
-        .bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #7a3df0, #00bcd4);
-            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border-radius: 0 0 10px 10px;
-        }
-        .bar-fill.red {
-            background: linear-gradient(90deg, #ff5252, #ff6b6b);
-        }
-
-        /* --- 平均提示 --- */
+        /* --- 图例 --- */
         .avg-note {
             position: absolute;
             right: 18px;
@@ -595,6 +594,15 @@
             .hero-pool-grid {
                 grid-template-columns: repeat(6, 1fr);
                 width: 100%;
+            }
+            .left-bottom-stats {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .stat-row {
+                flex: 1 1 100%;
             }
             .player-info {
                 width: 100%;
@@ -643,25 +651,6 @@
             }
             .pos-left {
                 left: 4%;
-            }
-            .bottom-stats {
-                flex-wrap: wrap;
-                gap: 6px;
-                bottom: 8px;
-                padding: 0 8px;
-            }
-            .stat-col {
-                min-width: 80px;
-                flex: 1 1 30%;
-            }
-            .mini-stat {
-                padding: 4px 8px;
-            }
-            .mini-stat-top {
-                font-size: 10px;
-            }
-            .mini-stat-val {
-                font-size: 11px;
             }
             .avg-note {
                 font-size: 10px;
@@ -780,20 +769,14 @@
                 top: 10%;
                 left: 18%;
             }
-            .bottom-stats {
-                flex-direction: column;
-                gap: 4px;
-                bottom: 4px;
-                padding: 0 4px;
+            .left-bottom-stats {
+                padding: 6px 8px;
             }
-            .stat-col {
-                flex: none;
-                flex-direction: row;
-                flex-wrap: wrap;
+            .stat-row {
+                flex-direction: column;
                 gap: 4px;
             }
             .mini-stat {
-                flex: 1;
                 min-width: 60px;
                 padding: 3px 8px;
             }
@@ -811,21 +794,6 @@
                 right: 6px;
                 top: 6px;
                 padding: 2px 8px;
-            }
-        }
-
-        /* ===== 工具类 ===== */
-        .fade-in {
-            animation: fadeIn 0.6s ease forwards;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
             }
         }
     </style>
@@ -850,10 +818,83 @@
 
         <!-- 主区域 -->
         <div class="main-area">
-            <!-- 左侧：英雄池 -->
+            <!-- 左侧：英雄池 + 底部进度条 -->
             <div class="left-panel">
                 <div class="hero-pool-title">🎯 英雄池 (<span id="heroCount">0</span>)</div>
                 <div class="hero-pool-grid" id="heroPool"></div>
+
+                <!-- 底部进度条数据（原右侧 bottom-stats 移到这里） -->
+                <div class="left-bottom-stats">
+                    <div class="stat-row">
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">POM</span>
+                                <span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">单杀</span>
+                                <span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">一血参与</span>
+                                <span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">对位等级差</span>
+                                <span><span class="mini-stat-val blue" id="stat-lane">--</span><span class="mini-stat-rank" id="rank-lane">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-lane"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">对位经济差</span>
+                                <span><span class="mini-stat-val blue" id="stat-gdiff">--</span><span class="mini-stat-rank" id="rank-gdiff">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-gdiff"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">对线期经济差</span>
+                                <span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">参团率</span>
+                                <span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">承伤占比</span>
+                                <span><span class="mini-stat-val blue" id="stat-taken">--</span><span class="mini-stat-rank" id="rank-taken">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill red" id="bar-taken"></div></div>
+                        </div>
+                        <div class="mini-stat">
+                            <div class="mini-stat-top">
+                                <span class="mini-stat-name">分均视野</span>
+                                <span><span class="mini-stat-val blue" id="stat-vision">--</span><span class="mini-stat-rank" id="rank-vision">#-</span></span>
+                            </div>
+                            <div class="bar-bg"><div class="bar-fill" id="bar-vision"></div></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 中间：选手信息 -->
@@ -869,7 +910,7 @@
                 </div>
             </div>
 
-            <!-- 右侧：雷达 + 指标 -->
+            <!-- 右侧：雷达 + 八维指标 -->
             <div class="right-panel">
                 <div id="radarChart"></div>
 
@@ -925,80 +966,7 @@
                     </div>
                 </div>
 
-                <!-- 底部迷你统计 -->
-                <div class="bottom-stats">
-                    <div class="stat-col">
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">POM</span>
-                                <span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">单杀</span>
-                                <span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">一血参与</span>
-                                <span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div>
-                        </div>
-                    </div>
-                    <div class="stat-col">
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">对位等级差</span>
-                                <span><span class="mini-stat-val blue" id="stat-lane">--</span><span class="mini-stat-rank" id="rank-lane">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-lane"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">对位经济差</span>
-                                <span><span class="mini-stat-val blue" id="stat-gdiff">--</span><span class="mini-stat-rank" id="rank-gdiff">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-gdiff"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">对线期经济差</span>
-                                <span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div>
-                        </div>
-                    </div>
-                    <div class="stat-col">
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">参团率</span>
-                                <span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">承伤占比</span>
-                                <span><span class="mini-stat-val blue" id="stat-taken">--</span><span class="mini-stat-rank" id="rank-taken">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill red" id="bar-taken"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">分均视野</span>
-                                <span><span class="mini-stat-val blue" id="stat-vision">--</span><span class="mini-stat-rank" id="rank-vision">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-vision"></div></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 图例说明 -->
+                <!-- 图例 -->
                 <div class="avg-note">
                     <span class="red-dot">●</span> 全队均值 &nbsp;·&nbsp; <span class="blue-dot">●</span> 选手值
                 </div>
@@ -1008,7 +976,7 @@
 
     <script>
         // ============================================================
-        //  数据加载 & 渲染逻辑（完全保留原功能，只优化了视觉更新）
+        //  数据加载 & 渲染逻辑（完全保留原功能，只调整了布局）
         // ============================================================
         let currentData = [];
         let avgStats = {};
@@ -1086,6 +1054,12 @@
                 document.getElementById('playerAvatar').src = 'https://via.placeholder.com/160';
                 document.getElementById('heroPool').innerHTML = '';
                 document.getElementById('heroCount').textContent = '0';
+                // 清空进度条
+                ['pom','solo','fb','lane','gdiff','early','partrate','taken','vision'].forEach(key => {
+                    document.getElementById(`stat-${key}`).textContent = '--';
+                    document.getElementById(`rank-${key}`).textContent = '#-';
+                    document.getElementById(`bar-${key}`).style.width = '0%';
+                });
                 return;
             }
 
