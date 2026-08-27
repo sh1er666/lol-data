@@ -84,7 +84,7 @@
             box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(122, 61, 240, 0.08) inset;
         }
 
-        /* ===== 标题（无图标） ===== */
+        /* ===== 标题 ===== */
         .title {
             text-align: center;
             font-size: 32px;
@@ -115,7 +115,7 @@
             margin-top: 2px;
         }
 
-        /* ===== 控制栏（无图标） ===== */
+        /* ===== 控制栏 ===== */
         .control-bar {
             display: flex;
             justify-content: center;
@@ -198,7 +198,6 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            /* 防止内容溢出 */
             min-height: 0;
         }
         .hero-pool-title {
@@ -220,18 +219,15 @@
             border-radius: 12px;
         }
 
-        /* 核心修复：英雄池网格 + 滚动条，防止布局被撑爆 */
         .hero-pool-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
             flex: 1 1 auto;
             align-content: start;
-            /* 限制最大高度，超出滚动 */
             max-height: 340px;
             overflow-y: auto;
             padding-right: 4px;
-            /* 自定义滚动条样式 */
             scrollbar-width: thin;
             scrollbar-color: #7a3df0 transparent;
         }
@@ -301,30 +297,33 @@
             margin-top: 1px;
         }
 
-        /* --- 左侧底部进度条（固定不压缩） --- */
+        /* --- 左侧底部进度条（重新布局：两行，3+2） --- */
         .left-bottom-stats {
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             margin-top: 4px;
             background: rgba(0, 0, 0, 0.15);
             border-radius: 16px;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
         .stat-row {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
         }
+        /* 每行项目均匀分布 */
+        .stat-row .mini-stat {
+            flex: 1 1 0;
+            min-width: 90px; /* 适当加宽 */
+        }
         .mini-stat {
-            flex: 1;
-            min-width: 80px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 10px;
-            padding: 5px 10px;
+            padding: 6px 12px;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(4px);
@@ -337,20 +336,20 @@
         .mini-stat-top {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
-            margin-bottom: 2px;
+            font-size: 12px;
+            margin-bottom: 3px;
             align-items: center;
         }
         .mini-stat-name {
             color: #888;
             font-weight: 500;
-            font-size: 10px;
+            font-size: 11px;
             letter-spacing: 0.3px;
         }
         .mini-stat-val {
             color: #fff;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 13px;
         }
         .mini-stat-val.blue {
             color: #00d4e6;
@@ -360,7 +359,7 @@
         }
         .mini-stat-rank {
             color: #fcd34d;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             margin-left: 4px;
         }
@@ -369,7 +368,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            height: 2.5px;
+            height: 3px;  /* 稍微加粗 */
             background: rgba(255, 255, 255, 0.05);
             border-radius: 0 0 10px 10px;
             overflow: hidden;
@@ -473,7 +472,6 @@
             transform: translate(-50%, -50%);
         }
 
-        /* --- 八维指标标签 --- */
         .stats-wrapper {
             width: 520px;
             height: 520px;
@@ -531,7 +529,6 @@
             margin-top: 1px;
         }
 
-        /* 八个方位 */
         .pos-top {
             top: 2%;
             left: 50%;
@@ -565,7 +562,6 @@
             left: 13%;
         }
 
-        /* --- 图例 --- */
         .avg-note {
             position: absolute;
             right: 18px;
@@ -590,7 +586,7 @@
             font-weight: 600;
         }
 
-        /* ===== 响应式适配 ===== */
+        /* ===== 响应式 ===== */
         @media (max-width: 1100px) {
             .container {
                 padding: 20px;
@@ -609,12 +605,9 @@
             }
             .left-bottom-stats {
                 width: 100%;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: space-between;
             }
-            .stat-row {
-                flex: 1 1 100%;
+            .stat-row .mini-stat {
+                min-width: 80px;
             }
             .player-info {
                 width: 100%;
@@ -792,15 +785,15 @@
                 left: 17%;
             }
             .left-bottom-stats {
-                padding: 6px 8px;
+                padding: 8px 10px;
             }
             .stat-row {
-                flex-direction: column;
-                gap: 4px;
+                flex-direction: row;
+                gap: 6px;
             }
-            .mini-stat {
+            .stat-row .mini-stat {
                 min-width: 60px;
-                padding: 3px 8px;
+                padding: 4px 6px;
             }
             .mini-stat-top {
                 font-size: 9px;
@@ -845,30 +838,9 @@
                 <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>)</div>
                 <div class="hero-pool-grid" id="heroPool"></div>
 
+                <!-- 进度条：保留五项，两行（3+2） -->
                 <div class="left-bottom-stats">
-                    <div class="stat-row">
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">POM</span>
-                                <span><span class="mini-stat-val blue" id="stat-pom">--</span><span class="mini-stat-rank" id="rank-pom">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-pom"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">单杀</span>
-                                <span><span class="mini-stat-val blue" id="stat-solo">--</span><span class="mini-stat-rank" id="rank-solo">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-solo"></div></div>
-                        </div>
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
-                                <span class="mini-stat-name">一血参与</span>
-                                <span><span class="mini-stat-val blue" id="stat-fb">--</span><span class="mini-stat-rank" id="rank-fb">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-fb"></div></div>
-                        </div>
-                    </div>
+                    <!-- 第一行：3个 -->
                     <div class="stat-row">
                         <div class="mini-stat">
                             <div class="mini-stat-top">
@@ -886,20 +858,14 @@
                         </div>
                         <div class="mini-stat">
                             <div class="mini-stat-top">
-                                <span class="mini-stat-name">对线期经济差</span>
-                                <span><span class="mini-stat-val blue" id="stat-early">--</span><span class="mini-stat-rank" id="rank-early">#-</span></span>
-                            </div>
-                            <div class="bar-bg"><div class="bar-fill" id="bar-early"></div></div>
-                        </div>
-                    </div>
-                    <div class="stat-row">
-                        <div class="mini-stat">
-                            <div class="mini-stat-top">
                                 <span class="mini-stat-name">参团率</span>
                                 <span><span class="mini-stat-val blue" id="stat-partrate">--</span><span class="mini-stat-rank" id="rank-partrate">#-</span></span>
                             </div>
                             <div class="bar-bg"><div class="bar-fill" id="bar-partrate"></div></div>
                         </div>
+                    </div>
+                    <!-- 第二行：2个 -->
+                    <div class="stat-row">
                         <div class="mini-stat">
                             <div class="mini-stat-top">
                                 <span class="mini-stat-name">承伤占比</span>
@@ -987,7 +953,7 @@
 
     <script>
         // ============================================================
-        //  数据加载 & 渲染（逻辑不变，仅保留功能）
+        //  数据加载 & 渲染（仅更新保留的五个进度条）
         // ============================================================
         let currentData = [];
         let avgStats = {};
@@ -1012,12 +978,8 @@
                         avg_dmgshare: 0,
                         avg_dmgtoGold: 0,
                         avg_survival: 0,
-                        avg_pom: 0,
-                        avg_solo_kills: 0,
-                        avg_fb: 0,
                         avg_lane_diff: 0,
                         avg_gold_diff: 0,
-                        avg_early_gold: 0,
                         avg_participation: 0,
                         avg_damage_taken: 0,
                         avg_vision: 0
@@ -1065,7 +1027,8 @@
                 document.getElementById('playerAvatar').src = 'https://via.placeholder.com/160';
                 document.getElementById('heroPool').innerHTML = '';
                 document.getElementById('heroCount').textContent = '0';
-                ['pom', 'solo', 'fb', 'lane', 'gdiff', 'early', 'partrate', 'taken', 'vision'].forEach(key => {
+                // 清空所有进度条（只清保留的五个）
+                ['lane', 'gdiff', 'partrate', 'taken', 'vision'].forEach(key => {
                     document.getElementById(`stat-${key}`).textContent = '--';
                     document.getElementById(`rank-${key}`).textContent = '#-';
                     document.getElementById(`bar-${key}`).style.width = '0%';
@@ -1095,12 +1058,9 @@
             updateStat('conv', player.dmgtoGold, avgStats.avg_dmgtoGold, player.rank_dmgtoGold);
             updateStat('surv', player.survival, avgStats.avg_survival, player.rank_survival);
 
-            updateBarStat('pom', player.pom, player.rank_pom, 10);
-            updateBarStat('solo', player.solo_kills, player.rank_solo_kills, 5);
-            updateBarStat('fb', player.fb_participation + '%', player.rank_fb, 60);
+            // 只更新保留的五个进度条
             updateBarStat('lane', player.lane_diff, player.rank_lane_diff, 2);
             updateBarStat('gdiff', player.gold_diff, player.rank_gold_diff, 2000);
-            updateBarStat('early', player.early_gold, player.rank_early_gold, 800);
             updateBarStat('partrate', player.participation + '%', player.rank_participation, 80);
             updateBarStat('taken', player.damage_taken_share + '%', player.rank_damage_taken, 30);
             updateBarStat('vision', player.vision_per_min, player.rank_vision, 2);
