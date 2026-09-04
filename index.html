@@ -205,7 +205,7 @@
         .player-selector .label {
             color: #888;
             font-size: 12px;
-            font-weight: 500;
+            font-weight:500;
             letter-spacing: 0.5px;
             flex-shrink: 0;
             margin-right: 4px;
@@ -571,11 +571,13 @@
             border: 1px solid rgba(255, 255, 255, 0.04);
             transition: all 0.3s ease;
             pointer-events: auto;
+            cursor: pointer;
         }
         .stat-item:hover {
-            background: rgba(0, 0, 0, 0.50);
-            border-color: rgba(122, 61, 240, 0.2);
+            background: rgba(0, 0, 0, 0.55);
+            border-color: rgba(122, 61, 240, 0.3);
             transform: translate(-50%, -50%) scale(1.06);
+            box-shadow: 0 0 20px rgba(122, 61, 240, 0.15);
         }
         .stat-name {
             color: #ddd;
@@ -650,6 +652,7 @@
             z-index: 10;
             font-weight: 500;
             letter-spacing: 0.3px;
+            pointer-events: none;
         }
         .avg-note .red-dot {
             color: #ff5252;
@@ -967,7 +970,8 @@
             },
             'JUNGLE': {
                 keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'participation',
-                'damage_taken_per_death'],
+                    'damage_taken_per_death'
+                ],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '参团率', '每死承伤'],
                 avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
                     'avg_participation', 'avg_damage_taken_per_death'
@@ -1024,6 +1028,7 @@
         let currentPlayerIndex = 0;
         let myChart = null;
         let isDataLoaded = false;
+        let currentFilteredPlayers = [];
 
         // ============================================================
         //  DOM 引用
@@ -1183,7 +1188,7 @@
         // ============================================================
         function updateLeftStats(player) {
             const mappings = [
-                { stat: 'lane', rank: 'rank_lane', bar: 'bar-lane', key: 'lane_diff', rankKey: 'rank_lane_diff',
+                { stat: 'lane', rank: 'rank-lane', bar: 'bar-lane', key: 'lane_diff', rankKey: 'rank_lane_diff',
                     max: 3, isRed: false },
                 { stat: 'gdiff', rank: 'rank-gdiff', bar: 'bar-gdiff', key: 'gold_diff', rankKey: 'rank_gold_diff',
                     max: 3000, isRed: false },
@@ -1220,6 +1225,8 @@
             if (!isDataLoaded) return;
 
             const players = getFilteredPlayers();
+            currentFilteredPlayers = players;
+
             if (players.length === 0) {
                 // 清空显示
                 document.getElementById('playerName').textContent = '暂无选手';
@@ -1319,13 +1326,64 @@
                 const displayAvg = typeof avgVal === 'number' ? avgVal.toFixed(1) : avgVal;
 
                 return `
-                        <div class="stat-item pos-${positions[index]}">
+                        <div class="stat-item pos-${positions[index]}" data-index="${index}" data-key="${key}">
                             <div class="stat-name">${config.labels[index]}</div>
                             <div><span class="stat-rank">#${rank}</span> <span class="stat-val-blue">${displayVal}</span></div>
                             <div class="stat-val-red">${displayAvg}</div>
                         </div>
                     `;
             }).join('');
+        }
+
+        // ============================================================
+        //  构建 Tooltip 内容
+        // ============================================================
+        function buildRadarTooltip(player, config, isPlayerSeries) {
+            let html = '';
+            const playerName = player.player || '未知选手';
+            const seriesLabel = isPlayerSeries ? '选手数据' : '均值数据';
+
+            if (isPlayerSeries) {
+                // 选手数据 tooltip
+                html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#00d4e6;">${playerName}</div>`;
+                html +=
+                    `<div style="font-size:11px;color:#888;margin-bottom:8px;">KDA: ${player.kills}/${player.deaths}/${player.assists}</div>`;
+            } else {
+                html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#ff6b6b;">均值数据</div>`;
+                html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">全选手平均</div>`;
+            }
+
+            html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:4px 16px;font-size:12px;">`;
+
+            config.keys.forEach((key, index) => {
+                let val = isPlayerSeries ? player[key] : avgStats[config.avgs[index]];
+                if (key === 'kills_assists') {
+                    val = isPlayerSeries ? (player.kills + player.assists) : avgStats[config.avgs[index]];
+                }
+                val = safeVal(val);
+                const displayVal = typeof val === 'number' ? val.toFixed(2) : val;
+                const rank = isPlayerSeries ? (player[config.ranks[index]] !== undefined ? player[config.ranks[
+                    index]] : '-') : '-';
+
+                const colorClass = isPlayerSeries ? '#00d4e6' : '#ff6b6b';
+                const labelColor = isPlayerSeries ? '#ddd' : '#aaa';
+
+                html += `
+                        <span style="color:${labelColor};">${config.labels[index]}</span>
+                        <span style="color:${colorClass};font-weight:600;text-align:right;">${displayVal}</span>
+                        <span style="color:#fcd34d;font-size:11px;text-align:right;">${isPlayerSeries ? '#'+rank : '—'}</span>
+                    `;
+            });
+
+            html += `</div>`;
+
+            // 底部提示
+            if (isPlayerSeries) {
+                html +=
+                    `<div style="margin-top:6px;padding-top:4px;border-top:1px solid rgba(255,255,255,0.1);font-size:10px;color:#666;">点击查看完整数据</div>`;
+            }
+
+            return html;
         }
 
         // ============================================================
@@ -1337,6 +1395,19 @@
                 myChart = echarts.init(chartDom, 'dark');
                 window.addEventListener('resize', () => {
                     if (myChart) myChart.resize();
+                });
+
+                // 绑定 tooltip 点击事件，点击雷达图数据点时切换选手
+                myChart.on('click', function(params) {
+                    if (params.seriesType === 'radar' && params.dataIndex === 0) {
+                        // 点击选手系列的数据点
+                        const idx = currentPlayerIndex;
+                        // 循环切换到下一个选手
+                        if (currentFilteredPlayers.length > 1) {
+                            currentPlayerIndex = (idx + 1) % currentFilteredPlayers.length;
+                            updateView();
+                        }
+                    }
                 });
             }
 
@@ -1356,6 +1427,29 @@
 
             const option = {
                 backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'item',
+                    confine: true,
+                    backgroundColor: 'rgba(20,23,30,0.95)',
+                    borderColor: 'rgba(122,61,240,0.3)',
+                    borderWidth: 1,
+                    borderRadius: 12,
+                    padding: [14, 18],
+                    extraCssText: 'backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-width: 320px;',
+                    textStyle: {
+                        color: '#eee',
+                        fontSize: 12,
+                    },
+                    formatter: function(params) {
+                        if (!params || !params.seriesIndex === undefined) return '';
+                        // seriesIndex 0 = 选手，seriesIndex 1 = 均值
+                        const isPlayerSeries = params.seriesIndex === 0;
+                        // 如果当前没有选手数据则返回空
+                        if (!currentFilteredPlayers.length) return '';
+                        const currentPlayer = currentFilteredPlayers[currentPlayerIndex] || currentFilteredPlayers[0];
+                        return buildRadarTooltip(currentPlayer, config, isPlayerSeries);
+                    }
+                },
                 radar: {
                     indicator: indicator,
                     center: ['50%', '48%'],
@@ -1380,16 +1474,41 @@
                         },
                         lineStyle: { color: '#00d4e6', width: 2.5 },
                         symbol: 'circle',
-                        symbolSize: 5,
-                        itemStyle: { color: '#00d4e6', borderColor: '#fff', borderWidth: 1 }
+                        symbolSize: 7,
+                        itemStyle: { color: '#00d4e6', borderColor: '#fff', borderWidth: 1.5 },
+                        emphasis: {
+                            lineStyle: { width: 3.5, color: '#00d4e6' },
+                            itemStyle: { color: '#00d4e6', borderColor: '#fff', borderWidth: 2, shadowBlur: 20,
+                                shadowColor: 'rgba(0,212,230,0.6)' },
+                            areaStyle: { color: 'rgba(0,212,230,0.45)' }
+                        },
+                        tooltip: {
+                            formatter: function(params) {
+                                const currentPlayer = currentFilteredPlayers[currentPlayerIndex] ||
+                                    currentFilteredPlayers[0];
+                                return buildRadarTooltip(currentPlayer, config, true);
+                            }
+                        }
                     }, {
                         value: avgValues,
                         itemStyle: { color: '#ff6b6b' },
                         areaStyle: { color: 'transparent' },
                         lineStyle: { color: '#ff6b6b', width: 1.5, type: 'dashed' },
                         symbol: 'diamond',
-                        symbolSize: 4,
-                        itemStyle: { color: '#ff6b6b' }
+                        symbolSize: 5,
+                        itemStyle: { color: '#ff6b6b' },
+                        emphasis: {
+                            lineStyle: { width: 2.5, color: '#ff6b6b' },
+                            itemStyle: { color: '#ff6b6b', borderColor: '#fff', borderWidth: 1.5, shadowBlur: 15,
+                                shadowColor: 'rgba(255,107,107,0.5)' }
+                        },
+                        tooltip: {
+                            formatter: function(params) {
+                                const currentPlayer = currentFilteredPlayers[currentPlayerIndex] ||
+                                    currentFilteredPlayers[0];
+                                return buildRadarTooltip(currentPlayer, config, false);
+                            }
+                        }
                     }]
                 }]
             };
