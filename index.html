@@ -2068,24 +2068,35 @@
         //  导出当前图片
         // ============================================================
         function exportImage() {
-            loadingOverlay.classList.remove('show');
-            setTimeout(() => {
-                html2canvas(rightPanel, {
-                    backgroundColor: '#0b0d12',
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `H武道会_${currentPosition}_${currentTeam}_${new Date().toISOString().slice(0,10)}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                }).catch(err => {
-                    console.error('导出失败:', err);
-                    alert('导出图片失败，请重试');
-                });
-            }, 300);
-        }
+    loadingOverlay.classList.remove('show');
+    // 获取主区域元素（包含英雄池、选手信息、图表）
+    const mainArea = document.querySelector('.main-area');
+    if (!mainArea) {
+        console.error('未找到主区域元素');
+        return;
+    }
+    setTimeout(() => {
+        html2canvas(mainArea, {
+            backgroundColor: '#0b0d12',
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            // 处理内部滚动元素，确保完整捕获
+            scrollX: 0,
+            scrollY: -window.scrollY,
+            windowWidth: document.documentElement.offsetWidth,
+            windowHeight: document.documentElement.offsetHeight,
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `H武道会_${currentPosition}_${currentTeam}_全景_${new Date().toISOString().slice(0,10)}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).catch(err => {
+            console.error('导出失败:', err);
+            alert('导出图片失败，请重试');
+        });
+    }, 300);
+}
 
         // ============================================================
         //  启动
