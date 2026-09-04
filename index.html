@@ -177,8 +177,8 @@
         .right-panel { width: 55%; position: relative; height: 740px; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.04); padding: 8px; overflow: hidden; }
         #radarChart { width: 520px; height: 520px; position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.3s; }
         .stats-wrapper { width: 520px; height: 520px; position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; transition: opacity 0.3s; }
-        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.3; min-width: 72px; padding: 4px 8px; border-radius: 8px; background: rgba(0,0,0,0.30); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; pointer-events: auto; cursor: pointer; }
-        .stat-item:hover { background: rgba(0,0,0,0.55); border-color: rgba(122,61,240,0.3); transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 20px rgba(122,61,240,0.15); }
+        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.3; min-width: 72px; padding: 4px 8px; border-radius: 8px; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; pointer-events: auto; cursor: pointer; }
+        .stat-item:hover { background: rgba(0,0,0,0.95); border-color: rgba(122,61,240,0.3); transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 20px rgba(122,61,240,0.15); }
         .stat-name { color: #ddd; font-weight: 500; font-size: 11px; letter-spacing: 0.5px; opacity: 0.8; }
         .stat-rank { color: #fcd34d; font-size: 11px; font-weight: 700; }
         .stat-val-blue { color: #00d4e6; font-weight: 700; font-size: 14px; }
@@ -521,10 +521,11 @@
             players.forEach((p, idx) => {
                 const active = idx === currentPlayerIndex ? 'active' : '';
                 const compare = comparePlayers.includes(idx) ? 'compare' : '';
-                const avatar = `http://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`;
+                // 修改点：使用代理解决跨域问题
+                const avatar = `https://images.weserv.nl/?url=${encodeURIComponent(`https://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`)}`;
                 html += `
                     <div class="player-chip ${active} ${compare}" data-index="${idx}" title="点击选择，Ctrl+点击加入对比">
-                        <img src="${avatar}" onerror="this.src='https://via.placeholder.com/32'" loading="lazy" />
+                        <img src="${avatar}" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/32'" loading="lazy" />
                         <span class="chip-name">${p.player}</span>
                         <span class="chip-kda"><span class="k">${p.kills}</span>/<span class="d">${p.deaths}</span>/<span class="a">${p.assists}</span></span>
                     </div>`;
@@ -593,9 +594,10 @@
             const player = players[currentPlayerIndex];
             renderPlayerChips(players);
 
-            const avatarUrl = `http://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`;
+            const avatarUrl = `https://images.weserv.nl/?url=${encodeURIComponent(`https://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`)}`;
             const avatarImg = document.getElementById('playerAvatar');
             avatarImg.src = avatarUrl;
+            avatarImg.crossOrigin = "anonymous";
             avatarImg.onerror = function() { this.onerror = null; this.src = 'https://via.placeholder.com/160'; };
 
             document.getElementById('playerName').textContent = player.player;
@@ -643,7 +645,7 @@
                 return `
                     <div class="hero-item">
                         <div class="hero-games">${h.games}</div>
-                        <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png" onerror="this.style.background='#2a2f38';this.alt='${champName}'" loading="lazy">
+                        <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png" crossorigin="anonymous" onerror="this.style.background='#2a2f38';this.alt='${champName}'" loading="lazy">
                         <div class="hero-win">${winRate}%</div>
                         <div class="hero-kda">${h.games}局</div>
                     </div>`;
@@ -707,7 +709,23 @@
                 window.addEventListener('resize', () => { if (myChart) myChart.resize(); });
             }
             const config = positionConfigs[currentPosition];
-            const indicator = config.keys.map((key, index) => ({ name: config.labels[index], max: config.maxs[index] }));
+            
+            // 修改点：动态计算当前筛选玩家的最大值，防止数据超出雷达范围
+            const dynamicMaxs = config.keys.map((key, index) => {
+                let maxVal = config.maxs[index] * 0.2; // 保底值
+                currentFilteredPlayers.forEach(p => {
+                    let val = p[key];
+                    if (key === 'kills_assists') val = (p.kills + p.assists);
+                    val = safeVal(val);
+                    if (val > maxVal) maxVal = val;
+                });
+                return Math.ceil(maxVal * 1.15); // 留出15%的余量，让图形更好看
+            });
+
+            const indicator = config.keys.map((key, index) => ({ 
+                name: config.labels[index], 
+                max: dynamicMaxs[index] 
+            }));
             const seriesData = [];
 
             let playerValues = config.keys.map(key => {
@@ -779,7 +797,8 @@
                 radar: {
                     indicator: indicator,
                     center: ['50%', '48%'],
-                    radius: '72%',
+                    // 修改点：稍微缩小半径，让外部标签更清晰，防止数据溢出
+                    radius: '68%',
                     splitNumber: 4,
                     shape: 'polygon',
                     splitArea: { areaStyle: { color: ['rgba(122,61,240,0.03)', 'rgba(122,61,240,0.07)'] } },
@@ -1053,24 +1072,44 @@
             parallelChartInstance.resize();
         }
 
-        // 导出图片
+        // 导出图片 (修改点：等待所有图片加载完成后再截图)
         function exportImage() {
-            loadingOverlay.classList.remove('show');
+            loadingOverlay.classList.add('show');
+            loadingOverlay.querySelector('.loading-text').textContent = '图片处理中...';
+
             const mainArea = document.querySelector('.main-area');
             if (!mainArea) return;
-            setTimeout(() => {
-                html2canvas(mainArea, {
-                    backgroundColor:'#0b0d12', scale:2, useCORS:true, logging:false,
-                    scrollX:0, scrollY:-window.scrollY,
-                    windowWidth: document.documentElement.offsetWidth,
-                    windowHeight: document.documentElement.offsetHeight,
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `H武道会_${currentPosition}_${currentTeam}_全景_${new Date().toISOString().slice(0,10)}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                }).catch(err => { console.error('导出失败:', err); alert('导出图片失败，请重试'); });
-            }, 300);
+
+            // 预加载 mainArea 内的所有图片，包括头像和英雄图片
+            const images = mainArea.querySelectorAll('img');
+            const promises = Array.from(images).map(img => {
+                if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                return new Promise(resolve => {
+                    img.onload = resolve;
+                    img.onerror = resolve;
+                });
+            });
+
+            Promise.all(promises).then(() => {
+                setTimeout(() => {
+                    html2canvas(mainArea, {
+                        backgroundColor:'#0b0d12', scale:2, useCORS:true, allowTaint:false, logging:false,
+                        scrollX:0, scrollY:-window.scrollY,
+                        windowWidth: document.documentElement.offsetWidth,
+                        windowHeight: document.documentElement.offsetHeight,
+                    }).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = `H武道会_${currentPosition}_${currentTeam}_全景_${new Date().toISOString().slice(0,10)}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        loadingOverlay.classList.remove('show');
+                    }).catch(err => { 
+                        console.error('导出失败:', err); 
+                        alert('导出图片失败，请重试'); 
+                        loadingOverlay.classList.remove('show');
+                    });
+                }, 300);
+            });
         }
 
         // 启动
