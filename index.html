@@ -4,17 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>H·武道会 · 数据展示</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         /* ===== 全局重置 ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #0b0d12;
             color: #eee;
@@ -27,1014 +21,255 @@
             position: relative;
             overflow-x: hidden;
         }
-        body::before {
-            content: '';
-            position: fixed;
-            top: -30%;
-            left: -20%;
-            width: 80%;
-            height: 80%;
-            background: radial-gradient(circle at 30% 40%, rgba(122, 61, 240, 0.12) 0%, transparent 70%);
-            animation: aurora 12s ease-in-out infinite alternate;
-            z-index: 0;
-            pointer-events: none;
-        }
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: -30%;
-            right: -20%;
-            width: 80%;
-            height: 80%;
-            background: radial-gradient(circle at 70% 60%, rgba(0, 188, 212, 0.08) 0%, transparent 70%);
-            animation: aurora2 15s ease-in-out infinite alternate;
-            z-index: 0;
-            pointer-events: none;
-        }
-        @keyframes aurora {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            100% {
-                transform: translate(5%, 5%) scale(1.2);
-            }
-        }
-        @keyframes aurora2 {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            100% {
-                transform: translate(-5%, -5%) scale(1.3);
-            }
-        }
+        body::before { content: ''; position: fixed; top: -30%; left: -20%; width: 80%; height: 80%; background: radial-gradient(circle at 30% 40%, rgba(122,61,240,0.12) 0%, transparent 70%); animation: aurora 12s ease-in-out infinite alternate; z-index: 0; pointer-events: none; }
+        body::after { content: ''; position: fixed; bottom: -30%; right: -20%; width: 80%; height: 80%; background: radial-gradient(circle at 70% 60%, rgba(0,188,212,0.08) 0%, transparent 70%); animation: aurora2 15s ease-in-out infinite alternate; z-index: 0; pointer-events: none; }
+        @keyframes aurora { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(5%,5%) scale(1.2); } }
+        @keyframes aurora2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-5%,-5%) scale(1.3); } }
 
-        /* ===== 主容器 ===== */
         .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 1360px;
-            background: rgba(21, 24, 30, 0.75);
-            backdrop-filter: blur(24px) saturate(1.2);
-            border-radius: 24px;
-            padding: 28px 32px 32px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(122, 61, 240, 0.08) inset;
+            position: relative; z-index: 1; width: 100%; max-width: 1360px;
+            background: rgba(21,24,30,0.75); backdrop-filter: blur(24px) saturate(1.2);
+            border-radius: 24px; padding: 28px 32px 32px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(122,61,240,0.08) inset;
         }
 
-        /* ===== 标题 ===== */
         .title {
-            text-align: center;
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 6px;
-            padding: 8px 0 18px;
-            color: #f0f0f0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
+            text-align: center; font-size: 32px; font-weight: 700; letter-spacing: 6px;
+            padding: 8px 0 18px; color: #f0f0f0;
+            border-bottom: 1px solid rgba(255,255,255,0.05); position: relative;
         }
         .title::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 2px;
+            content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 2px;
             background: linear-gradient(90deg, transparent, #7a3df0, #00bcd4, transparent);
             border-radius: 4px;
         }
-        .title .sub {
-            font-weight: 300;
-            font-size: 14px;
-            color: #888;
-            letter-spacing: 2px;
-            display: block;
-            margin-top: 2px;
-        }
+        .title .sub { font-weight: 300; font-size: 14px; color: #888; letter-spacing: 2px; display: block; margin-top: 2px; }
 
-        /* ===== 控制栏 ===== */
-        .control-bar {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
+        .control-bar { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
         .team-select {
-            background: rgba(42, 47, 56, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #ccc;
-            padding: 9px 22px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            outline: none;
-            appearance: none;
-            text-align: center;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
+            background: rgba(42,47,56,0.7); border: 1px solid rgba(255,255,255,0.08);
+            color: #ccc; padding: 9px 22px; border-radius: 40px; font-size: 14px;
+            font-weight: 500; cursor: pointer; outline: none; appearance: none;
+            text-align: center; backdrop-filter: blur(4px); transition: all 0.3s; letter-spacing: 0.5px;
         }
-        .team-select:hover {
-            background: rgba(60, 65, 80, 0.8);
-            color: #fff;
-            border-color: rgba(122, 61, 240, 0.3);
-        }
-        .team-select option {
-            background: #1a1d24;
-            color: #eee;
-        }
-        .position-selector {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .team-select:hover { background: rgba(60,65,80,0.8); color: #fff; border-color: rgba(122,61,240,0.3); }
+        .team-select option { background: #1a1d24; color: #eee; }
+        .position-selector { display: flex; gap: 8px; flex-wrap: wrap; }
         .pos-btn {
-            background: rgba(42, 47, 56, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #999;
-            padding: 9px 22px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            backdrop-filter: blur(4px);
-            letter-spacing: 0.5px;
+            background: rgba(42,47,56,0.6); border: 1px solid rgba(255,255,255,0.06);
+            color: #999; padding: 9px 22px; border-radius: 40px; font-size: 13px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            backdrop-filter: blur(4px); letter-spacing: 0.5px;
         }
-        .pos-btn:hover {
-            background: rgba(60, 65, 80, 0.8);
-            color: #fff;
-            transform: translateY(-1px);
-        }
+        .pos-btn:hover { background: rgba(60,65,80,0.8); color: #fff; transform: translateY(-1px); }
         .pos-btn.active {
-            background: linear-gradient(135deg, #7a3df0, #6a2fd0);
-            color: #fff;
-            border-color: #7a3df0;
-            box-shadow: 0 4px 24px rgba(122, 61, 240, 0.35);
+            background: linear-gradient(135deg, #7a3df0, #6a2fd0); color: #fff;
+            border-color: #7a3df0; box-shadow: 0 4px 24px rgba(122,61,240,0.35);
             transform: translateY(-1px);
         }
 
-        /* ===== 搜索框 ===== */
-        .search-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
+        .search-bar { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .search-input {
-            flex: 1 1 200px;
-            background: rgba(42, 47, 56, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #eee;
-            padding: 9px 18px;
-            border-radius: 40px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s;
+            flex: 1 1 200px; background: rgba(42,47,56,0.6); border: 1px solid rgba(255,255,255,0.08);
+            color: #eee; padding: 9px 18px; border-radius: 40px; font-size: 14px;
+            outline: none; transition: all 0.3s; letter-spacing: 0.5px;
+        }
+        .search-input:focus { border-color: rgba(122,61,240,0.5); box-shadow: 0 0 20px rgba(122,61,240,0.15); background: rgba(50,55,65,0.8); }
+        .search-input::placeholder { color: #666; }
+        .view-switch { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+        .view-btn, .export-btn {
+            background: rgba(42,47,56,0.6); border: 1px solid rgba(255,255,255,0.06);
+            color: #999; padding: 8px 16px; border-radius: 40px; font-size: 13px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(4px);
             letter-spacing: 0.5px;
         }
-        .search-input:focus {
-            border-color: rgba(122, 61, 240, 0.5);
-            box-shadow: 0 0 20px rgba(122, 61, 240, 0.15);
-            background: rgba(50, 55, 65, 0.8);
-        }
-        .search-input::placeholder {
-            color: #666;
-        }
-
-        /* ===== 视图切换按钮 ===== */
-        .view-switch {
-            display: flex;
-            gap: 8px;
-            margin-left: auto;
-            flex-wrap: wrap;
-        }
-        .view-btn {
-            background: rgba(42, 47, 56, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #999;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(4px);
-            letter-spacing: 0.5px;
-        }
-        .view-btn:hover {
-            background: rgba(60, 65, 80, 0.8);
-            color: #fff;
-            transform: translateY(-1px);
-        }
+        .view-btn:hover, .export-btn:hover { background: rgba(60,65,80,0.8); color: #fff; transform: translateY(-1px); }
         .view-btn.active {
-            background: linear-gradient(135deg, #7a3df0, #6a2fd0);
-            color: #fff;
-            border-color: #7a3df0;
-            box-shadow: 0 4px 24px rgba(122, 61, 240, 0.35);
-        }
-        .export-btn {
-            background: rgba(42, 47, 56, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #999;
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(4px);
-            letter-spacing: 0.5px;
-        }
-        .export-btn:hover {
-            background: rgba(60, 65, 80, 0.8);
-            color: #fff;
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, #7a3df0, #6a2fd0); color: #fff;
+            border-color: #7a3df0; box-shadow: 0 4px 24px rgba(122,61,240,0.35);
         }
 
-        /* ===== 选手选择栏 ===== */
         .player-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 14px;
-            padding: 10px 16px;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            overflow-x: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #7a3df0 transparent;
-            flex-wrap: nowrap;
-            min-height: 62px;
-            transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 10px; margin-top: 14px;
+            padding: 10px 16px; background: rgba(0,0,0,0.25);
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.04);
+            overflow-x: auto; scrollbar-width: thin; scrollbar-color: #7a3df0 transparent;
+            flex-wrap: nowrap; min-height: 62px; transition: all 0.3s ease;
         }
-        .player-selector::-webkit-scrollbar {
-            height: 4px;
-        }
-        .player-selector::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .player-selector::-webkit-scrollbar-thumb {
-            background: #7a3df0;
-            border-radius: 8px;
-        }
-        .player-selector .label {
-            color: #888;
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            flex-shrink: 0;
-            margin-right: 4px;
-        }
+        .player-selector::-webkit-scrollbar { height: 4px; }
+        .player-selector::-webkit-scrollbar-track { background: transparent; }
+        .player-selector::-webkit-scrollbar-thumb { background: #7a3df0; border-radius: 8px; }
+        .player-selector .label { color: #888; font-size: 12px; font-weight: 500; letter-spacing: 0.5px; flex-shrink: 0; margin-right: 4px; }
         .player-chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 14px 5px 8px;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex-shrink: 0;
-            white-space: nowrap;
-            position: relative;
-            user-select: none;
+            display: flex; align-items: center; gap: 8px; padding: 5px 14px 5px 8px;
+            border-radius: 30px; background: rgba(255,255,255,0.04);
+            border: 1px solid transparent; cursor: pointer; transition: all 0.3s;
+            flex-shrink: 0; white-space: nowrap; position: relative; user-select: none;
         }
-        .player-chip:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-        .player-chip.active {
-            background: rgba(122, 61, 240, 0.25);
-            border-color: rgba(122, 61, 240, 0.4);
-            box-shadow: 0 0 20px rgba(122, 61, 240, 0.1);
-        }
-        .player-chip.compare {
-            background: rgba(0, 188, 212, 0.2);
-            border-color: rgba(0, 188, 212, 0.5);
-            box-shadow: 0 0 15px rgba(0, 188, 212, 0.15);
-        }
-        .player-chip img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.08);
-            object-fit: cover;
-            background: #1a1d24;
-            loading: lazy;
-        }
-        .player-chip .chip-name {
-            color: #eee;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .player-chip .chip-kda {
-            color: #888;
-            font-size: 11px;
-            font-weight: 400;
-        }
-        .player-chip .chip-kda .k {
-            color: #00bcd4;
-        }
-        .player-chip .chip-kda .d {
-            color: #ff5252;
-        }
-        .player-chip .chip-kda .a {
-            color: #fcd34d;
-        }
+        .player-chip:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .player-chip.active { background: rgba(122,61,240,0.25); border-color: rgba(122,61,240,0.4); box-shadow: 0 0 20px rgba(122,61,240,0.1); }
+        .player-chip.compare { background: rgba(0,188,212,0.2); border-color: rgba(0,188,212,0.5); box-shadow: 0 0 15px rgba(0,188,212,0.15); }
+        .player-chip img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.08); object-fit: cover; background: #1a1d24; }
+        .player-chip .chip-name { color: #eee; font-size: 13px; font-weight: 500; }
+        .player-chip .chip-kda { color: #888; font-size: 11px; font-weight: 400; }
+        .player-chip .chip-kda .k { color: #00bcd4; }
+        .player-chip .chip-kda .d { color: #ff5252; }
+        .player-chip .chip-kda .a { color: #fcd34d; }
 
-        /* ===== 主区域 ===== */
-        .main-area {
-            display: flex;
-            justify-content: space-between;
-            gap: 24px;
-            align-items: stretch;
-            margin-top: 16px;
-        }
+        .main-area { display: flex; justify-content: space-between; gap: 24px; align-items: stretch; margin-top: 16px; }
 
-        /* --- 左侧 --- */
-        .left-panel {
-            width: 26%;
-            min-width: 210px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-height: 0;
-        }
+        .left-panel { width: 26%; min-width: 210px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
         .hero-pool-title {
-            background: linear-gradient(135deg, #7a3df0, #5a2db0);
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 15px;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 20px rgba(122, 61, 240, 0.25);
-            flex-shrink: 0;
+            background: linear-gradient(135deg, #7a3df0, #5a2db0); color: #fff;
+            text-align: center; padding: 10px 0; border-radius: 40px;
+            font-weight: 600; font-size: 15px; letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(122,61,240,0.25); flex-shrink: 0;
         }
-        .hero-pool-title span {
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0 8px;
-            border-radius: 12px;
-        }
+        .hero-pool-title span { font-weight: 700; background: rgba(255,255,255,0.2); padding: 0 8px; border-radius: 12px; }
         .hero-pool-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            flex: 1 1 auto;
-            align-content: start;
-            max-height: 340px;
-            overflow-y: auto;
-            padding-right: 4px;
-            scrollbar-width: thin;
-            scrollbar-color: #7a3df0 transparent;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            flex: 1 1 auto; align-content: start; max-height: 340px;
+            overflow-y: auto; padding-right: 4px; scrollbar-width: thin; scrollbar-color: #7a3df0 transparent;
         }
-        .hero-pool-grid::-webkit-scrollbar {
-            width: 4px;
-        }
-        .hero-pool-grid::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .hero-pool-grid::-webkit-scrollbar-thumb {
-            background: #7a3df0;
-            border-radius: 8px;
-        }
+        .hero-pool-grid::-webkit-scrollbar { width: 4px; }
+        .hero-pool-grid::-webkit-scrollbar-track { background: transparent; }
+        .hero-pool-grid::-webkit-scrollbar-thumb { background: #7a3df0; border-radius: 8px; }
         .hero-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 6px 4px 8px;
-            transition: all 0.3s;
-            border: 1px solid transparent;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            position: relative; background: rgba(255,255,255,0.03); border-radius: 12px;
+            padding: 6px 4px 8px; transition: all 0.3s; border: 1px solid transparent;
         }
-        .hero-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(122, 61, 240, 0.2);
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-        .hero-games {
-            position: absolute;
-            top: 2px;
-            left: 6px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 12px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 0 6px;
-            border-radius: 8px;
-            backdrop-filter: blur(4px);
-        }
-        .hero-icon {
-            width: 62px;
-            height: 62px;
-            border-radius: 12px;
-            margin-bottom: 4px;
-            background: #1e222a;
-            border: 2px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.3s;
-            object-fit: cover;
-            loading: lazy;
-        }
-        .hero-item:hover .hero-icon {
-            border-color: rgba(122, 61, 240, 0.4);
-            box-shadow: 0 0 20px rgba(122, 61, 240, 0.15);
-        }
-        .hero-win {
-            color: #bbb;
-            font-size: 11px;
-            font-weight: 500;
-        }
-        .hero-kda {
-            color: #777;
-            font-size: 10px;
-            margin-top: 1px;
-        }
+        .hero-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(122,61,240,0.2); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .hero-games { position: absolute; top: 2px; left: 6px; color: #fff; font-weight: 700; font-size: 12px; background: rgba(0,0,0,0.6); padding: 0 6px; border-radius: 8px; backdrop-filter: blur(4px); }
+        .hero-icon { width: 62px; height: 62px; border-radius: 12px; margin-bottom: 4px; background: #1e222a; border: 2px solid rgba(255,255,255,0.06); transition: all 0.3s; object-fit: cover; }
+        .hero-item:hover .hero-icon { border-color: rgba(122,61,240,0.4); box-shadow: 0 0 20px rgba(122,61,240,0.15); }
+        .hero-win { color: #bbb; font-size: 11px; font-weight: 500; }
+        .hero-kda { color: #777; font-size: 10px; margin-top: 1px; }
 
-        /* --- 左侧底部进度条 --- */
-        .left-bottom-stats {
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 4px;
-            background: rgba(0, 0, 0, 0.15);
-            border-radius: 16px;
-            padding: 12px 14px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .stat-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .stat-row .mini-stat {
-            flex: 1 1 0;
-            min-width: 90px;
-        }
-        .mini-stat {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            padding: 6px 12px;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s;
-        }
-        .mini-stat:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(122, 61, 240, 0.15);
-        }
-        .mini-stat-top {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            margin-bottom: 3px;
-            align-items: center;
-        }
-        .mini-stat-name {
-            color: #888;
-            font-weight: 500;
-            font-size: 11px;
-            letter-spacing: 0.3px;
-        }
-        .mini-stat-val {
-            color: #fff;
-            font-weight: 700;
-            font-size: 13px;
-        }
-        .mini-stat-val.blue {
-            color: #00d4e6;
-        }
-        .mini-stat-val.red {
-            color: #ff6b6b;
-        }
-        .mini-stat-rank {
-            color: #fcd34d;
-            font-size: 11px;
-            font-weight: 700;
-            margin-left: 4px;
-        }
-        .bar-bg {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0 0 10px 10px;
-            overflow: hidden;
-        }
-        .bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #7a3df0, #00bcd4);
-            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border-radius: 0 0 10px 10px;
-        }
-        .bar-fill.red {
-            background: linear-gradient(90deg, #ff5252, #ff6b6b);
-        }
+        .left-bottom-stats { flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; margin-top: 4px; background: rgba(0,0,0,0.15); border-radius: 16px; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.04); }
+        .stat-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .stat-row .mini-stat { flex: 1 1 0; min-width: 90px; }
+        .mini-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 6px 12px; position: relative; overflow: hidden; backdrop-filter: blur(4px); transition: all 0.3s; }
+        .mini-stat:hover { background: rgba(255,255,255,0.06); border-color: rgba(122,61,240,0.15); }
+        .mini-stat-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; align-items: center; }
+        .mini-stat-name { color: #888; font-weight: 500; font-size: 11px; letter-spacing: 0.3px; }
+        .mini-stat-val { color: #fff; font-weight: 700; font-size: 13px; }
+        .mini-stat-val.blue { color: #00d4e6; }
+        .mini-stat-val.red { color: #ff6b6b; }
+        .mini-stat-rank { color: #fcd34d; font-size: 11px; font-weight: 700; margin-left: 4px; }
+        .bar-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.05); border-radius: 0 0 10px 10px; overflow: hidden; }
+        .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #7a3df0, #00bcd4); transition: width 1s cubic-bezier(0.34,1.56,0.64,1); border-radius: 0 0 10px 10px; }
+        .bar-fill.red { background: linear-gradient(90deg, #ff5252, #ff6b6b); }
 
-        /* --- 中间 --- */
-        .player-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 0 8px;
-            min-width: 140px;
-            transition: all 0.3s ease;
-        }
-        .player-avatar-wrap {
-            position: relative;
-            border-radius: 16px;
-            padding: 4px;
-            background: linear-gradient(135deg, #7a3df0, #00bcd4);
-            box-shadow: 0 0 40px rgba(122, 61, 240, 0.15);
-            transition: all 0.4s;
-        }
-        .player-avatar-wrap:hover {
-            box-shadow: 0 0 60px rgba(122, 61, 240, 0.3);
-            transform: scale(1.02);
-        }
-        .player-avatar {
-            width: 140px;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 13px;
-            display: block;
-            background: #1a1d24;
-            loading: lazy;
-        }
-        .player-meta {
-            display: flex;
-            align-items: baseline;
-            gap: 18px;
-            margin-top: 4px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .player-name {
-            font-size: 26px;
-            font-weight: 700;
-            color: #f0f0f0;
-            letter-spacing: 0.5px;
-        }
-        .player-total-kda {
-            font-size: 20px;
-            font-weight: 600;
-            color: #aaa;
-            letter-spacing: 1px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 2px 16px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .player-total-kda .k {
-            color: #00bcd4;
-        }
-        .player-total-kda .d {
-            color: #ff5252;
-        }
-        .player-total-kda .a {
-            color: #fcd34d;
-        }
+        .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 0 8px; min-width: 140px; }
+        .player-avatar-wrap { position: relative; border-radius: 16px; padding: 4px; background: linear-gradient(135deg, #7a3df0, #00bcd4); box-shadow: 0 0 40px rgba(122,61,240,0.15); transition: all 0.4s; }
+        .player-avatar-wrap:hover { box-shadow: 0 0 60px rgba(122,61,240,0.3); transform: scale(1.02); }
+        .player-avatar { width: 140px; height: 140px; object-fit: cover; border-radius: 13px; display: block; background: #1a1d24; }
+        .player-meta { display: flex; align-items: baseline; gap: 18px; margin-top: 4px; flex-wrap: wrap; justify-content: center; }
+        .player-name { font-size: 26px; font-weight: 700; color: #f0f0f0; letter-spacing: 0.5px; }
+        .player-total-kda { font-size: 20px; font-weight: 600; color: #aaa; letter-spacing: 1px; background: rgba(255,255,255,0.05); padding: 2px 16px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.06); }
+        .player-total-kda .k { color: #00bcd4; }
+        .player-total-kda .d { color: #ff5252; }
+        .player-total-kda .a { color: #fcd34d; }
 
-        /* --- 右侧 --- */
-        .right-panel {
-            width: 55%;
-            position: relative;
-            height: 740px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            padding: 8px;
-            overflow: hidden;
-        }
-        #radarChart {
-            width: 520px;
-            height: 520px;
-            position: absolute;
-            top: 48%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: opacity 0.3s;
-        }
-        .stats-wrapper {
-            width: 520px;
-            height: 520px;
-            position: absolute;
-            top: 48%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .stat-item {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transform: translate(-50%, -50%);
-            line-height: 1.3;
-            min-width: 72px;
-            padding: 4px 8px;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.30);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            transition: all 0.3s ease;
-            pointer-events: auto;
-            cursor: pointer;
-        }
-        .stat-item:hover {
-            background: rgba(0, 0, 0, 0.55);
-            border-color: rgba(122, 61, 240, 0.3);
-            transform: translate(-50%, -50%) scale(1.06);
-            box-shadow: 0 0 20px rgba(122, 61, 240, 0.15);
-        }
-        .stat-name {
-            color: #ddd;
-            font-weight: 500;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            opacity: 0.8;
-        }
-        .stat-rank {
-            color: #fcd34d;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .stat-val-blue {
-            color: #00d4e6;
-            font-weight: 700;
-            font-size: 14px;
-        }
-        .stat-val-red {
-            color: #ff6b6b;
-            font-size: 10px;
-            font-weight: 500;
-            opacity: 0.7;
-            margin-top: 1px;
-        }
+        .right-panel { width: 55%; position: relative; height: 740px; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.04); padding: 8px; overflow: hidden; }
+        #radarChart { width: 520px; height: 520px; position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.3s; }
+        .stats-wrapper { width: 520px; height: 520px; position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; transition: opacity 0.3s; }
+        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.3; min-width: 72px; padding: 4px 8px; border-radius: 8px; background: rgba(0,0,0,0.30); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; pointer-events: auto; cursor: pointer; }
+        .stat-item:hover { background: rgba(0,0,0,0.55); border-color: rgba(122,61,240,0.3); transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 20px rgba(122,61,240,0.15); }
+        .stat-name { color: #ddd; font-weight: 500; font-size: 11px; letter-spacing: 0.5px; opacity: 0.8; }
+        .stat-rank { color: #fcd34d; font-size: 11px; font-weight: 700; }
+        .stat-val-blue { color: #00d4e6; font-weight: 700; font-size: 14px; }
+        .stat-val-red { color: #ff6b6b; font-size: 10px; font-weight: 500; opacity: 0.7; margin-top: 1px; }
 
-        /* 定位样式 */
-        .pos-top {
-            top: 2%;
-            left: 50%;
-        }
-        .pos-topright {
-            top: 13%;
-            left: 87%;
-        }
-        .pos-right {
-            top: 45%;
-            left: 97.5%;
-        }
-        .pos-bottomright {
-            bottom: 16%;
-            left: 87%;
-        }
-        .pos-bottom {
-            bottom: 1%;
-            left: 50%;
-        }
-        .pos-bottomleft {
-            bottom: 16%;
-            left: 13%;
-        }
-        .pos-left {
-            top: 45%;
-            left: 2.5%;
-        }
-        .pos-topleft {
-            top: 13%;
-            left: 13%;
-        }
+        .pos-top { top: 2%; left: 50%; }
+        .pos-topright { top: 13%; left: 87%; }
+        .pos-right { top: 45%; left: 97.5%; }
+        .pos-bottomright { bottom: 16%; left: 87%; }
+        .pos-bottom { bottom: 1%; left: 50%; }
+        .pos-bottomleft { bottom: 16%; left: 13%; }
+        .pos-left { top: 45%; left: 2.5%; }
+        .pos-topleft { top: 13%; left: 13%; }
 
-        .avg-note {
-            position: absolute;
-            right: 18px;
-            top: 18px;
-            color: #888;
-            font-size: 11px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 4px 12px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            z-index: 10;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            pointer-events: none;
-        }
-        .avg-note .red-dot {
-            color: #ff5252;
-            font-weight: 600;
-        }
-        .avg-note .blue-dot {
-            color: #00bcd4;
-            font-weight: 600;
-        }
+        .avg-note { position: absolute; right: 18px; top: 18px; color: #888; font-size: 11px; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 20px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.04); z-index: 10; font-weight: 500; letter-spacing: 0.3px; pointer-events: none; }
+        .avg-note .red-dot { color: #ff5252; font-weight: 600; }
+        .avg-note .blue-dot { color: #00bcd4; font-weight: 600; }
 
-        /* ===== 散点图容器 ===== */
-        #scatterChart {
-            position: absolute;
-            inset: 0;
-            display: none;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
+        /* 新图表容器 */
+        #scatterChart, #barChart, #heatmapChart, #parallelChart {
+            position: absolute; inset: 0; display: none; width: 100%; height: 100%; cursor: pointer;
         }
-        #scatterChart.active {
-            display: block;
-        }
+        #scatterChart.active, #barChart.active, #heatmapChart.active, #parallelChart.active { display: block; }
 
-        /* 散点图图例覆盖层 */
-        .scatter-legend-overlay {
-            position: absolute;
-            left: 14px;
-            bottom: 12px;
-            z-index: 15;
-            display: none;
-            font-size: 10px;
-            color: #888;
-            background: rgba(0, 0, 0, 0.55);
-            padding: 6px 12px;
-            border-radius: 16px;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            pointer-events: none;
-            letter-spacing: 0.3px;
-            line-height: 1.6;
-        }
-        .scatter-legend-overlay.show {
-            display: block;
-        }
-        .scatter-legend-overlay .legend-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 4px;
-            vertical-align: middle;
-        }
-        .scatter-legend-overlay .legend-dot.white {
-            border: 2px solid #fff;
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .scatter-legend-overlay .legend-dot.orange {
-            border: 2px solid #ff9800;
-            background: rgba(255, 152, 0, 0.2);
-        }
-        .scatter-legend-overlay .legend-dot.small {
-            width: 5px;
-            height: 5px;
-            background: #00bcd4;
-            opacity: 0.7;
-        }
-        .scatter-legend-overlay .legend-dot.large {
-            width: 14px;
-            height: 14px;
-            background: #00bcd4;
-            opacity: 0.7;
-        }
+        .scatter-legend-overlay { position: absolute; left: 14px; bottom: 12px; z-index: 15; display: none; font-size: 10px; color: #888; background: rgba(0,0,0,0.55); padding: 6px 12px; border-radius: 16px; backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.06); pointer-events: none; letter-spacing: 0.3px; line-height: 1.6; }
+        .scatter-legend-overlay.show { display: block; }
+        .scatter-legend-overlay .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+        .scatter-legend-overlay .legend-dot.white { border: 2px solid #fff; background: rgba(255,255,255,0.2); }
+        .scatter-legend-overlay .legend-dot.orange { border: 2px solid #ff9800; background: rgba(255,152,0,0.2); }
+        .scatter-legend-overlay .legend-dot.small { width: 5px; height: 5px; background: #00bcd4; opacity: 0.7; }
+        .scatter-legend-overlay .legend-dot.large { width: 14px; height: 14px; background: #00bcd4; opacity: 0.7; }
 
-        /* ===== 加载状态 ===== */
-        .loading-overlay {
-            display: none;
-            position: absolute;
-            inset: 0;
-            background: rgba(11, 13, 18, 0.7);
-            backdrop-filter: blur(8px);
-            border-radius: 20px;
-            z-index: 20;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .loading-overlay.show {
-            display: flex;
-        }
-        .loading-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid rgba(122, 61, 240, 0.15);
-            border-top-color: #7a3df0;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        .loading-text {
-            color: #aaa;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
+        .loading-overlay { display: none; position: absolute; inset: 0; background: rgba(11,13,18,0.7); backdrop-filter: blur(8px); border-radius: 20px; z-index: 20; justify-content: center; align-items: center; flex-direction: column; gap: 16px; }
+        .loading-overlay.show { display: flex; }
+        .loading-spinner { width: 48px; height: 48px; border: 4px solid rgba(122,61,240,0.15); border-top-color: #7a3df0; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #aaa; font-size: 14px; letter-spacing: 1px; }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 1100px) {
-            .container {
-                padding: 20px;
-            }
-            .main-area {
-                flex-direction: column;
-                align-items: center;
-            }
-            .left-panel {
-                width: 100%;
-                min-width: unset;
-            }
-            .hero-pool-grid {
-                max-height: 260px;
-                grid-template-columns: repeat(6, 1fr);
-            }
-            .left-bottom-stats {
-                width: 100%;
-            }
-            .player-info {
-                width: 100%;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 12px;
-            }
-            .right-panel {
-                width: 100%;
-                height: 660px;
-            }
-            #radarChart,
-            .stats-wrapper {
-                width: 420px;
-                height: 420px;
-            }
-            .stat-item {
-                min-width: 60px;
-                padding: 3px 6px;
-            }
-            .stat-name {
-                font-size: 10px;
-            }
-            .stat-val-blue {
-                font-size: 12px;
-            }
-            .stat-rank {
-                font-size: 10px;
-            }
-            .stat-val-red {
-                font-size: 9px;
-            }
-            .pos-topright {
-                left: 85%;
-            }
-            .pos-bottomright {
-                left: 85%;
-            }
-            .pos-topleft {
-                left: 15%;
-            }
-            .pos-bottomleft {
-                left: 15%;
-            }
-            .pos-right {
-                left: 96.5%;
-            }
-            .pos-left {
-                left: 3.5%;
-            }
-            .scatter-legend-overlay {
-                left: 8px;
-                bottom: 6px;
-                font-size: 9px;
-                padding: 4px 10px;
-            }
+            .container { padding: 20px; }
+            .main-area { flex-direction: column; align-items: center; }
+            .left-panel { width: 100%; min-width: unset; }
+            .hero-pool-grid { max-height: 260px; grid-template-columns: repeat(6, 1fr); }
+            .left-bottom-stats { width: 100%; }
+            .player-info { width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px; }
+            .right-panel { width: 100%; height: 660px; }
+            #radarChart, .stats-wrapper { width: 420px; height: 420px; }
+            .stat-item { min-width: 60px; padding: 3px 6px; }
+            .stat-name { font-size: 10px; }
+            .stat-val-blue { font-size: 12px; }
+            .stat-rank { font-size: 10px; }
+            .stat-val-red { font-size: 9px; }
+            .pos-topright { left: 85%; }
+            .pos-bottomright { left: 85%; }
+            .pos-topleft { left: 15%; }
+            .pos-bottomleft { left: 15%; }
+            .pos-right { left: 96.5%; }
+            .pos-left { left: 3.5%; }
+            .scatter-legend-overlay { left: 8px; bottom: 6px; font-size: 9px; padding: 4px 10px; }
         }
         @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-            .container {
-                padding: 14px;
-                border-radius: 16px;
-            }
-            .title {
-                font-size: 22px;
-                letter-spacing: 3px;
-                padding: 4px 0 12px;
-            }
-            .title .sub {
-                font-size: 11px;
-            }
-            .hero-pool-grid {
-                max-height: 200px;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 6px;
-            }
-            .hero-icon {
-                width: 48px;
-                height: 48px;
-            }
-            .right-panel {
-                height: 520px;
-            }
-            #radarChart,
-            .stats-wrapper {
-                width: 310px;
-                height: 310px;
-            }
-            .stat-item {
-                min-width: 48px;
-                padding: 2px 4px;
-                border-radius: 6px;
-            }
-            .stat-name {
-                font-size: 8px;
-            }
-            .stat-val-blue {
-                font-size: 10px;
-            }
-            .stat-rank {
-                font-size: 8px;
-            }
-            .stat-val-red {
-                font-size: 7px;
-            }
-            .pos-topright {
-                top: 9%;
-                left: 83%;
-            }
-            .pos-bottomright {
-                bottom: 13%;
-                left: 83%;
-            }
-            .pos-left {
-                top: 43%;
-                left: 4%;
-            }
-            .player-selector {
-                padding: 8px 12px;
-                gap: 6px;
-                min-height: 50px;
-            }
-            .player-chip {
-                padding: 4px 10px 4px 6px;
-            }
-            .player-chip img {
-                width: 26px;
-                height: 26px;
-            }
-            .player-chip .chip-name {
-                font-size: 11px;
-            }
-            .player-chip .chip-kda {
-                font-size: 10px;
-            }
-            .search-input {
-                font-size: 12px;
-                padding: 7px 14px;
-            }
-            .view-btn,
-            .export-btn {
-                padding: 6px 12px;
-                font-size: 11px;
-            }
-            .scatter-legend-overlay {
-                display: none !important;
-            }
+            body { padding: 12px; }
+            .container { padding: 14px; border-radius: 16px; }
+            .title { font-size: 22px; letter-spacing: 3px; padding: 4px 0 12px; }
+            .title .sub { font-size: 11px; }
+            .hero-pool-grid { max-height: 200px; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+            .hero-icon { width: 48px; height: 48px; }
+            .right-panel { height: 520px; }
+            #radarChart, .stats-wrapper { width: 310px; height: 310px; }
+            .stat-item { min-width: 48px; padding: 2px 4px; border-radius: 6px; }
+            .stat-name { font-size: 8px; }
+            .stat-val-blue { font-size: 10px; }
+            .stat-rank { font-size: 8px; }
+            .stat-val-red { font-size: 7px; }
+            .pos-topright { top: 9%; left: 83%; }
+            .pos-bottomright { bottom: 13%; left: 83%; }
+            .pos-left { top: 43%; left: 4%; }
+            .player-selector { padding: 8px 12px; gap: 6px; min-height: 50px; }
+            .player-chip { padding: 4px 10px 4px 6px; }
+            .player-chip img { width: 26px; height: 26px; }
+            .player-chip .chip-name { font-size: 11px; }
+            .player-chip .chip-kda { font-size: 10px; }
+            .search-input { font-size: 12px; padding: 7px 14px; }
+            .view-btn, .export-btn { padding: 6px 12px; font-size: 11px; }
+            .scatter-legend-overlay { display: none !important; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="title">
-            H·武道会
-            <span class="sub">SEASON DATA</span>
-        </div>
+        <div class="title">H·武道会<span class="sub">SEASON DATA</span></div>
 
         <div class="control-bar">
             <select class="team-select" id="teamSelect"></select>
@@ -1047,23 +282,23 @@
             </div>
         </div>
 
-        <!-- 搜索栏和视图切换 -->
         <div class="search-bar">
             <input type="text" class="search-input" id="playerSearch" placeholder="🔍 搜索选手...">
             <div class="view-switch">
                 <button class="view-btn active" data-view="radar">雷达图</button>
                 <button class="view-btn" data-view="scatter">气泡图</button>
+                <button class="view-btn" data-view="bar">条形图</button>
+                <button class="view-btn" data-view="heatmap">热力图</button>
+                <button class="view-btn" data-view="parallel">平行坐标</button>
                 <button class="export-btn" id="exportBtn">导出图片</button>
             </div>
         </div>
 
-        <!-- 选手选择栏 -->
         <div class="player-selector" id="playerSelector">
             <span class="label">👥 选手</span>
         </div>
 
         <div class="main-area">
-            <!-- 左侧 -->
             <div class="left-panel">
                 <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>)</div>
                 <div class="hero-pool-grid" id="heroPool"></div>
@@ -1110,7 +345,6 @@
                 </div>
             </div>
 
-            <!-- 中间 -->
             <div class="player-info">
                 <div class="player-avatar-wrap">
                     <img class="player-avatar" id="playerAvatar" src="" onerror="this.src='https://via.placeholder.com/160'" alt="avatar" />
@@ -1123,7 +357,6 @@
                 </div>
             </div>
 
-            <!-- 右侧 -->
             <div class="right-panel">
                 <div class="loading-overlay" id="loadingOverlay">
                     <div class="loading-spinner"></div>
@@ -1134,9 +367,10 @@
                 <div class="avg-note">
                     <span class="red-dot">●</span> 均值 &nbsp;<span class="blue-dot">●</span> 选手
                 </div>
-                <!-- 散点图容器 -->
                 <div id="scatterChart"></div>
-                <!-- 散点图图例 -->
+                <div id="barChart"></div>
+                <div id="heatmapChart"></div>
+                <div id="parallelChart"></div>
                 <div class="scatter-legend-overlay" id="scatterLegend">
                     <span><span class="legend-dot small"></span>气泡大小=分均伤害</span><br>
                     <span><span class="legend-dot" style="background:#e74c3c;"></span>低KDA → <span class="legend-dot" style="background:#ffd700;"></span>高KDA</span><br>
@@ -1155,60 +389,36 @@
             'TOP': {
                 keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'damage_taken_per_death'],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '每死承伤'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold',
-                    'avg_damage_taken_per_death'
-                ],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
-                    'rank_dmgtoGold', 'rank_damage_taken_per_death'
-                ],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold', 'avg_damage_taken_per_death'],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold', 'rank_damage_taken_per_death'],
                 maxs: [10, 15, 2000, 15, 800, 40, 300, 12000]
             },
             'JUNGLE': {
-                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'participation',
-                    'damage_taken_per_death'
-                ],
+                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'participation', 'damage_taken_per_death'],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '参团率', '每死承伤'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
-                    'avg_participation', 'avg_damage_taken_per_death'
-                ],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
-                    'rank_participation', 'rank_damage_taken_per_death'
-                ],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_participation', 'avg_damage_taken_per_death'],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_participation', 'rank_damage_taken_per_death'],
                 maxs: [10, 15, 2000, 15, 800, 40, 100, 12000]
             },
             'MIDDLE': {
                 keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival'],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold',
-                    'avg_survival'
-                ],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
-                    'rank_dmgtoGold', 'rank_survival'
-                ],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold', 'avg_survival'],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold', 'rank_survival'],
                 maxs: [10, 15, 2000, 15, 800, 40, 300, 5]
             },
             'BOTTOM': {
                 keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival'],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold',
-                    'avg_survival'
-                ],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
-                    'rank_dmgtoGold', 'rank_survival'
-                ],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold', 'avg_survival'],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold', 'rank_survival'],
                 maxs: [10, 15, 2000, 15, 800, 40, 300, 5]
             },
             'UTILITY': {
-                keys: ['kda', 'kills_assists', 'goldpm', 'participation', 'dmgshare', 'damage_taken_share', 'vision_per_min',
-                    'damage_taken_per_death'
-                ],
+                keys: ['kda', 'kills_assists', 'goldpm', 'participation', 'dmgshare', 'damage_taken_share', 'vision_per_min', 'damage_taken_per_death'],
                 labels: ['KDA', '击杀助攻', '分均经济', '参团率', '伤害占比', '承伤占比', '分均视野', '每死承伤'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_goldpm', 'avg_participation', 'avg_dmgshare',
-                    'avg_damage_taken_share', 'avg_vision_per_min', 'avg_damage_taken_per_death'
-                ],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_goldpm', 'rank_participation', 'rank_dmgshare',
-                    'rank_damage_taken_share', 'rank_vision_per_min', 'rank_damage_taken_per_death'
-                ],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_goldpm', 'avg_participation', 'avg_dmgshare', 'avg_damage_taken_share', 'avg_vision_per_min', 'avg_damage_taken_per_death'],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_goldpm', 'rank_participation', 'rank_dmgshare', 'rank_damage_taken_share', 'rank_vision_per_min', 'rank_damage_taken_per_death'],
                 maxs: [10, 15, 800, 100, 40, 40, 5, 12000]
             }
         };
@@ -1223,15 +433,16 @@
         let currentPlayerIndex = 0;
         let myChart = null;
         let scatterChartInstance = null;
+        let barChartInstance = null;
+        let heatmapChartInstance = null;
+        let parallelChartInstance = null;
         let isDataLoaded = false;
         let currentFilteredPlayers = [];
         let searchTerm = '';
-        let currentView = 'radar'; // 'radar', 'scatter'
-        let comparePlayers = []; // 存储对比的选手索引（最多两个）
+        let currentView = 'radar';
+        let comparePlayers = [];
 
-        // ============================================================
-        //  DOM 引用
-        // ============================================================
+        // DOM
         const teamSelect = document.getElementById('teamSelect');
         const posBtns = document.querySelectorAll('.pos-btn');
         const playerSelector = document.getElementById('playerSelector');
@@ -1243,94 +454,38 @@
         const rightPanel = document.querySelector('.right-panel');
         const scatterLegend = document.getElementById('scatterLegend');
 
-        // ============================================================
-        //  工具
-        // ============================================================
-        function safeVal(v, fallback = 0) {
-            const n = parseFloat(v);
-            return isNaN(n) ? fallback : n;
-        }
+        // 工具
+        function safeVal(v, fallback = 0) { const n = parseFloat(v); return isNaN(n) ? fallback : n; }
+        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
-        function clamp(v, min, max) {
-            return Math.max(min, Math.min(max, v));
-        }
-
-        // ============================================================
-        //  数据加载
-        // ============================================================
+        // 加载数据
         async function loadData() {
             loadingOverlay.classList.add('show');
             try {
                 const res = await fetch('./data.json');
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const json = await res.json();
-
-                // 提取均值
                 const avgObj = json.find(item => item.avg_kda !== undefined);
-                if (avgObj) {
-                    avgStats = avgObj;
-                } else {
-                    console.warn('未找到均值数据，使用默认值');
-                    avgStats = {
-                        avg_kda: 0,
-                        avg_cspm: 0,
-                        avg_dpm: 0,
-                        avg_kpart: 0,
-                        avg_goldpm: 0,
-                        avg_dmgshare: 0,
-                        avg_dmgtoGold: 0,
-                        avg_survival: 0,
-                        avg_lane_diff: 0,
-                        avg_gold_diff: 0,
-                        avg_participation: 0,
-                        avg_damage_taken: 0,
-                        avg_vision: 0,
-                        avg_kills_assists: 0,
-                        avg_damage_taken_share: 0,
-                        avg_vision_per_min: 0,
-                        avg_damage_taken_per_death: 0
-                    };
-                }
-
+                if (avgObj) avgStats = avgObj;
+                else { console.warn('未找到均值数据'); avgStats = {}; }
                 allPlayers = json.filter(item => item.avg_kda === undefined);
                 isDataLoaded = true;
 
-                // 填充战队下拉
                 const teamSet = new Set(allPlayers.map(p => p.player.split(' ')[0]));
                 let optionsHtml = `<option value="ALL">全部战队</option>`;
-                teamSet.forEach(team => {
-                    optionsHtml += `<option value="${team}">${team}</option>`;
-                });
+                teamSet.forEach(team => { optionsHtml += `<option value="${team}">${team}</option>`; });
                 teamSelect.innerHTML = optionsHtml;
 
-                // 绑定事件
-                teamSelect.addEventListener('change', () => {
-                    currentTeam = teamSelect.value;
-                    currentPlayerIndex = 0;
-                    comparePlayers = [];
-                    updateView();
-                });
-
+                teamSelect.addEventListener('change', () => { currentTeam = teamSelect.value; currentPlayerIndex = 0; comparePlayers = []; updateView(); });
                 posBtns.forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         posBtns.forEach(b => b.classList.remove('active'));
                         e.target.classList.add('active');
                         currentPosition = e.target.dataset.pos;
-                        currentPlayerIndex = 0;
-                        comparePlayers = [];
-                        updateView();
+                        currentPlayerIndex = 0; comparePlayers = []; updateView();
                     });
                 });
-
-                // 搜索事件
-                playerSearch.addEventListener('input', (e) => {
-                    searchTerm = e.target.value.toLowerCase().trim();
-                    currentPlayerIndex = 0;
-                    comparePlayers = [];
-                    updateView();
-                });
-
-                // 视图切换
+                playerSearch.addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase().trim(); currentPlayerIndex = 0; comparePlayers = []; updateView(); });
                 viewBtns.forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         viewBtns.forEach(b => b.classList.remove('active'));
@@ -1339,141 +494,87 @@
                         updateViewVisibility();
                     });
                 });
-
-                // 导出图片
                 exportBtn.addEventListener('click', exportImage);
 
                 updateView();
-
             } catch (error) {
                 console.error('加载数据失败:', error);
                 document.getElementById('playerName').textContent = '⚠️ 数据加载失败';
-                const wrapper = document.getElementById('statsWrapper');
-                wrapper.innerHTML =
-                    `<div style="color:#ff6b6b;text-align:center;padding:40px;font-size:14px;">数据加载失败，请检查网络或 data.json 文件</div>`;
+                document.getElementById('statsWrapper').innerHTML = '<div style="color:#ff6b6b;text-align:center;padding:40px;font-size:14px;">数据加载失败</div>';
             } finally {
                 loadingOverlay.classList.remove('show');
             }
         }
 
-        // ============================================================
-        //  获取筛选后的选手列表（包含搜索）
-        // ============================================================
         function getFilteredPlayers() {
             let filtered = allPlayers.filter(p => p.position === currentPosition);
-            if (currentTeam !== 'ALL') {
-                filtered = filtered.filter(p => p.player.startsWith(currentTeam));
-            }
-            if (searchTerm) {
-                filtered = filtered.filter(p => p.player.toLowerCase().includes(searchTerm));
-            }
-            // 按 KDA 降序排序
+            if (currentTeam !== 'ALL') filtered = filtered.filter(p => p.player.startsWith(currentTeam));
+            if (searchTerm) filtered = filtered.filter(p => p.player.toLowerCase().includes(searchTerm));
             filtered.sort((a, b) => (b.kda || 0) - (a.kda || 0));
             return filtered;
         }
 
-        // ============================================================
-        //  渲染选手选择栏
-        // ============================================================
         function renderPlayerChips(players) {
             const container = playerSelector;
             let html = `<span class="label">👥 选手</span>`;
-            if (players.length === 0) {
-                html += `<span style="color:#666;font-size:13px;padding:6px 0;">暂无选手</span>`;
-                container.innerHTML = html;
-                return;
-            }
+            if (players.length === 0) { html += `<span style="color:#666;font-size:13px;padding:6px 0;">暂无选手</span>`; container.innerHTML = html; return; }
             players.forEach((p, idx) => {
                 const active = idx === currentPlayerIndex ? 'active' : '';
                 const compare = comparePlayers.includes(idx) ? 'compare' : '';
                 const avatar = `http://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`;
                 html += `
-                        <div class="player-chip ${active} ${compare}" data-index="${idx}" title="点击选择，Ctrl+点击加入对比">
-                            <img src="${avatar}" onerror="this.src='https://via.placeholder.com/32'" loading="lazy" />
-                            <span class="chip-name">${p.player}</span>
-                            <span class="chip-kda"><span class="k">${p.kills}</span>/<span class="d">${p.deaths}</span>/<span class="a">${p.assists}</span></span>
-                        </div>
-                    `;
+                    <div class="player-chip ${active} ${compare}" data-index="${idx}" title="点击选择，Ctrl+点击加入对比">
+                        <img src="${avatar}" onerror="this.src='https://via.placeholder.com/32'" loading="lazy" />
+                        <span class="chip-name">${p.player}</span>
+                        <span class="chip-kda"><span class="k">${p.kills}</span>/<span class="d">${p.deaths}</span>/<span class="a">${p.assists}</span></span>
+                    </div>`;
             });
             container.innerHTML = html;
-
-            // 绑定点击事件
             container.querySelectorAll('.player-chip').forEach(el => {
                 el.addEventListener('click', (e) => {
                     const idx = parseInt(el.dataset.index, 10);
                     if (e.ctrlKey || e.metaKey) {
-                        // 对比模式：最多两个
-                        if (comparePlayers.includes(idx)) {
-                            comparePlayers = comparePlayers.filter(i => i !== idx);
-                        } else {
-                            if (comparePlayers.length >= 2) {
-                                comparePlayers.shift();
-                            }
-                            comparePlayers.push(idx);
-                        }
+                        if (comparePlayers.includes(idx)) comparePlayers = comparePlayers.filter(i => i !== idx);
+                        else { if (comparePlayers.length >= 2) comparePlayers.shift(); comparePlayers.push(idx); }
                         updateView();
                     } else {
-                        if (!isNaN(idx) && idx !== currentPlayerIndex) {
-                            currentPlayerIndex = idx;
-                            comparePlayers = []; // 普通点击清除对比
-                            updateView();
-                        }
+                        if (!isNaN(idx) && idx !== currentPlayerIndex) { currentPlayerIndex = idx; comparePlayers = []; updateView(); }
                     }
                 });
             });
         }
 
-        // ============================================================
-        //  更新左侧指标
-        // ============================================================
         function updateLeftStats(player) {
             const mappings = [
-                { stat: 'lane', rank: 'rank-lane', bar: 'bar-lane', key: 'lane_diff', rankKey: 'rank_lane_diff',
-                    max: 3, isRed: false },
-                { stat: 'gdiff', rank: 'rank-gdiff', bar: 'bar-gdiff', key: 'gold_diff', rankKey: 'rank_gold_diff',
-                    max: 3000, isRed: false },
-                { stat: 'partrate', rank: 'rank-partrate', bar: 'bar-partrate', key: 'participation',
-                    rankKey: 'rank_participation', max: 100, isRed: false },
-                { stat: 'taken', rank: 'rank-taken', bar: 'bar-taken', key: 'damage_taken_share',
-                    rankKey: 'rank_damage_taken', max: 40, isRed: true },
-                { stat: 'vision', rank: 'rank-vision', bar: 'bar-vision', key: 'vision_per_min',
-                    rankKey: 'rank_vision', max: 3, isRed: false },
+                { stat: 'lane', rank: 'rank-lane', bar: 'bar-lane', key: 'lane_diff', rankKey: 'rank_lane_diff', max: 3, isRed: false },
+                { stat: 'gdiff', rank: 'rank-gdiff', bar: 'bar-gdiff', key: 'gold_diff', rankKey: 'rank_gold_diff', max: 3000, isRed: false },
+                { stat: 'partrate', rank: 'rank-partrate', bar: 'bar-partrate', key: 'participation', rankKey: 'rank_participation', max: 100, isRed: false },
+                { stat: 'taken', rank: 'rank-taken', bar: 'bar-taken', key: 'damage_taken_share', rankKey: 'rank_damage_taken', max: 40, isRed: true },
+                { stat: 'vision', rank: 'rank-vision', bar: 'bar-vision', key: 'vision_per_min', rankKey: 'rank_vision', max: 3, isRed: false },
             ];
-
             mappings.forEach(({ stat, rank, bar, key, rankKey, max, isRed }) => {
                 const val = safeVal(player[key]);
                 const r = player[rankKey] || '-';
-                document.getElementById(`stat-${stat}`).textContent = key === 'gold_diff' ? (val >= 0 ? '+' : '') + val
-                    .toFixed(0) : val.toFixed(1);
+                document.getElementById(`stat-${stat}`).textContent = key === 'gold_diff' ? (val >= 0 ? '+' : '') + val.toFixed(0) : val.toFixed(1);
                 document.getElementById(`rank-${stat}`).textContent = `#${r}`;
                 const pct = clamp((val / max) * 100, 0, 100);
                 const barEl = document.getElementById(bar);
                 barEl.style.width = pct + '%';
-                if (isRed) {
-                    barEl.className = 'bar-fill red';
-                } else {
-                    barEl.className = 'bar-fill';
-                }
+                barEl.className = isRed ? 'bar-fill red' : 'bar-fill';
             });
         }
 
-        // ============================================================
-        //  更新视图主流程
-        // ============================================================
         function updateView() {
             if (!isDataLoaded) return;
-
             const players = getFilteredPlayers();
             currentFilteredPlayers = players;
-
             if (players.length === 0) {
-                // 清空显示
                 document.getElementById('playerName').textContent = '暂无选手';
                 document.getElementById('totalKda').innerHTML = '<span class="k">0</span>/<span class="d">0</span>/<span class="a">0</span>';
                 document.getElementById('playerAvatar').src = 'https://via.placeholder.com/160';
                 document.getElementById('heroPool').innerHTML = '';
                 document.getElementById('heroCount').textContent = '0';
-                ['lane', 'gdiff', 'partrate', 'taken', 'vision'].forEach(key => {
+                ['lane','gdiff','partrate','taken','vision'].forEach(key => {
                     document.getElementById(`stat-${key}`).textContent = '--';
                     document.getElementById(`rank-${key}`).textContent = '#-';
                     document.getElementById(`bar-${key}`).style.width = '0%';
@@ -1482,69 +583,56 @@
                 renderPlayerChips([]);
                 if (myChart) myChart.clear();
                 if (scatterChartInstance) scatterChartInstance.clear();
+                if (barChartInstance) barChartInstance.clear();
+                if (heatmapChartInstance) heatmapChartInstance.clear();
+                if (parallelChartInstance) parallelChartInstance.clear();
                 updateViewVisibility();
                 return;
             }
-
-            // 确保索引有效
-            if (currentPlayerIndex >= players.length) {
-                currentPlayerIndex = 0;
-            }
+            if (currentPlayerIndex >= players.length) currentPlayerIndex = 0;
             const player = players[currentPlayerIndex];
-
-            // 渲染选手芯片
             renderPlayerChips(players);
 
-            // 更新中间信息
             const avatarUrl = `http://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`;
             const avatarImg = document.getElementById('playerAvatar');
             avatarImg.src = avatarUrl;
-            avatarImg.onerror = function() {
-                this.onerror = null;
-                this.src = 'https://via.placeholder.com/160';
-            };
+            avatarImg.onerror = function() { this.onerror = null; this.src = 'https://via.placeholder.com/160'; };
 
             document.getElementById('playerName').textContent = player.player;
-            document.getElementById('totalKda').innerHTML =
-                `<span class="k">${player.kills}</span>/<span class="d">${player.deaths}</span>/<span class="a">${player.assists}</span>`;
+            document.getElementById('totalKda').innerHTML = `<span class="k">${player.kills}</span>/<span class="d">${player.deaths}</span>/<span class="a">${player.assists}</span>`;
 
-            // 更新英雄池
             renderHeroPool(player);
-
-            // 更新左侧指标
             updateLeftStats(player);
 
-            // 更新右侧视图
             updateViewVisibility();
-            if (currentView === 'radar') {
-                renderStatsWrapper(player);
-                renderRadar(player);
-            } else if (currentView === 'scatter') {
-                renderScatterChart(players);
-            }
+            if (currentView === 'radar') { renderStatsWrapper(player); renderRadar(player); }
+            else if (currentView === 'scatter') renderScatterChart(players);
+            else if (currentView === 'bar') renderBarChart(player);
+            else if (currentView === 'heatmap') renderHeatmap(players);
+            else if (currentView === 'parallel') renderParallel(player);
         }
 
         function updateViewVisibility() {
             const radarChart = document.getElementById('radarChart');
             const statsWrapper = document.getElementById('statsWrapper');
             const avgNote = document.querySelector('.avg-note');
-
             radarChart.style.display = currentView === 'radar' ? 'block' : 'none';
             statsWrapper.style.display = currentView === 'radar' ? 'block' : 'none';
             avgNote.style.display = currentView === 'radar' ? 'block' : 'none';
-            scatterChartDiv.classList.toggle('active', currentView === 'scatter');
+            document.getElementById('scatterChart').classList.toggle('active', currentView === 'scatter');
+            document.getElementById('barChart').classList.toggle('active', currentView === 'bar');
+            document.getElementById('heatmapChart').classList.toggle('active', currentView === 'heatmap');
+            document.getElementById('parallelChart').classList.toggle('active', currentView === 'parallel');
             scatterLegend.classList.toggle('show', currentView === 'scatter');
 
-            if (currentView === 'radar' && myChart) {
-                myChart.resize();
-            } else if (currentView === 'scatter') {
-                if (currentFilteredPlayers.length) renderScatterChart(currentFilteredPlayers);
-            }
+            if (currentView === 'radar' && myChart) myChart.resize();
+            else if (currentView === 'scatter' && currentFilteredPlayers.length) renderScatterChart(currentFilteredPlayers);
+            else if (currentView === 'bar' && currentFilteredPlayers.length) renderBarChart(currentFilteredPlayers[currentPlayerIndex]);
+            else if (currentView === 'heatmap' && currentFilteredPlayers.length) renderHeatmap(currentFilteredPlayers);
+            else if (currentView === 'parallel' && currentFilteredPlayers.length) renderParallel(currentFilteredPlayers[currentPlayerIndex]);
         }
 
-        // ============================================================
-        //  渲染英雄池
-        // ============================================================
+        // 英雄池渲染
         function renderHeroPool(player) {
             const poolEl = document.getElementById('heroPool');
             const heroes = player.heroes || [{ champion: player.champion || 'Unknown', games: 1, wins: 1 }];
@@ -1553,157 +641,89 @@
                 const winRate = Math.round((h.wins / h.games) * 100);
                 const champName = h.champion || 'Unknown';
                 return `
-                        <div class="hero-item">
-                            <div class="hero-games">${h.games}</div>
-                            <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png" 
-                                 onerror="this.style.background='#2a2f38';this.alt='${champName}'" loading="lazy">
-                            <div class="hero-win">${winRate}%</div>
-                            <div class="hero-kda">${h.games}局</div>
-                        </div>
-                    `;
+                    <div class="hero-item">
+                        <div class="hero-games">${h.games}</div>
+                        <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png" onerror="this.style.background='#2a2f38';this.alt='${champName}'" loading="lazy">
+                        <div class="hero-win">${winRate}%</div>
+                        <div class="hero-kda">${h.games}局</div>
+                    </div>`;
             }).join('');
         }
 
-        // ============================================================
-        //  渲染右侧指标（雷达图外围文本）
-        // ============================================================
+        // 雷达图外围标签
         function renderStatsWrapper(player) {
             const config = positionConfigs[currentPosition];
             const wrapper = document.getElementById('statsWrapper');
             const positions = ['top', 'topright', 'right', 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft'];
-
             wrapper.innerHTML = config.keys.map((key, index) => {
                 let val = player[key];
-                if (key === 'kills_assists') {
-                    val = (player.kills + player.assists);
-                }
+                if (key === 'kills_assists') val = (player.kills + player.assists);
                 val = safeVal(val);
-
-                let avgVal = avgStats[config.avgs[index]];
-                avgVal = safeVal(avgVal);
-
-                let rank = player[config.ranks[index]];
-                rank = (rank !== undefined && rank !== null) ? rank : '-';
-
+                let avgVal = safeVal(avgStats[config.avgs[index]]);
+                let rank = player[config.ranks[index]] !== undefined ? player[config.ranks[index]] : '-';
                 const displayVal = typeof val === 'number' ? val.toFixed(1) : val;
                 const displayAvg = typeof avgVal === 'number' ? avgVal.toFixed(1) : avgVal;
-
                 return `
-                        <div class="stat-item pos-${positions[index]}" data-index="${index}" data-key="${key}">
-                            <div class="stat-name">${config.labels[index]}</div>
-                            <div><span class="stat-rank">#${rank}</span> <span class="stat-val-blue">${displayVal}</span></div>
-                            <div class="stat-val-red">${displayAvg}</div>
-                        </div>
-                    `;
+                    <div class="stat-item pos-${positions[index]}" data-index="${index}" data-key="${key}">
+                        <div class="stat-name">${config.labels[index]}</div>
+                        <div><span class="stat-rank">#${rank}</span> <span class="stat-val-blue">${displayVal}</span></div>
+                        <div class="stat-val-red">${displayAvg}</div>
+                    </div>`;
             }).join('');
         }
 
-        // ============================================================
-        //  构建 Tooltip 内容
-        // ============================================================
+        // 雷达图
         function buildRadarTooltip(player, config, isPlayerSeries) {
             let html = '';
             const playerName = player.player || '未知选手';
-            const seriesLabel = isPlayerSeries ? '选手数据' : '均值数据';
-
             if (isPlayerSeries) {
                 html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#00d4e6;">${playerName}</div>`;
-                html +=
-                    `<div style="font-size:11px;color:#888;margin-bottom:8px;">KDA: ${player.kills}/${player.deaths}/${player.assists}</div>`;
+                html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">KDA: ${player.kills}/${player.deaths}/${player.assists}</div>`;
             } else {
                 html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#ff6b6b;">均值数据</div>`;
                 html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">全选手平均</div>`;
             }
-
             html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:4px 16px;font-size:12px;">`;
-
             config.keys.forEach((key, index) => {
                 let val = isPlayerSeries ? player[key] : avgStats[config.avgs[index]];
-                if (key === 'kills_assists') {
-                    val = isPlayerSeries ? (player.kills + player.assists) : avgStats[config.avgs[index]];
-                }
+                if (key === 'kills_assists') val = isPlayerSeries ? (player.kills + player.assists) : avgStats[config.avgs[index]];
                 val = safeVal(val);
                 const displayVal = typeof val === 'number' ? val.toFixed(2) : val;
-                const rank = isPlayerSeries ? (player[config.ranks[index]] !== undefined ? player[config.ranks[
-                    index]] : '-') : '-';
-
+                const rank = isPlayerSeries ? (player[config.ranks[index]] !== undefined ? player[config.ranks[index]] : '-') : '-';
                 const colorClass = isPlayerSeries ? '#00d4e6' : '#ff6b6b';
-                const labelColor = isPlayerSeries ? '#ddd' : '#aaa';
-
                 html += `
-                        <span style="color:${labelColor};">${config.labels[index]}</span>
-                        <span style="color:${colorClass};font-weight:600;text-align:right;">${displayVal}</span>
-                        <span style="color:#fcd34d;font-size:11px;text-align:right;">${isPlayerSeries ? '#'+rank : '—'}</span>
-                    `;
+                    <span style="color:#aaa;">${config.labels[index]}</span>
+                    <span style="color:${colorClass};font-weight:600;text-align:right;">${displayVal}</span>
+                    <span style="color:#fcd34d;font-size:11px;text-align:right;">${isPlayerSeries ? '#'+rank : '—'}</span>`;
             });
-
             html += `</div>`;
             return html;
         }
 
-        // ============================================================
-        //  渲染雷达图（优化版：指标名称、渐变、动画、对比高亮）
-        // ============================================================
         function renderRadar(player) {
             const chartDom = document.getElementById('radarChart');
             if (!myChart) {
                 myChart = echarts.init(chartDom, 'dark');
-                window.addEventListener('resize', () => {
-                    if (myChart) myChart.resize();
-                });
+                window.addEventListener('resize', () => { if (myChart) myChart.resize(); });
             }
-
             const config = positionConfigs[currentPosition];
-            const indicator = config.keys.map((key, index) => ({
-                name: config.labels[index],
-                max: config.maxs[index]
-            }));
-
+            const indicator = config.keys.map((key, index) => ({ name: config.labels[index], max: config.maxs[index] }));
             const seriesData = [];
 
-            // 当前选手系列
             let playerValues = config.keys.map(key => {
                 let val = player[key];
                 if (key === 'kills_assists') val = (player.kills + player.assists);
                 return safeVal(val);
             });
             seriesData.push({
-                value: playerValues,
-                name: player.player,
-                itemStyle: {
-                    color: '#00d4e6',
-                    shadowBlur: 20,
-                    shadowColor: 'rgba(0,212,230,0.5)'
-                },
-                lineStyle: {
-                    color: '#00d4e6',
-                    width: 3,
-                    shadowBlur: 15,
-                    shadowColor: 'rgba(0,212,230,0.4)'
-                },
-                areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: 'rgba(0,212,230,0.35)' },
-                        { offset: 0.6, color: 'rgba(0,212,230,0.10)' },
-                        { offset: 1, color: 'rgba(0,212,230,0.02)' }
-                    ])
-                },
-                symbol: 'circle',
-                symbolSize: 8,
-                emphasis: {
-                    lineStyle: { width: 4, color: '#00d4e6' },
-                    itemStyle: {
-                        color: '#00d4e6',
-                        borderColor: '#fff',
-                        borderWidth: 3,
-                        shadowBlur: 25,
-                        shadowColor: 'rgba(0,212,230,0.8)'
-                    },
-                    areaStyle: { color: 'rgba(0,212,230,0.5)' }
-                }
+                value: playerValues, name: player.player,
+                itemStyle: { color: '#00d4e6', shadowBlur: 20, shadowColor: 'rgba(0,212,230,0.5)' },
+                lineStyle: { color: '#00d4e6', width: 3, shadowBlur: 15, shadowColor: 'rgba(0,212,230,0.4)' },
+                areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1, [{offset:0,color:'rgba(0,212,230,0.35)'},{offset:0.6,color:'rgba(0,212,230,0.10)'},{offset:1,color:'rgba(0,212,230,0.02)'}]) },
+                symbol: 'circle', symbolSize: 8,
+                emphasis: { lineStyle: { width:4, color:'#00d4e6' }, itemStyle: { color:'#00d4e6', borderColor:'#fff', borderWidth:3, shadowBlur:25, shadowColor:'rgba(0,212,230,0.8)' } }
             });
 
-            // 对比选手系列（最多两个）
             comparePlayers.forEach((idx, order) => {
                 const compPlayer = currentFilteredPlayers[idx];
                 if (compPlayer) {
@@ -1714,57 +734,24 @@
                     });
                     const color = order === 0 ? '#ff9800' : '#c084fc';
                     seriesData.push({
-                        value: compValues,
-                        name: compPlayer.player,
-                        itemStyle: {
-                            color: color,
-                            shadowBlur: 15,
-                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.5)' : 'rgba(192,132,252,0.5)'
-                        },
-                        lineStyle: {
-                            color: color,
-                            width: 2.5,
-                            type: 'solid',
-                            shadowBlur: 10,
-                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.4)' : 'rgba(192,132,252,0.4)'
-                        },
-                        areaStyle: {
-                            color: color === '#ff9800' ? 'rgba(255,152,0,0.12)' : 'rgba(192,132,252,0.12)'
-                        },
-                        symbol: 'circle',
-                        symbolSize: 6,
-                        emphasis: {
-                            lineStyle: { width: 3.5, color: color },
-                            itemStyle: { color: color, borderColor: '#fff', borderWidth: 2.5 }
-                        }
+                        value: compValues, name: compPlayer.player,
+                        itemStyle: { color, shadowBlur:15, shadowColor: color==='#ff9800'?'rgba(255,152,0,0.5)':'rgba(192,132,252,0.5)' },
+                        lineStyle: { color, width:2.5, shadowBlur:10, shadowColor: color==='#ff9800'?'rgba(255,152,0,0.4)':'rgba(192,132,252,0.4)' },
+                        areaStyle: { color: color==='#ff9800'?'rgba(255,152,0,0.12)':'rgba(192,132,252,0.12)' },
+                        symbol: 'circle', symbolSize: 6,
+                        emphasis: { lineStyle:{ width:3.5, color }, itemStyle:{ color, borderColor:'#fff', borderWidth:2.5 } }
                     });
                 }
             });
 
-            // 均值系列
             let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
             seriesData.push({
-                value: avgValues,
-                name: '均值',
-                itemStyle: {
-                    color: '#ff6b6b',
-                    shadowBlur: 8,
-                    shadowColor: 'rgba(255,107,107,0.3)'
-                },
-                lineStyle: {
-                    color: '#ff6b6b',
-                    width: 1.8,
-                    type: 'dashed',
-                    shadowBlur: 5,
-                    shadowColor: 'rgba(255,107,107,0.2)'
-                },
-                areaStyle: { color: 'transparent' },
-                symbol: 'diamond',
-                symbolSize: 6,
-                emphasis: {
-                    lineStyle: { width: 2.5, color: '#ff6b6b' },
-                    itemStyle: { color: '#ff6b6b', borderColor: '#fff', borderWidth: 1.5 }
-                }
+                value: avgValues, name: '均值',
+                itemStyle: { color:'#ff6b6b', shadowBlur:8, shadowColor:'rgba(255,107,107,0.3)' },
+                lineStyle: { color:'#ff6b6b', width:1.8, type:'dashed', shadowBlur:5, shadowColor:'rgba(255,107,107,0.2)' },
+                areaStyle: { color:'transparent' },
+                symbol: 'diamond', symbolSize: 6,
+                emphasis: { lineStyle:{ width:2.5, color:'#ff6b6b' }, itemStyle:{ color:'#ff6b6b', borderColor:'#fff', borderWidth:1.5 } }
             });
 
             const option = {
@@ -1774,23 +761,17 @@
                 animationEasing: 'cubicOut',
                 animationEasingUpdate: 'cubicInOut',
                 tooltip: {
-                    trigger: 'item',
-                    confine: true,
+                    trigger: 'item', confine: true,
                     backgroundColor: 'rgba(20,23,30,0.95)',
-                    borderColor: 'rgba(122,61,240,0.3)',
-                    borderWidth: 1,
-                    borderRadius: 12,
-                    padding: [14, 18],
+                    borderColor: 'rgba(122,61,240,0.3)', borderWidth:1, borderRadius:12, padding:[14,18],
                     extraCssText: 'backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-width: 320px;',
-                    textStyle: { color: '#eee', fontSize: 12 },
+                    textStyle: { color:'#eee', fontSize:12 },
                     formatter: function(params) {
                         if (!params || params.seriesIndex === undefined) return '';
                         const seriesIdx = params.seriesIndex;
-                        if (seriesIdx === seriesData.length - 1) {
-                            return buildRadarTooltip(player, config, false);
-                        } else {
-                            const dataPlayer = seriesIdx === 0 ? player : currentFilteredPlayers[comparePlayers[
-                                seriesIdx - 1]];
+                        if (seriesIdx === seriesData.length - 1) return buildRadarTooltip(player, config, false);
+                        else {
+                            const dataPlayer = seriesIdx === 0 ? player : currentFilteredPlayers[comparePlayers[seriesIdx-1]];
                             return dataPlayer ? buildRadarTooltip(dataPlayer, config, true) : '';
                         }
                     }
@@ -1801,162 +782,83 @@
                     radius: '72%',
                     splitNumber: 4,
                     shape: 'polygon',
-                    splitArea: {
-                        areaStyle: {
-                            color: ['rgba(122,61,240,0.03)', 'rgba(122,61,240,0.07)']
-                        }
-                    },
-                    axisLine: {
-                        show: true,
-                        lineStyle: {
-                            color: 'rgba(255,255,255,0.12)',
-                            width: 1.2
-                        }
-                    },
-                    splitLine: {
-                        lineStyle: {
-                            color: 'rgba(255,255,255,0.08)',
-                            width: 1
-                        }
-                    },
+                    splitArea: { areaStyle: { color: ['rgba(122,61,240,0.03)', 'rgba(122,61,240,0.07)'] } },
+                    axisLine: { show: true, lineStyle: { color:'rgba(255,255,255,0.12)', width:1.2 } },
+                    splitLine: { lineStyle: { color:'rgba(255,255,255,0.08)', width:1 } },
                     axisName: {
-                        show: true,
-                        color: '#ccc',
-                        fontSize: 11,
-                        fontWeight: 500,
-                        distance: 12,
-                        backgroundColor: 'rgba(0,0,0,0.4)',
-                        borderRadius: 6,
-                        padding: [2, 6],
-                        lineHeight: 16,
+                        show: false,  // 隐藏轴标签，使用外部自定义标签
                     }
                 },
-                series: [{
-                    type: 'radar',
-                    data: seriesData
-                }]
+                series: [{ type: 'radar', data: seriesData }]
             };
-
             myChart.setOption(option, true);
             myChart.resize();
         }
 
-        // ============================================================
-        //  渲染气泡图（优化版：颜色映射、动态大小、均值参考线）
-        // ============================================================
+        // 气泡图
         function renderScatterChart(players) {
             if (!scatterChartInstance) {
                 scatterChartInstance = echarts.init(scatterChartDiv, 'dark');
-                window.addEventListener('resize', () => {
-                    if (scatterChartInstance) scatterChartInstance.resize();
-                });
+                window.addEventListener('resize', () => { if (scatterChartInstance) scatterChartInstance.resize(); });
                 scatterChartInstance.on('click', function(params) {
                     if (params.data && params.data.playerIndex !== undefined) {
                         const idx = params.data.playerIndex;
                         if (idx === currentPlayerIndex) return;
-                        currentPlayerIndex = idx;
-                        comparePlayers = [];
-                        updateView();
+                        currentPlayerIndex = idx; comparePlayers = []; updateView();
                     }
                 });
             }
-
-            const xKey = 'goldpm';
-            const yKey = 'dmgshare';
-            const sizeKey = 'dpm';
-            const xLabel = '分均经济';
-            const yLabel = '伤害占比 (%)';
+            const config = positionConfigs[currentPosition];
+            const xKey = 'goldpm', yKey = 'dmgshare', sizeKey = 'dpm';
+            const xLabel = '分均经济', yLabel = '伤害占比 (%)';
 
             const allDpm = players.map(p => safeVal(p[sizeKey]));
-            const minDpm = Math.min(...allDpm, 0);
-            const maxDpm = Math.max(...allDpm, 1);
-
+            const minDpm = Math.min(...allDpm, 0), maxDpm = Math.max(...allDpm, 1);
             const allKda = players.map(p => safeVal(p.kda));
-            const minKda = Math.min(...allKda, 0);
-            const maxKda = Math.max(...allKda, 1);
-
-            const avgX = players.reduce((sum, p) => sum + safeVal(p[xKey]), 0) / players.length;
-            const avgY = players.reduce((sum, p) => sum + safeVal(p[yKey]), 0) / players.length;
-
-            const allX = players.map(p => safeVal(p[xKey]));
-            const allY = players.map(p => safeVal(p[yKey]));
-            const xMin = Math.min(...allX);
-            const xMax = Math.max(...allX);
-            const yMin = Math.min(...allY);
-            const yMax = Math.max(...allY);
-            const xPad = (xMax - xMin) * 0.12 || 50;
-            const yPad = (yMax - yMin) * 0.15 || 5;
+            const minKda = Math.min(...allKda, 0), maxKda = Math.max(...allKda, 1);
+            const avgX = players.reduce((s,p)=>s+safeVal(p[xKey]),0)/players.length;
+            const avgY = players.reduce((s,p)=>s+safeVal(p[yKey]),0)/players.length;
+            const allX = players.map(p=>safeVal(p[xKey])), allY = players.map(p=>safeVal(p[yKey]));
+            const xMin = Math.min(...allX), xMax = Math.max(...allX);
+            const yMin = Math.min(...allY), yMax = Math.max(...allY);
+            const xPad = (xMax-xMin)*0.12 || 50, yPad = (yMax-yMin)*0.15 || 5;
 
             const data = players.map((p, idx) => {
-                const kda = safeVal(p.kda);
-                const dpm = safeVal(p[sizeKey]);
-                const isCurrent = idx === currentPlayerIndex;
-                const isCompare = comparePlayers.includes(idx);
-
-                const sizeRatio = maxDpm > minDpm ? (dpm - minDpm) / (maxDpm - minDpm) : 0.5;
-                let symbolSize = 8 + sizeRatio * 20;
+                const kda = safeVal(p.kda), dpm = safeVal(p[sizeKey]);
+                const isCurrent = idx === currentPlayerIndex, isCompare = comparePlayers.includes(idx);
+                const sizeRatio = maxDpm>minDpm ? (dpm-minDpm)/(maxDpm-minDpm) : 0.5;
+                let symbolSize = 8 + sizeRatio*20;
                 if (isCurrent) symbolSize += 7;
                 if (isCompare) symbolSize += 3;
-
                 return {
                     value: [safeVal(p[xKey]), safeVal(p[yKey]), kda, dpm],
-                    name: p.player,
-                    player: p,
-                    playerIndex: idx,
-                    symbolSize: symbolSize,
+                    name: p.player, player: p, playerIndex: idx, symbolSize: symbolSize,
                     itemStyle: {
-                        opacity: isCurrent ? 1 : (isCompare ? 0.9 : 0.72),
-                        borderColor: isCurrent ? '#ffffff' : (isCompare ? '#ff9800' : 'transparent'),
-                        borderWidth: isCurrent ? 3 : (isCompare ? 2.5 : 0),
-                        shadowBlur: isCurrent ? 30 : (isCompare ? 18 : 6),
-                        shadowColor: isCurrent ? 'rgba(255,255,255,0.7)' : (isCompare ? 'rgba(255,152,0,0.6)' :
-                            'rgba(0,0,0,0.35)'),
+                        opacity: isCurrent?1:(isCompare?0.9:0.72),
+                        borderColor: isCurrent?'#ffffff':(isCompare?'#ff9800':'transparent'),
+                        borderWidth: isCurrent?3:(isCompare?2.5:0),
+                        shadowBlur: isCurrent?30:(isCompare?18:6),
+                        shadowColor: isCurrent?'rgba(255,255,255,0.7)':(isCompare?'rgba(255,152,0,0.6)':'rgba(0,0,0,0.35)')
                     },
                     label: {
-                        show: isCurrent || isCompare,
-                        formatter: '{b}',
-                        position: 'top',
-                        distance: 6,
-                        color: isCurrent ? '#ffffff' : '#ff9800',
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        textShadowColor: 'rgba(0,0,0,0.85)',
-                        textShadowBlur: 5,
+                        show: isCurrent||isCompare, formatter:'{b}', position:'top', distance:6,
+                        color: isCurrent?'#ffffff':'#ff9800', fontSize:12, fontWeight:'bold',
+                        textShadowColor:'rgba(0,0,0,0.85)', textShadowBlur:5
                     },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: 13,
-                        },
-                        itemStyle: {
-                            shadowBlur: 35,
-                            shadowColor: 'rgba(255,255,255,0.65)',
-                            borderWidth: isCurrent ? 3 : 2,
-                            borderColor: isCurrent ? '#fff' : '#ff9800',
-                            opacity: 1,
-                        }
-                    }
+                    emphasis: { label:{show:true, fontSize:13}, itemStyle:{ shadowBlur:35, shadowColor:'rgba(255,255,255,0.65)', borderWidth: isCurrent?3:2, borderColor:isCurrent?'#fff':'#ff9800', opacity:1 } }
                 };
             });
 
             const option = {
                 backgroundColor: 'transparent',
-                animation: true,
-                animationDuration: 700,
-                animationEasing: 'elasticOut',
-                animationDelay: function(idx) {
-                    return Math.min(idx * 40, 600);
-                },
+                animation: true, animationDuration: 700, animationEasing: 'elasticOut',
+                animationDelay: (idx)=>Math.min(idx*40,600),
                 tooltip: {
-                    trigger: 'item',
-                    confine: true,
-                    backgroundColor: 'rgba(18,20,26,0.95)',
-                    borderColor: 'rgba(0,188,212,0.35)',
-                    borderWidth: 1,
-                    borderRadius: 14,
-                    padding: [14, 18],
-                    extraCssText: 'backdrop-filter: blur(18px); box-shadow: 0 10px 40px rgba(0,0,0,0.65); max-width: 280px;',
-                    textStyle: { color: '#eee', fontSize: 12 },
+                    trigger:'item', confine:true,
+                    backgroundColor:'rgba(18,20,26,0.95)', borderColor:'rgba(0,188,212,0.35)', borderWidth:1,
+                    borderRadius:14, padding:[14,18],
+                    extraCssText:'backdrop-filter: blur(18px); box-shadow: 0 10px 40px rgba(0,0,0,0.65); max-width: 280px;',
+                    textStyle:{ color:'#eee', fontSize:12 },
                     formatter: function(params) {
                         if (!params || !params.data) return '';
                         const p = params.data.player;
@@ -1964,143 +866,214 @@
                         const isComp = comparePlayers.includes(params.data.playerIndex);
                         const badge = isCur ? '⭐ 当前选手' : (isComp ? '🔶 对比选手' : '');
                         return `
-                                <div style="font-weight:700;font-size:14px;margin-bottom:4px;color:${isCur ? '#fff' : (isComp ? '#ff9800' : '#00d4e6')};">
-                                    ${p.player} ${badge ? '<span style="font-size:10px;color:#fcd34d;">'+badge+'</span>' : ''}
-                                </div>
-                                <div style="font-size:11px;color:#888;margin-bottom:10px;">KDA: ${p.kills}/${p.deaths}/${p.assists}</div>
-                                <div style="display:grid;grid-template-columns:1fr auto;gap:3px 18px;font-size:12px;">
-                                    <span style="color:#aaa;">分均经济</span>
-                                    <span style="color:#00d4e6;font-weight:600;">${safeVal(p[xKey]).toFixed(1)}</span>
-                                    <span style="color:#aaa;">伤害占比</span>
-                                    <span style="color:#00d4e6;font-weight:600;">${safeVal(p[yKey]).toFixed(1)}%</span>
-                                    <span style="color:#aaa;">分均伤害</span>
-                                    <span style="color:#00d4e6;font-weight:600;">${safeVal(p[sizeKey]).toFixed(0)}</span>
-                                    <span style="color:#aaa;">KDA值</span>
-                                    <span style="color:#fcd34d;font-weight:700;">${safeVal(p.kda).toFixed(2)}</span>
-                                </div>
-                                <div style="margin-top:8px;font-size:10px;color:#666;">💡 点击切换选手 | Ctrl+点击对比</div>
-                            `;
+                            <div style="font-weight:700;font-size:14px;margin-bottom:4px;color:${isCur?'#fff':(isComp?'#ff9800':'#00d4e6')};">${p.player} ${badge?'<span style="font-size:10px;color:#fcd34d;">'+badge+'</span>':''}</div>
+                            <div style="font-size:11px;color:#888;margin-bottom:10px;">KDA: ${p.kills}/${p.deaths}/${p.assists}</div>
+                            <div style="display:grid;grid-template-columns:1fr auto;gap:3px 18px;font-size:12px;">
+                                <span style="color:#aaa;">分均经济</span><span style="color:#00d4e6;font-weight:600;">${safeVal(p[xKey]).toFixed(1)}</span>
+                                <span style="color:#aaa;">伤害占比</span><span style="color:#00d4e6;font-weight:600;">${safeVal(p[yKey]).toFixed(1)}%</span>
+                                <span style="color:#aaa;">分均伤害</span><span style="color:#00d4e6;font-weight:600;">${safeVal(p[sizeKey]).toFixed(0)}</span>
+                                <span style="color:#aaa;">KDA值</span><span style="color:#fcd34d;font-weight:700;">${safeVal(p.kda).toFixed(2)}</span>
+                            </div>
+                            <div style="margin-top:8px;font-size:10px;color:#666;">💡 点击切换选手 | Ctrl+点击对比</div>`;
                     }
                 },
                 visualMap: {
-                    dimension: 2,
-                    min: minKda,
-                    max: maxKda,
-                    calculable: false,
-                    orient: 'vertical',
-                    right: 4,
-                    top: 'center',
-                    itemWidth: 12,
-                    itemHeight: 80,
-                    text: ['高KDA', '低KDA'],
-                    textStyle: { color: '#888', fontSize: 10 },
-                    inRange: {
-                        color: ['#e74c3c', '#f39c12', '#3a9bd5', '#00bcd4', '#ffd700']
-                    },
-                    show: players.length > 3,
+                    dimension:2, min:minKda, max:maxKda, calculable:false,
+                    orient:'vertical', right:4, top:'center', itemWidth:12, itemHeight:80,
+                    text:['高KDA','低KDA'], textStyle:{color:'#888',fontSize:10},
+                    inRange:{color:['#e74c3c','#f39c12','#3a9bd5','#00bcd4','#ffd700']},
+                    show: players.length > 3
                 },
-                grid: {
-                    left: '8%',
-                    right: '16%',
-                    top: '12%',
-                    bottom: '15%',
-                    containLabel: true,
-                },
+                grid: { left:'8%', right:'16%', top:'12%', bottom:'15%', containLabel:true },
                 xAxis: {
-                    name: xLabel,
-                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
-                    nameLocation: 'middle',
-                    nameGap: 28,
-                    min: Math.max(0, xMin - xPad),
-                    max: xMax + xPad,
-                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
-                    axisLabel: { color: '#888', fontSize: 10 },
-                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } },
+                    name:xLabel, nameTextStyle:{color:'#999',fontSize:12,fontWeight:500},
+                    nameLocation:'middle', nameGap:28, min:Math.max(0,xMin-xPad), max:xMax+xPad,
+                    axisLine:{lineStyle:{color:'rgba(255,255,255,0.15)',width:1}},
+                    axisLabel:{color:'#888',fontSize:10},
+                    splitLine:{lineStyle:{color:'rgba(255,255,255,0.04)',type:'dashed'}}
                 },
                 yAxis: {
-                    name: yLabel,
-                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
-                    nameLocation: 'middle',
-                    nameGap: 40,
-                    min: Math.max(0, yMin - yPad),
-                    max: yMax + yPad,
-                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
-                    axisLabel: { color: '#888', fontSize: 10 },
-                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } },
+                    name:yLabel, nameTextStyle:{color:'#999',fontSize:12,fontWeight:500},
+                    nameLocation:'middle', nameGap:40, min:Math.max(0,yMin-yPad), max:yMax+yPad,
+                    axisLine:{lineStyle:{color:'rgba(255,255,255,0.15)',width:1}},
+                    axisLabel:{color:'#888',fontSize:10},
+                    splitLine:{lineStyle:{color:'rgba(255,255,255,0.04)',type:'dashed'}}
                 },
                 series: [{
-                    type: 'scatter',
-                    data: data,
-                    cursor: 'pointer',
+                    type:'scatter', data:data, cursor:'pointer',
                     markLine: {
-                        silent: true,
-                        symbol: 'none',
-                        label: {
-                            show: true,
-                            formatter: function(params) {
-                                if (params.data.xAxis !== undefined) return '均值X';
-                                if (params.data.yAxis !== undefined) return '均值Y';
-                                return '';
-                            },
-                            color: '#888',
-                            fontSize: 9,
-                            position: 'insideEndTop',
-                        },
-                        lineStyle: {
-                            color: 'rgba(255,255,255,0.18)',
-                            type: 'dashed',
-                            width: 1,
-                        },
-                        data: [
-                            { xAxis: avgX, label: { formatter: '均值X', color: '#888', fontSize: 9 } },
-                            { yAxis: avgY, label: { formatter: '均值Y', color: '#888', fontSize: 9 } },
-                        ],
-                        animation: false,
-                    },
-                }],
+                        silent:true, symbol:'none',
+                        label:{ show:true, formatter:(p)=>p.data.xAxis!==undefined?'均值X':(p.data.yAxis!==undefined?'均值Y':''), color:'#888', fontSize:9, position:'insideEndTop' },
+                        lineStyle:{ color:'rgba(255,255,255,0.18)', type:'dashed', width:1 },
+                        data:[ {xAxis:avgX},{yAxis:avgY} ], animation:false
+                    }
+                }]
             };
-
             scatterChartInstance.setOption(option, true);
             scatterChartInstance.resize();
         }
 
-        // ============================================================
-        //  导出当前图片
-        // ============================================================
-        function exportImage() {
-    loadingOverlay.classList.remove('show');
-    // 获取主区域元素（包含英雄池、选手信息、图表）
-    const mainArea = document.querySelector('.main-area');
-    if (!mainArea) {
-        console.error('未找到主区域元素');
-        return;
-    }
-    setTimeout(() => {
-        html2canvas(mainArea, {
-            backgroundColor: '#0b0d12',
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            // 处理内部滚动元素，确保完整捕获
-            scrollX: 0,
-            scrollY: -window.scrollY,
-            windowWidth: document.documentElement.offsetWidth,
-            windowHeight: document.documentElement.offsetHeight,
-        }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `H武道会_${currentPosition}_${currentTeam}_全景_${new Date().toISOString().slice(0,10)}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }).catch(err => {
-            console.error('导出失败:', err);
-            alert('导出图片失败，请重试');
-        });
-    }, 300);
-}
+        // 条形图
+        function renderBarChart(player) {
+            if (!barChartInstance) {
+                barChartInstance = echarts.init(document.getElementById('barChart'), 'dark');
+                window.addEventListener('resize', () => { if (barChartInstance) barChartInstance.resize(); });
+            }
+            const config = positionConfigs[currentPosition];
+            const categories = config.labels;
+            const playerValues = config.keys.map(key => {
+                let val = player[key];
+                if (key === 'kills_assists') val = (player.kills + player.assists);
+                return safeVal(val);
+            });
+            const avgValues = config.avgs.map(key => safeVal(avgStats[key]));
+            const series = [
+                { name: player.player, type:'bar', data: playerValues, itemStyle:{ color:'#00d4e6', borderRadius:[4,4,0,0] }, barGap:'10%', barCategoryGap:'30%' },
+                { name: '均值', type:'bar', data: avgValues, itemStyle:{ color:'#ff6b6b', borderRadius:[4,4,0,0] } }
+            ];
+            comparePlayers.forEach((idx, order) => {
+                const compPlayer = currentFilteredPlayers[idx];
+                if (compPlayer) {
+                    let compValues = config.keys.map(key => {
+                        let val = compPlayer[key];
+                        if (key === 'kills_assists') val = (compPlayer.kills + compPlayer.assists);
+                        return safeVal(val);
+                    });
+                    series.push({
+                        name: compPlayer.player, type:'bar', data: compValues,
+                        itemStyle:{ color: order===0?'#ff9800':'#c084fc', borderRadius:[4,4,0,0] }
+                    });
+                }
+            });
+            const option = {
+                backgroundColor:'transparent',
+                tooltip:{ trigger:'axis', axisPointer:{type:'shadow'} },
+                legend:{ data: series.map(s=>s.name), textStyle:{color:'#ccc'}, top:0 },
+                grid:{ left:'10%', right:'5%', top:'15%', bottom:'10%', containLabel:true },
+                xAxis:{ type:'value', axisLabel:{color:'#888'}, splitLine:{lineStyle:{color:'rgba(255,255,255,0.06)'}} },
+                yAxis:{ type:'category', data: categories, axisLabel:{color:'#ddd',fontSize:11}, axisLine:{lineStyle:{color:'#666'}} },
+                series: series
+            };
+            barChartInstance.setOption(option, true);
+            barChartInstance.resize();
+        }
 
-        // ============================================================
-        //  启动
-        // ============================================================
+        // 热力图
+        function renderHeatmap(players) {
+            if (!heatmapChartInstance) {
+                heatmapChartInstance = echarts.init(document.getElementById('heatmapChart'), 'dark');
+                window.addEventListener('resize', () => { if (heatmapChartInstance) heatmapChartInstance.resize(); });
+            }
+            const config = positionConfigs[currentPosition];
+            const indicators = config.labels;
+            const topN = Math.min(players.length, 30);
+            const selectedPlayers = players.slice(0, topN);
+            const data = [];
+            selectedPlayers.forEach((p, idx) => {
+                config.keys.forEach((key, keyIdx) => {
+                    let val = p[key];
+                    if (key === 'kills_assists') val = (p.kills + p.assists);
+                    val = safeVal(val);
+                    data.push([keyIdx, idx, val]);
+                });
+            });
+            const maxVals = {};
+            config.keys.forEach((key, keyIdx) => {
+                let maxVal = 0;
+                selectedPlayers.forEach(p => {
+                    let val = p[key];
+                    if (key === 'kills_assists') val = (p.kills + p.assists);
+                    val = safeVal(val);
+                    if (val > maxVal) maxVal = val;
+                });
+                maxVals[keyIdx] = maxVal || 1;
+            });
+            const normalizedData = data.map(item => [item[0], item[1], item[2] / maxVals[item[0]]]);
+
+            const option = {
+                backgroundColor:'transparent',
+                tooltip: {
+                    position:'top',
+                    formatter: function(params) {
+                        const xIdx = params.value[0], yIdx = params.value[1];
+                        const rawVal = data.find(d => d[0]===xIdx && d[1]===yIdx)[2];
+                        return `${selectedPlayers[yIdx].player}<br>${config.labels[xIdx]}: ${rawVal.toFixed(2)}`;
+                    }
+                },
+                grid:{ left:'15%', right:'5%', top:'10%', bottom:'15%', containLabel:true },
+                xAxis:{ type:'category', data: config.labels, splitArea:{show:true}, axisLabel:{color:'#ddd',fontSize:10,interval:0,rotate:30} },
+                yAxis:{ type:'category', data: selectedPlayers.map(p=>p.player), splitArea:{show:true}, axisLabel:{color:'#ddd',fontSize:10,width:100,overflow:'truncate'} },
+                visualMap:{ min:0, max:1, calculable:true, orient:'vertical', right:0, top:'center', itemWidth:12, itemHeight:100, text:['高','低'], textStyle:{color:'#888'}, inRange:{color:['#1a1d24','#00bcd4']} },
+                series:[{ type:'heatmap', data: normalizedData, label:{show:false}, emphasis:{itemStyle:{borderColor:'#fff',borderWidth:1}} }]
+            };
+            heatmapChartInstance.setOption(option, true);
+            heatmapChartInstance.resize();
+        }
+
+        // 平行坐标
+        function renderParallel(player) {
+            if (!parallelChartInstance) {
+                parallelChartInstance = echarts.init(document.getElementById('parallelChart'), 'dark');
+                window.addEventListener('resize', () => { if (parallelChartInstance) parallelChartInstance.resize(); });
+            }
+            const config = positionConfigs[currentPosition];
+            const parallelAxis = config.keys.map((key, idx) => ({
+                dim: idx, name: config.labels[idx], max: config.maxs[idx],
+                axisLabel:{color:'#888'}, nameTextStyle:{color:'#ddd'}
+            }));
+            const data = [];
+            let playerValues = config.keys.map(key => {
+                let val = player[key];
+                if (key === 'kills_assists') val = (player.kills + player.assists);
+                return safeVal(val);
+            });
+            data.push({ value: playerValues, name: player.player, lineStyle:{color:'#00d4e6',width:3}, itemStyle:{color:'#00d4e6'} });
+            comparePlayers.forEach((idx, order) => {
+                const compPlayer = currentFilteredPlayers[idx];
+                if (compPlayer) {
+                    let compValues = config.keys.map(key => {
+                        let val = compPlayer[key];
+                        if (key === 'kills_assists') val = (compPlayer.kills + compPlayer.assists);
+                        return safeVal(val);
+                    });
+                    data.push({ value: compValues, name: compPlayer.player, lineStyle:{color:order===0?'#ff9800':'#c084fc',width:2.5}, itemStyle:{color:order===0?'#ff9800':'#c084fc'} });
+                }
+            });
+            let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
+            data.push({ value: avgValues, name:'均值', lineStyle:{color:'#ff6b6b',width:2,type:'dashed'}, itemStyle:{color:'#ff6b6b'} });
+
+            const option = {
+                backgroundColor:'transparent',
+                tooltip:{ trigger:'item', confine:true },
+                parallelAxis: parallelAxis,
+                parallel:{ left:'5%', right:'5%', top:'15%', bottom:'10%', parallelAxisDefault:{ axisLine:{lineStyle:{color:'#666'}}, axisLabel:{color:'#888'} } },
+                series:[{ type:'parallel', data:data, lineStyle:{width:3}, animationDuration:800 }]
+            };
+            parallelChartInstance.setOption(option, true);
+            parallelChartInstance.resize();
+        }
+
+        // 导出图片
+        function exportImage() {
+            loadingOverlay.classList.remove('show');
+            const mainArea = document.querySelector('.main-area');
+            if (!mainArea) return;
+            setTimeout(() => {
+                html2canvas(mainArea, {
+                    backgroundColor:'#0b0d12', scale:2, useCORS:true, logging:false,
+                    scrollX:0, scrollY:-window.scrollY,
+                    windowWidth: document.documentElement.offsetWidth,
+                    windowHeight: document.documentElement.offsetHeight,
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `H武道会_${currentPosition}_${currentTeam}_全景_${new Date().toISOString().slice(0,10)}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }).catch(err => { console.error('导出失败:', err); alert('导出图片失败，请重试'); });
+            }, 300);
+        }
+
+        // 启动
         loadData();
     </script>
 </body>
