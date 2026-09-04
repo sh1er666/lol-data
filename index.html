@@ -4,14 +4,36 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>H·武道会 · 数据展示</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+    </script>
     <style>
         /* ===== 全局重置 ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-deep: #0b0d12;
+            --panel-bg: rgba(21, 24, 30, 0.78);
+            --accent-purple: #7a3df0;
+            --accent-cyan: #00bcd4;
+            --accent-amber: #fcd34d;
+            --accent-red: #ff5252;
+            --text-primary: #f0f0f0;
+            --text-secondary: #999;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-pill: 40px;
+            --shadow-glow-purple: 0 4px 24px rgba(122, 61, 240, 0.35);
+            --transition-smooth: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
         body {
-            background: #0b0d12;
-            color: #eee;
+            background: var(--bg-deep);
+            color: var(--text-primary);
             font-family: 'Inter', 'Microsoft YaHei', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -21,249 +43,1090 @@
             position: relative;
             overflow-x: hidden;
         }
-        body::before { content: ''; position: fixed; top: -30%; left: -20%; width: 80%; height: 80%; background: radial-gradient(circle at 30% 40%, rgba(122,61,240,0.12) 0%, transparent 70%); animation: aurora 12s ease-in-out infinite alternate; z-index: 0; pointer-events: none; }
-        body::after { content: ''; position: fixed; bottom: -30%; right: -20%; width: 80%; height: 80%; background: radial-gradient(circle at 70% 60%, rgba(0,188,212,0.08) 0%, transparent 70%); animation: aurora2 15s ease-in-out infinite alternate; z-index: 0; pointer-events: none; }
-        @keyframes aurora { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(5%,5%) scale(1.2); } }
-        @keyframes aurora2 { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-5%,-5%) scale(1.3); } }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle at 30% 40%, rgba(122, 61, 240, 0.12) 0%, transparent 70%);
+            animation: aurora 12s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            right: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle at 70% 60%, rgba(0, 188, 212, 0.08) 0%, transparent 70%);
+            animation: aurora2 15s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+        @keyframes aurora {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(5%, 5%) scale(1.2);
+            }
+        }
+        @keyframes aurora2 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                transform: translate(-5%, -5%) scale(1.3);
+            }
+        }
 
         .container {
-            position: relative; z-index: 1; width: 100%; max-width: 1360px;
-            background: rgba(21,24,30,0.75); backdrop-filter: blur(24px) saturate(1.2);
-            border-radius: 24px; padding: 28px 32px 32px;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(122,61,240,0.08) inset;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1380px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(24px) saturate(1.2);
+            border-radius: var(--radius-lg);
+            padding: 28px 32px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(122, 61, 240, 0.08) inset;
         }
 
         .title {
-            text-align: center; font-size: 32px; font-weight: 700; letter-spacing: 6px;
-            padding: 8px 0 18px; color: #f0f0f0;
-            border-bottom: 1px solid rgba(255,255,255,0.05); position: relative;
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            padding: 8px 0 18px;
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
         }
         .title::after {
-            content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 2px;
-            background: linear-gradient(90deg, transparent, #7a3df0, #00bcd4, transparent);
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-purple), var(--accent-cyan), transparent);
             border-radius: 4px;
         }
-        .title .sub { font-weight: 300; font-size: 14px; color: #888; letter-spacing: 2px; display: block; margin-top: 2px; }
+        .title .sub {
+            font-weight: 300;
+            font-size: 14px;
+            color: #888;
+            letter-spacing: 2px;
+            display: block;
+            margin-top: 2px;
+        }
 
-        .control-bar { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+        .control-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
         .team-select {
-            background: rgba(42,47,56,0.7); border: 1px solid rgba(255,255,255,0.08);
-            color: #ccc; padding: 9px 22px; border-radius: 40px; font-size: 14px;
-            font-weight: 500; cursor: pointer; outline: none; appearance: none;
-            text-align: center; backdrop-filter: blur(4px); transition: all 0.3s; letter-spacing: 0.5px;
+            background: rgba(42, 47, 56, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #ccc;
+            padding: 9px 22px;
+            border-radius: var(--radius-pill);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            text-align: center;
+            backdrop-filter: blur(4px);
+            transition: var(--transition-smooth);
+            letter-spacing: 0.5px;
         }
-        .team-select:hover { background: rgba(60,65,80,0.8); color: #fff; border-color: rgba(122,61,240,0.3); }
-        .team-select option { background: #1a1d24; color: #eee; }
-        .position-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+        .team-select:hover {
+            background: rgba(60, 65, 80, 0.8);
+            color: #fff;
+            border-color: rgba(122, 61, 240, 0.3);
+        }
+        .team-select option {
+            background: #1a1d24;
+            color: #eee;
+        }
+        .position-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
         .pos-btn {
-            background: rgba(42,47,56,0.6); border: 1px solid rgba(255,255,255,0.06);
-            color: #999; padding: 9px 22px; border-radius: 40px; font-size: 13px;
-            font-weight: 600; cursor: pointer; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-            backdrop-filter: blur(4px); letter-spacing: 0.5px;
+            background: rgba(42, 47, 56, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #999;
+            padding: 9px 22px;
+            border-radius: var(--radius-pill);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
         }
-        .pos-btn:hover { background: rgba(60,65,80,0.8); color: #fff; transform: translateY(-1px); }
+        .pos-btn:hover {
+            background: rgba(60, 65, 80, 0.8);
+            color: #fff;
+            transform: translateY(-1px);
+        }
         .pos-btn.active {
-            background: linear-gradient(135deg, #7a3df0, #6a2fd0); color: #fff;
-            border-color: #7a3df0; box-shadow: 0 4px 24px rgba(122,61,240,0.35);
+            background: linear-gradient(135deg, #7a3df0, #6a2fd0);
+            color: #fff;
+            border-color: #7a3df0;
+            box-shadow: var(--shadow-glow-purple);
             transform: translateY(-1px);
         }
 
-        .search-bar { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .search-input {
-            flex: 1 1 200px; background: rgba(42,47,56,0.6); border: 1px solid rgba(255,255,255,0.08);
-            color: #eee; padding: 9px 18px; border-radius: 40px; font-size: 14px;
-            outline: none; transition: all 0.3s; letter-spacing: 0.5px;
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
         }
-        .search-input:focus { border-color: rgba(122,61,240,0.5); box-shadow: 0 0 20px rgba(122,61,240,0.15); background: rgba(50,55,65,0.8); }
-        .search-input::placeholder { color: #666; }
-        .view-switch { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
-        .view-btn, .export-btn {
-            background: rgba(42,47,56,0.6); border: 1px solid rgba(255,255,255,0.06);
-            color: #999; padding: 8px 16px; border-radius: 40px; font-size: 13px;
-            font-weight: 600; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(4px);
+        .search-input {
+            flex: 1 1 200px;
+            background: rgba(42, 47, 56, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #eee;
+            padding: 9px 18px;
+            border-radius: var(--radius-pill);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition-smooth);
             letter-spacing: 0.5px;
         }
-        .view-btn:hover, .export-btn:hover { background: rgba(60,65,80,0.8); color: #fff; transform: translateY(-1px); }
+        .search-input:focus {
+            border-color: rgba(122, 61, 240, 0.5);
+            box-shadow: 0 0 20px rgba(122, 61, 240, 0.15);
+            background: rgba(50, 55, 65, 0.8);
+        }
+        .search-input::placeholder {
+            color: #666;
+        }
+        .view-switch {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+        .view-btn,
+        .export-btn {
+            background: rgba(42, 47, 56, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #999;
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
+        }
+        .view-btn:hover,
+        .export-btn:hover {
+            background: rgba(60, 65, 80, 0.8);
+            color: #fff;
+            transform: translateY(-1px);
+        }
         .view-btn.active {
-            background: linear-gradient(135deg, #7a3df0, #6a2fd0); color: #fff;
-            border-color: #7a3df0; box-shadow: 0 4px 24px rgba(122,61,240,0.35);
+            background: linear-gradient(135deg, #7a3df0, #6a2fd0);
+            color: #fff;
+            border-color: #7a3df0;
+            box-shadow: var(--shadow-glow-purple);
+        }
+        .export-btn {
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.15), rgba(122, 61, 240, 0.15));
+            border-color: rgba(0, 188, 212, 0.25);
+            color: #ccc;
+        }
+        .export-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 188, 212, 0.3), rgba(122, 61, 240, 0.3));
+            border-color: rgba(0, 188, 212, 0.5);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 188, 212, 0.2);
         }
 
         .player-selector {
-            display: flex; align-items: center; gap: 10px; margin-top: 14px;
-            padding: 10px 16px; background: rgba(0,0,0,0.25);
-            border-radius: 16px; border: 1px solid rgba(255,255,255,0.04);
-            overflow-x: auto; scrollbar-width: thin; scrollbar-color: #7a3df0 transparent;
-            flex-wrap: nowrap; min-height: 62px; transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #7a3df0 transparent;
+            flex-wrap: nowrap;
+            min-height: 62px;
+            transition: var(--transition-smooth);
         }
-        .player-selector::-webkit-scrollbar { height: 4px; }
-        .player-selector::-webkit-scrollbar-track { background: transparent; }
-        .player-selector::-webkit-scrollbar-thumb { background: #7a3df0; border-radius: 8px; }
-        .player-selector .label { color: #888; font-size: 12px; font-weight: 500; letter-spacing: 0.5px; flex-shrink: 0; margin-right: 4px; }
+        .player-selector::-webkit-scrollbar {
+            height: 4px;
+        }
+        .player-selector::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .player-selector::-webkit-scrollbar-thumb {
+            background: #7a3df0;
+            border-radius: 8px;
+        }
+        .player-selector .label {
+            color: #888;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            margin-right: 4px;
+        }
         .player-chip {
-            display: flex; align-items: center; gap: 8px; padding: 5px 14px 5px 8px;
-            border-radius: 30px; background: rgba(255,255,255,0.04);
-            border: 1px solid transparent; cursor: pointer; transition: all 0.3s;
-            flex-shrink: 0; white-space: nowrap; position: relative; user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 14px 5px 8px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            flex-shrink: 0;
+            white-space: nowrap;
+            position: relative;
+            user-select: none;
         }
-        .player-chip:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
-        .player-chip.active { background: rgba(122,61,240,0.25); border-color: rgba(122,61,240,0.4); box-shadow: 0 0 20px rgba(122,61,240,0.1); }
-        .player-chip.compare { background: rgba(0,188,212,0.2); border-color: rgba(0,188,212,0.5); box-shadow: 0 0 15px rgba(0,188,212,0.15); }
-        .player-chip img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.08); object-fit: cover; background: #1a1d24; }
-        .player-chip .chip-name { color: #eee; font-size: 13px; font-weight: 500; }
-        .player-chip .chip-kda { color: #888; font-size: 11px; font-weight: 400; }
-        .player-chip .chip-kda .k { color: #00bcd4; }
-        .player-chip .chip-kda .d { color: #ff5252; }
-        .player-chip .chip-kda .a { color: #fcd34d; }
+        .player-chip:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+        .player-chip.active {
+            background: rgba(122, 61, 240, 0.25);
+            border-color: rgba(122, 61, 240, 0.4);
+            box-shadow: 0 0 20px rgba(122, 61, 240, 0.1);
+        }
+        .player-chip.compare {
+            background: rgba(0, 188, 212, 0.2);
+            border-color: rgba(0, 188, 212, 0.5);
+            box-shadow: 0 0 15px rgba(0, 188, 212, 0.15);
+        }
+        .player-chip img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            object-fit: cover;
+            background: #1a1d24;
+        }
+        .player-chip .chip-name {
+            color: #eee;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .player-chip .chip-kda {
+            color: #888;
+            font-size: 11px;
+            font-weight: 400;
+        }
+        .player-chip .chip-kda .k {
+            color: var(--accent-cyan);
+        }
+        .player-chip .chip-kda .d {
+            color: var(--accent-red);
+        }
+        .player-chip .chip-kda .a {
+            color: var(--accent-amber);
+        }
 
-        .main-area { display: flex; justify-content: space-between; gap: 24px; align-items: stretch; margin-top: 16px; }
+        .main-area {
+            display: flex;
+            justify-content: space-between;
+            gap: 24px;
+            align-items: stretch;
+            margin-top: 16px;
+        }
 
-        .left-panel { width: 26%; min-width: 210px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+        .left-panel {
+            width: 26%;
+            min-width: 210px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 0;
+        }
         .hero-pool-title {
-            background: linear-gradient(135deg, #7a3df0, #5a2db0); color: #fff;
-            text-align: center; padding: 10px 0; border-radius: 40px;
-            font-weight: 600; font-size: 15px; letter-spacing: 1px;
-            box-shadow: 0 4px 20px rgba(122,61,240,0.25); flex-shrink: 0;
+            background: linear-gradient(135deg, #7a3df0, #5a2db0);
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 20px rgba(122, 61, 240, 0.25);
+            flex-shrink: 0;
         }
-        .hero-pool-title span { font-weight: 700; background: rgba(255,255,255,0.2); padding: 0 8px; border-radius: 12px; }
+        .hero-pool-title span {
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0 8px;
+            border-radius: 12px;
+        }
         .hero-pool-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-            flex: 1 1 auto; align-content: start; max-height: 340px;
-            overflow-y: auto; padding-right: 4px; scrollbar-width: thin; scrollbar-color: #7a3df0 transparent;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            flex: 1 1 auto;
+            align-content: start;
+            max-height: 340px;
+            overflow-y: auto;
+            padding-right: 4px;
+            scrollbar-width: thin;
+            scrollbar-color: #7a3df0 transparent;
         }
-        .hero-pool-grid::-webkit-scrollbar { width: 4px; }
-        .hero-pool-grid::-webkit-scrollbar-track { background: transparent; }
-        .hero-pool-grid::-webkit-scrollbar-thumb { background: #7a3df0; border-radius: 8px; }
+        .hero-pool-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .hero-pool-grid::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .hero-pool-grid::-webkit-scrollbar-thumb {
+            background: #7a3df0;
+            border-radius: 8px;
+        }
         .hero-item {
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            position: relative; background: rgba(255,255,255,0.03); border-radius: 12px;
-            padding: 6px 4px 8px; transition: all 0.3s; border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 6px 4px 8px;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
         }
-        .hero-item:hover { background: rgba(255,255,255,0.06); border-color: rgba(122,61,240,0.2); transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-        .hero-games { position: absolute; top: 2px; left: 6px; color: #fff; font-weight: 700; font-size: 12px; background: rgba(0,0,0,0.6); padding: 0 6px; border-radius: 8px; backdrop-filter: blur(4px); }
-        .hero-icon { width: 62px; height: 62px; border-radius: 12px; margin-bottom: 4px; background: #1e222a; border: 2px solid rgba(255,255,255,0.06); transition: all 0.3s; object-fit: cover; }
-        .hero-item:hover .hero-icon { border-color: rgba(122,61,240,0.4); box-shadow: 0 0 20px rgba(122,61,240,0.15); }
-        .hero-win { color: #bbb; font-size: 11px; font-weight: 500; }
-        .hero-kda { color: #777; font-size: 10px; margin-top: 1px; }
+        .hero-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(122, 61, 240, 0.2);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .hero-games {
+            position: absolute;
+            top: 2px;
+            left: 6px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 0 6px;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+        }
+        .hero-icon {
+            width: 62px;
+            height: 62px;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            background: #1e222a;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            transition: var(--transition-smooth);
+            object-fit: cover;
+        }
+        .hero-item:hover .hero-icon {
+            border-color: rgba(122, 61, 240, 0.4);
+            box-shadow: 0 0 20px rgba(122, 61, 240, 0.15);
+        }
+        .hero-win {
+            color: #bbb;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .hero-kda {
+            color: #777;
+            font-size: 10px;
+            margin-top: 1px;
+        }
 
-        .left-bottom-stats { flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; margin-top: 4px; background: rgba(0,0,0,0.15); border-radius: 16px; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.04); }
-        .stat-row { display: flex; gap: 10px; flex-wrap: wrap; }
-        .stat-row .mini-stat { flex: 1 1 0; min-width: 90px; }
-        .mini-stat { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 6px 12px; position: relative; overflow: hidden; backdrop-filter: blur(4px); transition: all 0.3s; }
-        .mini-stat:hover { background: rgba(255,255,255,0.06); border-color: rgba(122,61,240,0.15); }
-        .mini-stat-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; align-items: center; }
-        .mini-stat-name { color: #888; font-weight: 500; font-size: 11px; letter-spacing: 0.3px; }
-        .mini-stat-val { color: #fff; font-weight: 700; font-size: 13px; }
-        .mini-stat-val.blue { color: #00d4e6; }
-        .mini-stat-val.red { color: #ff6b6b; }
-        .mini-stat-rank { color: #fcd34d; font-size: 11px; font-weight: 700; margin-left: 4px; }
-        .bar-bg { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,0.05); border-radius: 0 0 10px 10px; overflow: hidden; }
-        .bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #7a3df0, #00bcd4); transition: width 1s cubic-bezier(0.34,1.56,0.64,1); border-radius: 0 0 10px 10px; }
-        .bar-fill.red { background: linear-gradient(90deg, #ff5252, #ff6b6b); }
+        .left-bottom-stats {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .stat-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .stat-row .mini-stat {
+            flex: 1 1 0;
+            min-width: 90px;
+        }
+        .mini-stat {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 6px 12px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+            transition: var(--transition-smooth);
+        }
+        .mini-stat:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(122, 61, 240, 0.15);
+        }
+        .mini-stat-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 3px;
+            align-items: center;
+        }
+        .mini-stat-name {
+            color: #888;
+            font-weight: 500;
+            font-size: 11px;
+            letter-spacing: 0.3px;
+        }
+        .mini-stat-val {
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .mini-stat-val.blue {
+            color: #00d4e6;
+        }
+        .mini-stat-val.red {
+            color: #ff6b6b;
+        }
+        .mini-stat-rank {
+            color: var(--accent-amber);
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+        .bar-bg {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0 0 10px 10px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #7a3df0, #00bcd4);
+            transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 0 0 10px 10px;
+        }
+        .bar-fill.red {
+            background: linear-gradient(90deg, #ff5252, #ff6b6b);
+        }
 
-        .player-info { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 0 8px; min-width: 140px; }
-        .player-avatar-wrap { position: relative; border-radius: 16px; padding: 4px; background: linear-gradient(135deg, #7a3df0, #00bcd4); box-shadow: 0 0 40px rgba(122,61,240,0.15); transition: all 0.4s; }
-        .player-avatar-wrap:hover { box-shadow: 0 0 60px rgba(122,61,240,0.3); transform: scale(1.02); }
-        .player-avatar { width: 140px; height: 140px; object-fit: cover; border-radius: 13px; display: block; background: #1a1d24; }
-        .player-meta { display: flex; align-items: baseline; gap: 18px; margin-top: 4px; flex-wrap: wrap; justify-content: center; }
-        .player-name { font-size: 26px; font-weight: 700; color: #f0f0f0; letter-spacing: 0.5px; }
-        .player-total-kda { font-size: 20px; font-weight: 600; color: #aaa; letter-spacing: 1px; background: rgba(255,255,255,0.05); padding: 2px 16px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.06); }
-        .player-total-kda .k { color: #00bcd4; }
-        .player-total-kda .d { color: #ff5252; }
-        .player-total-kda .a { color: #fcd34d; }
+        .player-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0 8px;
+            min-width: 140px;
+        }
+        .player-avatar-wrap {
+            position: relative;
+            border-radius: 16px;
+            padding: 4px;
+            background: linear-gradient(135deg, #7a3df0, #00bcd4);
+            box-shadow: 0 0 40px rgba(122, 61, 240, 0.15);
+            transition: var(--transition-smooth);
+        }
+        .player-avatar-wrap:hover {
+            box-shadow: 0 0 60px rgba(122, 61, 240, 0.3);
+            transform: scale(1.02);
+        }
+        .player-avatar {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 13px;
+            display: block;
+            background: #1a1d24;
+        }
+        .player-meta {
+            display: flex;
+            align-items: baseline;
+            gap: 18px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .player-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+        .player-total-kda {
+            font-size: 20px;
+            font-weight: 600;
+            color: #aaa;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 16px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .player-total-kda .k {
+            color: var(--accent-cyan);
+        }
+        .player-total-kda .d {
+            color: var(--accent-red);
+        }
+        .player-total-kda .a {
+            color: var(--accent-amber);
+        }
 
-        .right-panel { width: 55%; position: relative; height: 740px; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.2); border-radius: 20px; border: 1px solid rgba(255,255,255,0.04); padding: 8px; overflow: hidden; }
-        #radarChart { width: 520px; height: 520px; position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); transition: opacity 0.3s; }
-        .stats-wrapper { width: 520px; height: 520px; position: absolute; top: 48%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; transition: opacity 0.3s; }
-        .stat-item { position: absolute; display: flex; flex-direction: column; align-items: center; text-align: center; transform: translate(-50%, -50%); line-height: 1.3; min-width: 72px; padding: 4px 8px; border-radius: 8px; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.04); transition: all 0.3s ease; pointer-events: auto; cursor: pointer; }
-        .stat-item:hover { background: rgba(0,0,0,0.95); border-color: rgba(122,61,240,0.3); transform: translate(-50%, -50%) scale(1.06); box-shadow: 0 0 20px rgba(122,61,240,0.15); }
-        .stat-name { color: #ddd; font-weight: 500; font-size: 11px; letter-spacing: 0.5px; opacity: 0.8; }
-        .stat-rank { color: #fcd34d; font-size: 11px; font-weight: 700; }
-        .stat-val-blue { color: #00d4e6; font-weight: 700; font-size: 14px; }
-        .stat-val-red { color: #ff6b6b; font-size: 10px; font-weight: 500; opacity: 0.7; margin-top: 1px; }
+        .right-panel {
+            width: 55%;
+            position: relative;
+            height: 740px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 8px;
+            overflow: hidden;
+        }
+        #radarChart {
+            width: 520px;
+            height: 520px;
+            position: absolute;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+        }
+        .stats-wrapper {
+            width: 520px;
+            height: 520px;
+            position: absolute;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 5;
+        }
+        .stat-item {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transform: translate(-50%, -50%);
+            line-height: 1.35;
+            min-width: 72px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: var(--transition-smooth);
+            pointer-events: auto;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        }
+        .stat-item:hover {
+            background: rgba(0, 0, 0, 0.96);
+            border-color: rgba(122, 61, 240, 0.35);
+            transform: translate(-50%, -50%) scale(1.07);
+            box-shadow: 0 0 24px rgba(122, 61, 240, 0.2);
+            z-index: 10;
+        }
+        .stat-name {
+            color: #ddd;
+            font-weight: 500;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+        }
+        .stat-rank {
+            color: var(--accent-amber);
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .stat-val-blue {
+            color: #00d4e6;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .stat-val-red {
+            color: #ff6b6b;
+            font-size: 10px;
+            font-weight: 500;
+            opacity: 0.7;
+            margin-top: 1px;
+        }
 
-        .pos-top { top: 2%; left: 50%; }
-        .pos-topright { top: 13%; left: 87%; }
-        .pos-right { top: 45%; left: 97.5%; }
-        .pos-bottomright { bottom: 16%; left: 87%; }
-        .pos-bottom { bottom: 1%; left: 50%; }
-        .pos-bottomleft { bottom: 16%; left: 13%; }
-        .pos-left { top: 45%; left: 2.5%; }
-        .pos-topleft { top: 13%; left: 13%; }
+        /* 精确的雷达图顶点标签定位（针对8指标多边形） */
+        .pos-top {
+            top: 10.5%;
+            left: 50%;
+        }
+        .pos-topright {
+            top: 20.5%;
+            left: 77.5%;
+        }
+        .pos-right {
+            top: 48%;
+            left: 87.5%;
+        }
+        .pos-bottomright {
+            bottom: 24.5%;
+            left: 77.5%;
+            top: auto;
+        }
+        .pos-bottom {
+            bottom: 14.5%;
+            left: 50%;
+            top: auto;
+        }
+        .pos-bottomleft {
+            bottom: 24.5%;
+            left: 22.5%;
+            top: auto;
+        }
+        .pos-left {
+            top: 48%;
+            left: 12.5%;
+        }
+        .pos-topleft {
+            top: 20.5%;
+            left: 22.5%;
+        }
 
-        .avg-note { position: absolute; right: 18px; top: 18px; color: #888; font-size: 11px; background: rgba(0,0,0,0.5); padding: 4px 12px; border-radius: 20px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.04); z-index: 10; font-weight: 500; letter-spacing: 0.3px; pointer-events: none; }
-        .avg-note .red-dot { color: #ff5252; font-weight: 600; }
-        .avg-note .blue-dot { color: #00bcd4; font-weight: 600; }
+        .avg-note {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            color: #888;
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            z-index: 10;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+        }
+        .avg-note .red-dot {
+            color: #ff5252;
+            font-weight: 600;
+        }
+        .avg-note .blue-dot {
+            color: #00bcd4;
+            font-weight: 600;
+        }
+
+        /* 雷达图图例 */
+        .radar-legend {
+            position: absolute;
+            left: 16px;
+            bottom: 14px;
+            z-index: 12;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 10px;
+            color: #aaa;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 8px 14px;
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            letter-spacing: 0.3px;
+            line-height: 1.5;
+        }
+        .radar-legend .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .radar-legend .legend-line {
+            width: 20px;
+            height: 2px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .radar-legend .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1.5px solid #fff;
+        }
 
         /* 新图表容器 */
-        #scatterChart, #barChart, #heatmapChart, #parallelChart {
-            position: absolute; inset: 0; display: none; width: 100%; height: 100%; cursor: pointer;
+        #scatterChart,
+        #barChart,
+        #heatmapChart,
+        #parallelChart {
+            position: absolute;
+            inset: 0;
+            display: none;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
         }
-        #scatterChart.active, #barChart.active, #heatmapChart.active, #parallelChart.active { display: block; }
+        #scatterChart.active,
+        #barChart.active,
+        #heatmapChart.active,
+        #parallelChart.active {
+            display: block;
+        }
 
-        .scatter-legend-overlay { position: absolute; left: 14px; bottom: 12px; z-index: 15; display: none; font-size: 10px; color: #888; background: rgba(0,0,0,0.55); padding: 6px 12px; border-radius: 16px; backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.06); pointer-events: none; letter-spacing: 0.3px; line-height: 1.6; }
-        .scatter-legend-overlay.show { display: block; }
-        .scatter-legend-overlay .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
-        .scatter-legend-overlay .legend-dot.white { border: 2px solid #fff; background: rgba(255,255,255,0.2); }
-        .scatter-legend-overlay .legend-dot.orange { border: 2px solid #ff9800; background: rgba(255,152,0,0.2); }
-        .scatter-legend-overlay .legend-dot.small { width: 5px; height: 5px; background: #00bcd4; opacity: 0.7; }
-        .scatter-legend-overlay .legend-dot.large { width: 14px; height: 14px; background: #00bcd4; opacity: 0.7; }
+        .scatter-legend-overlay {
+            position: absolute;
+            left: 14px;
+            bottom: 12px;
+            z-index: 15;
+            display: none;
+            font-size: 10px;
+            color: #888;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 6px 12px;
+            border-radius: 16px;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+            letter-spacing: 0.3px;
+            line-height: 1.6;
+        }
+        .scatter-legend-overlay.show {
+            display: block;
+        }
+        .scatter-legend-overlay .legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .scatter-legend-overlay .legend-dot.white {
+            border: 2px solid #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .scatter-legend-overlay .legend-dot.orange {
+            border: 2px solid #ff9800;
+            background: rgba(255, 152, 0, 0.2);
+        }
+        .scatter-legend-overlay .legend-dot.small {
+            width: 5px;
+            height: 5px;
+            background: #00bcd4;
+            opacity: 0.7;
+        }
+        .scatter-legend-overlay .legend-dot.large {
+            width: 14px;
+            height: 14px;
+            background: #00bcd4;
+            opacity: 0.7;
+        }
 
-        .loading-overlay { display: none; position: absolute; inset: 0; background: rgba(11,13,18,0.7); backdrop-filter: blur(8px); border-radius: 20px; z-index: 20; justify-content: center; align-items: center; flex-direction: column; gap: 16px; }
-        .loading-overlay.show { display: flex; }
-        .loading-spinner { width: 48px; height: 48px; border: 4px solid rgba(122,61,240,0.15); border-top-color: #7a3df0; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: #aaa; font-size: 14px; letter-spacing: 1px; }
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(11, 13, 18, 0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            z-index: 30;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .loading-overlay.show {
+            display: flex;
+        }
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(122, 61, 240, 0.15);
+            border-top-color: #7a3df0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-text {
+            color: #aaa;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+        .export-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .export-progress .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #7a3df0, #00bcd4);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
 
         @media (max-width: 1100px) {
-            .container { padding: 20px; }
-            .main-area { flex-direction: column; align-items: center; }
-            .left-panel { width: 100%; min-width: unset; }
-            .hero-pool-grid { max-height: 260px; grid-template-columns: repeat(6, 1fr); }
-            .left-bottom-stats { width: 100%; }
-            .player-info { width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px; }
-            .right-panel { width: 100%; height: 660px; }
-            #radarChart, .stats-wrapper { width: 420px; height: 420px; }
-            .stat-item { min-width: 60px; padding: 3px 6px; }
-            .stat-name { font-size: 10px; }
-            .stat-val-blue { font-size: 12px; }
-            .stat-rank { font-size: 10px; }
-            .stat-val-red { font-size: 9px; }
-            .pos-topright { left: 85%; }
-            .pos-bottomright { left: 85%; }
-            .pos-topleft { left: 15%; }
-            .pos-bottomleft { left: 15%; }
-            .pos-right { left: 96.5%; }
-            .pos-left { left: 3.5%; }
-            .scatter-legend-overlay { left: 8px; bottom: 6px; font-size: 9px; padding: 4px 10px; }
+            .container {
+                padding: 20px;
+            }
+            .main-area {
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-panel {
+                width: 100%;
+                min-width: unset;
+            }
+            .hero-pool-grid {
+                max-height: 260px;
+                grid-template-columns: repeat(6, 1fr);
+            }
+            .left-bottom-stats {
+                width: 100%;
+            }
+            .player-info {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            .right-panel {
+                width: 100%;
+                height: 660px;
+            }
+            #radarChart,
+            .stats-wrapper {
+                width: 420px;
+                height: 420px;
+            }
+            .stat-item {
+                min-width: 60px;
+                padding: 3px 6px;
+            }
+            .stat-name {
+                font-size: 10px;
+            }
+            .stat-val-blue {
+                font-size: 12px;
+            }
+            .stat-rank {
+                font-size: 10px;
+            }
+            .stat-val-red {
+                font-size: 9px;
+            }
+            .pos-top {
+                top: 7.5%;
+            }
+            .pos-topright {
+                top: 18%;
+                left: 80%;
+            }
+            .pos-right {
+                left: 90%;
+            }
+            .pos-bottomright {
+                bottom: 21%;
+                left: 80%;
+            }
+            .pos-bottom {
+                bottom: 11%;
+            }
+            .pos-bottomleft {
+                bottom: 21%;
+                left: 20%;
+            }
+            .pos-left {
+                left: 10%;
+            }
+            .pos-topleft {
+                top: 18%;
+                left: 20%;
+            }
+            .scatter-legend-overlay {
+                left: 8px;
+                bottom: 6px;
+                font-size: 9px;
+                padding: 4px 10px;
+            }
+            .radar-legend {
+                left: 8px;
+                bottom: 6px;
+                font-size: 9px;
+                padding: 6px 10px;
+            }
         }
         @media (max-width: 600px) {
-            body { padding: 12px; }
-            .container { padding: 14px; border-radius: 16px; }
-            .title { font-size: 22px; letter-spacing: 3px; padding: 4px 0 12px; }
-            .title .sub { font-size: 11px; }
-            .hero-pool-grid { max-height: 200px; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-            .hero-icon { width: 48px; height: 48px; }
-            .right-panel { height: 520px; }
-            #radarChart, .stats-wrapper { width: 310px; height: 310px; }
-            .stat-item { min-width: 48px; padding: 2px 4px; border-radius: 6px; }
-            .stat-name { font-size: 8px; }
-            .stat-val-blue { font-size: 10px; }
-            .stat-rank { font-size: 8px; }
-            .stat-val-red { font-size: 7px; }
-            .pos-topright { top: 9%; left: 83%; }
-            .pos-bottomright { bottom: 13%; left: 83%; }
-            .pos-left { top: 43%; left: 4%; }
-            .player-selector { padding: 8px 12px; gap: 6px; min-height: 50px; }
-            .player-chip { padding: 4px 10px 4px 6px; }
-            .player-chip img { width: 26px; height: 26px; }
-            .player-chip .chip-name { font-size: 11px; }
-            .player-chip .chip-kda { font-size: 10px; }
-            .search-input { font-size: 12px; padding: 7px 14px; }
-            .view-btn, .export-btn { padding: 6px 12px; font-size: 11px; }
-            .scatter-legend-overlay { display: none !important; }
+            body {
+                padding: 12px;
+            }
+            .container {
+                padding: 14px;
+                border-radius: 16px;
+            }
+            .title {
+                font-size: 22px;
+                letter-spacing: 3px;
+                padding: 4px 0 12px;
+            }
+            .title .sub {
+                font-size: 11px;
+            }
+            .hero-pool-grid {
+                max-height: 200px;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+            }
+            .hero-icon {
+                width: 48px;
+                height: 48px;
+            }
+            .right-panel {
+                height: 520px;
+            }
+            #radarChart,
+            .stats-wrapper {
+                width: 310px;
+                height: 310px;
+            }
+            .stat-item {
+                min-width: 48px;
+                padding: 2px 4px;
+                border-radius: 6px;
+            }
+            .stat-name {
+                font-size: 8px;
+            }
+            .stat-val-blue {
+                font-size: 10px;
+            }
+            .stat-rank {
+                font-size: 8px;
+            }
+            .stat-val-red {
+                font-size: 7px;
+            }
+            .pos-top {
+                top: 4%;
+            }
+            .pos-topright {
+                top: 12%;
+                left: 82%;
+            }
+            .pos-right {
+                left: 92%;
+                top: 46%;
+            }
+            .pos-bottomright {
+                bottom: 15%;
+                left: 82%;
+            }
+            .pos-bottom {
+                bottom: 4%;
+            }
+            .pos-bottomleft {
+                bottom: 15%;
+                left: 18%;
+            }
+            .pos-left {
+                left: 8%;
+                top: 46%;
+            }
+            .pos-topleft {
+                top: 12%;
+                left: 18%;
+            }
+            .player-selector {
+                padding: 8px 12px;
+                gap: 6px;
+                min-height: 50px;
+            }
+            .player-chip {
+                padding: 4px 10px 4px 6px;
+            }
+            .player-chip img {
+                width: 26px;
+                height: 26px;
+            }
+            .player-chip .chip-name {
+                font-size: 11px;
+            }
+            .player-chip .chip-kda {
+                font-size: 10px;
+            }
+            .search-input {
+                font-size: 12px;
+                padding: 7px 14px;
+            }
+            .view-btn,
+            .export-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            .scatter-legend-overlay {
+                display: none !important;
+            }
+            .radar-legend {
+                display: none !important;
+            }
+            .avg-note {
+                font-size: 9px;
+                padding: 3px 8px;
+                right: 8px;
+                top: 8px;
+            }
         }
     </style>
 </head>
@@ -290,7 +1153,7 @@
                 <button class="view-btn" data-view="bar">条形图</button>
                 <button class="view-btn" data-view="heatmap">热力图</button>
                 <button class="view-btn" data-view="parallel">平行坐标</button>
-                <button class="export-btn" id="exportBtn">导出图片</button>
+                <button class="export-btn" id="exportBtn">📷 导出图片</button>
             </div>
         </div>
 
@@ -298,7 +1161,7 @@
             <span class="label">👥 选手</span>
         </div>
 
-        <div class="main-area">
+        <div class="main-area" id="mainArea">
             <div class="left-panel">
                 <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>)</div>
                 <div class="hero-pool-grid" id="heroPool"></div>
@@ -347,7 +1210,7 @@
 
             <div class="player-info">
                 <div class="player-avatar-wrap">
-                    <img class="player-avatar" id="playerAvatar" src="" onerror="this.src='https://via.placeholder.com/160'" alt="avatar" />
+                    <img class="player-avatar" id="playerAvatar" src="" onerror="this.src='https://via.placeholder.com/160'" alt="avatar" crossorigin="anonymous" />
                 </div>
                 <div class="player-meta">
                     <div class="player-name" id="playerName">加载中...</div>
@@ -357,13 +1220,34 @@
                 </div>
             </div>
 
-            <div class="right-panel">
+            <div class="right-panel" id="rightPanel">
                 <div class="loading-overlay" id="loadingOverlay">
                     <div class="loading-spinner"></div>
                     <div class="loading-text">数据加载中...</div>
+                    <div class="export-progress" id="exportProgress" style="display:none;">
+                        <div class="progress-fill" id="exportProgressFill"></div>
+                    </div>
                 </div>
                 <div id="radarChart"></div>
                 <div class="stats-wrapper" id="statsWrapper"></div>
+                <div class="radar-legend" id="radarLegend">
+                    <div class="legend-row">
+                        <span class="legend-dot" style="background:#00d4e6;border-color:#00d4e6;"></span>
+                        <span>当前选手</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-dot" style="background:#ff9800;border-color:#ff9800;"></span>
+                        <span>对比选手1</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-dot" style="background:#c084fc;border-color:#c084fc;"></span>
+                        <span>对比选手2</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="legend-line" style="background:#ff6b6b;border-top:1.5px dashed #ff6b6b;"></span>
+                        <span>全选手均值</span>
+                    </div>
+                </div>
                 <div class="avg-note">
                     <span class="red-dot">●</span> 均值 &nbsp;<span class="blue-dot">●</span> 选手
                 </div>
@@ -387,38 +1271,64 @@
         // ============================================================
         const positionConfigs = {
             'TOP': {
-                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'damage_taken_per_death'],
+                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold',
+                    'damage_taken_per_death'
+                ],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '每死承伤'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold', 'avg_damage_taken_per_death'],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold', 'rank_damage_taken_per_death'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_dmgtoGold', 'avg_damage_taken_per_death'
+                ],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_dmgtoGold', 'rank_damage_taken_per_death'
+                ],
                 maxs: [10, 15, 2000, 15, 800, 40, 300, 12000]
             },
             'JUNGLE': {
-                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'participation', 'damage_taken_per_death'],
+                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'participation',
+                    'damage_taken_per_death'
+                ],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '参团率', '每死承伤'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_participation', 'avg_damage_taken_per_death'],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_participation', 'rank_damage_taken_per_death'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_participation', 'avg_damage_taken_per_death'
+                ],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_participation', 'rank_damage_taken_per_death'
+                ],
                 maxs: [10, 15, 2000, 15, 800, 40, 100, 12000]
             },
             'MIDDLE': {
                 keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival'],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold', 'avg_survival'],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold', 'rank_survival'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_dmgtoGold', 'avg_survival'
+                ],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_dmgtoGold', 'rank_survival'
+                ],
                 maxs: [10, 15, 2000, 15, 800, 40, 300, 5]
             },
             'BOTTOM': {
                 keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival'],
                 labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold', 'avg_survival'],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold', 'rank_survival'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_dmgtoGold', 'avg_survival'
+                ],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_dmgtoGold', 'rank_survival'
+                ],
                 maxs: [10, 15, 2000, 15, 800, 40, 300, 5]
             },
             'UTILITY': {
-                keys: ['kda', 'kills_assists', 'goldpm', 'participation', 'dmgshare', 'damage_taken_share', 'vision_per_min', 'damage_taken_per_death'],
+                keys: ['kda', 'kills_assists', 'goldpm', 'participation', 'dmgshare', 'damage_taken_share',
+                    'vision_per_min', 'damage_taken_per_death'
+                ],
                 labels: ['KDA', '击杀助攻', '分均经济', '参团率', '伤害占比', '承伤占比', '分均视野', '每死承伤'],
-                avgs: ['avg_kda', 'avg_kills_assists', 'avg_goldpm', 'avg_participation', 'avg_dmgshare', 'avg_damage_taken_share', 'avg_vision_per_min', 'avg_damage_taken_per_death'],
-                ranks: ['rank_kda', 'rank_kills_assists', 'rank_goldpm', 'rank_participation', 'rank_dmgshare', 'rank_damage_taken_share', 'rank_vision_per_min', 'rank_damage_taken_per_death'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_goldpm', 'avg_participation', 'avg_dmgshare',
+                    'avg_damage_taken_share', 'avg_vision_per_min', 'avg_damage_taken_per_death'
+                ],
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_goldpm', 'rank_participation', 'rank_dmgshare',
+                    'rank_damage_taken_share', 'rank_vision_per_min', 'rank_damage_taken_per_death'
+                ],
                 maxs: [10, 15, 800, 100, 40, 40, 5, 12000]
             }
         };
@@ -441,8 +1351,9 @@
         let searchTerm = '';
         let currentView = 'radar';
         let comparePlayers = [];
+        let radarRenderVersion = 0;
 
-        // DOM
+        // DOM 引用
         const teamSelect = document.getElementById('teamSelect');
         const posBtns = document.querySelectorAll('.pos-btn');
         const playerSelector = document.getElementById('playerSelector');
@@ -451,23 +1362,44 @@
         const viewBtns = document.querySelectorAll('.view-btn');
         const scatterChartDiv = document.getElementById('scatterChart');
         const exportBtn = document.getElementById('exportBtn');
-        const rightPanel = document.querySelector('.right-panel');
+        const rightPanel = document.getElementById('rightPanel');
         const scatterLegend = document.getElementById('scatterLegend');
+        const radarLegend = document.getElementById('radarLegend');
+        const mainArea = document.getElementById('mainArea');
+        const exportProgress = document.getElementById('exportProgress');
+        const exportProgressFill = document.getElementById('exportProgressFill');
 
-        // 工具
+        // 工具函数
         function safeVal(v, fallback = 0) { const n = parseFloat(v); return isNaN(n) ? fallback : n; }
+
         function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+        /** 百分位数计算（用于雷达图动态最大值） */
+        function percentile(values, pct) {
+            if (!values.length) return 0;
+            const sorted = [...values].sort((a, b) => a - b);
+            const idx = Math.min(sorted.length - 1, Math.floor(pct * sorted.length));
+            return sorted[idx] || 0;
+        }
+
+        /** 代理图片URL */
+        function proxyImageUrl(originalUrl) {
+            return `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}`;
+        }
 
         // 加载数据
         async function loadData() {
             loadingOverlay.classList.add('show');
+            loadingOverlay.querySelector('.loading-text').textContent = '数据加载中...';
+            exportProgress.style.display = 'none';
             try {
                 const res = await fetch('./data.json');
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const json = await res.json();
                 const avgObj = json.find(item => item.avg_kda !== undefined);
                 if (avgObj) avgStats = avgObj;
-                else { console.warn('未找到均值数据'); avgStats = {}; }
+                else { console.warn('未找到均值数据');
+                    avgStats = {}; }
                 allPlayers = json.filter(item => item.avg_kda === undefined);
                 isDataLoaded = true;
 
@@ -476,16 +1408,24 @@
                 teamSet.forEach(team => { optionsHtml += `<option value="${team}">${team}</option>`; });
                 teamSelect.innerHTML = optionsHtml;
 
-                teamSelect.addEventListener('change', () => { currentTeam = teamSelect.value; currentPlayerIndex = 0; comparePlayers = []; updateView(); });
+                teamSelect.addEventListener('change', () => { currentTeam = teamSelect.value;
+                    currentPlayerIndex = 0;
+                    comparePlayers = [];
+                    updateView(); });
                 posBtns.forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         posBtns.forEach(b => b.classList.remove('active'));
                         e.target.classList.add('active');
                         currentPosition = e.target.dataset.pos;
-                        currentPlayerIndex = 0; comparePlayers = []; updateView();
+                        currentPlayerIndex = 0;
+                        comparePlayers = [];
+                        updateView();
                     });
                 });
-                playerSearch.addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase().trim(); currentPlayerIndex = 0; comparePlayers = []; updateView(); });
+                playerSearch.addEventListener('input', (e) => { searchTerm = e.target.value.toLowerCase().trim();
+                    currentPlayerIndex = 0;
+                    comparePlayers = [];
+                    updateView(); });
                 viewBtns.forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         viewBtns.forEach(b => b.classList.remove('active'));
@@ -500,7 +1440,8 @@
             } catch (error) {
                 console.error('加载数据失败:', error);
                 document.getElementById('playerName').textContent = '⚠️ 数据加载失败';
-                document.getElementById('statsWrapper').innerHTML = '<div style="color:#ff6b6b;text-align:center;padding:40px;font-size:14px;">数据加载失败</div>';
+                document.getElementById('statsWrapper').innerHTML =
+                    '<div style="color:#ff6b6b;text-align:center;padding:40px;font-size:14px;">数据加载失败</div>';
             } finally {
                 loadingOverlay.classList.remove('show');
             }
@@ -517,12 +1458,15 @@
         function renderPlayerChips(players) {
             const container = playerSelector;
             let html = `<span class="label">👥 选手</span>`;
-            if (players.length === 0) { html += `<span style="color:#666;font-size:13px;padding:6px 0;">暂无选手</span>`; container.innerHTML = html; return; }
+            if (players.length === 0) {
+                html += `<span style="color:#666;font-size:13px;padding:6px 0;">暂无选手</span>`;
+                container.innerHTML = html;
+                return;
+            }
             players.forEach((p, idx) => {
                 const active = idx === currentPlayerIndex ? 'active' : '';
                 const compare = comparePlayers.includes(idx) ? 'compare' : '';
-                // 修改点：使用代理解决跨域问题
-                const avatar = `https://images.weserv.nl/?url=${encodeURIComponent(`https://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`)}`;
+                const avatar = proxyImageUrl(`https://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`);
                 html += `
                     <div class="player-chip ${active} ${compare}" data-index="${idx}" title="点击选择，Ctrl+点击加入对比">
                         <img src="${avatar}" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/32'" loading="lazy" />
@@ -535,11 +1479,19 @@
                 el.addEventListener('click', (e) => {
                     const idx = parseInt(el.dataset.index, 10);
                     if (e.ctrlKey || e.metaKey) {
-                        if (comparePlayers.includes(idx)) comparePlayers = comparePlayers.filter(i => i !== idx);
-                        else { if (comparePlayers.length >= 2) comparePlayers.shift(); comparePlayers.push(idx); }
+                        if (comparePlayers.includes(idx)) {
+                            comparePlayers = comparePlayers.filter(i => i !== idx);
+                        } else {
+                            if (comparePlayers.length >= 2) comparePlayers.shift();
+                            comparePlayers.push(idx);
+                        }
                         updateView();
                     } else {
-                        if (!isNaN(idx) && idx !== currentPlayerIndex) { currentPlayerIndex = idx; comparePlayers = []; updateView(); }
+                        if (!isNaN(idx) && idx !== currentPlayerIndex) {
+                            currentPlayerIndex = idx;
+                            comparePlayers = [];
+                            updateView();
+                        }
                     }
                 });
             });
@@ -547,16 +1499,22 @@
 
         function updateLeftStats(player) {
             const mappings = [
-                { stat: 'lane', rank: 'rank-lane', bar: 'bar-lane', key: 'lane_diff', rankKey: 'rank_lane_diff', max: 3, isRed: false },
-                { stat: 'gdiff', rank: 'rank-gdiff', bar: 'bar-gdiff', key: 'gold_diff', rankKey: 'rank_gold_diff', max: 3000, isRed: false },
-                { stat: 'partrate', rank: 'rank-partrate', bar: 'bar-partrate', key: 'participation', rankKey: 'rank_participation', max: 100, isRed: false },
-                { stat: 'taken', rank: 'rank-taken', bar: 'bar-taken', key: 'damage_taken_share', rankKey: 'rank_damage_taken', max: 40, isRed: true },
-                { stat: 'vision', rank: 'rank-vision', bar: 'bar-vision', key: 'vision_per_min', rankKey: 'rank_vision', max: 3, isRed: false },
+                { stat: 'lane', rank: 'rank-lane', bar: 'bar-lane', key: 'lane_diff', rankKey: 'rank_lane_diff',
+                    max: 3, isRed: false },
+                { stat: 'gdiff', rank: 'rank-gdiff', bar: 'bar-gdiff', key: 'gold_diff', rankKey: 'rank_gold_diff',
+                    max: 3000, isRed: false },
+                { stat: 'partrate', rank: 'rank-partrate', bar: 'bar-partrate', key: 'participation',
+                    rankKey: 'rank_participation', max: 100, isRed: false },
+                { stat: 'taken', rank: 'rank-taken', bar: 'bar-taken', key: 'damage_taken_share',
+                    rankKey: 'rank_damage_taken', max: 40, isRed: true },
+                { stat: 'vision', rank: 'rank-vision', bar: 'bar-vision', key: 'vision_per_min',
+                    rankKey: 'rank_vision', max: 3, isRed: false },
             ];
             mappings.forEach(({ stat, rank, bar, key, rankKey, max, isRed }) => {
                 const val = safeVal(player[key]);
                 const r = player[rankKey] || '-';
-                document.getElementById(`stat-${stat}`).textContent = key === 'gold_diff' ? (val >= 0 ? '+' : '') + val.toFixed(0) : val.toFixed(1);
+                document.getElementById(`stat-${stat}`).textContent = key === 'gold_diff' ? (val >= 0 ? '+' : '') +
+                    val.toFixed(0) : val.toFixed(1);
                 document.getElementById(`rank-${stat}`).textContent = `#${r}`;
                 const pct = clamp((val / max) * 100, 0, 100);
                 const barEl = document.getElementById(bar);
@@ -571,11 +1529,12 @@
             currentFilteredPlayers = players;
             if (players.length === 0) {
                 document.getElementById('playerName').textContent = '暂无选手';
-                document.getElementById('totalKda').innerHTML = '<span class="k">0</span>/<span class="d">0</span>/<span class="a">0</span>';
+                document.getElementById('totalKda').innerHTML =
+                    '<span class="k">0</span>/<span class="d">0</span>/<span class="a">0</span>';
                 document.getElementById('playerAvatar').src = 'https://via.placeholder.com/160';
                 document.getElementById('heroPool').innerHTML = '';
                 document.getElementById('heroCount').textContent = '0';
-                ['lane','gdiff','partrate','taken','vision'].forEach(key => {
+                ['lane', 'gdiff', 'partrate', 'taken', 'vision'].forEach(key => {
                     document.getElementById(`stat-${key}`).textContent = '--';
                     document.getElementById(`rank-${key}`).textContent = '#-';
                     document.getElementById(`bar-${key}`).style.width = '0%';
@@ -594,21 +1553,23 @@
             const player = players[currentPlayerIndex];
             renderPlayerChips(players);
 
-            const avatarUrl = `https://images.weserv.nl/?url=${encodeURIComponent(`https://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`)}`;
+            const avatarUrl = proxyImageUrl(`https://q.qlogo.cn/headimg_dl?dst_uin=${player.qq}&spec=640`);
             const avatarImg = document.getElementById('playerAvatar');
             avatarImg.src = avatarUrl;
             avatarImg.crossOrigin = "anonymous";
-            avatarImg.onerror = function() { this.onerror = null; this.src = 'https://via.placeholder.com/160'; };
+            avatarImg.onerror = function() { this.onerror = null;
+                this.src = 'https://via.placeholder.com/160'; };
 
             document.getElementById('playerName').textContent = player.player;
-            document.getElementById('totalKda').innerHTML = `<span class="k">${player.kills}</span>/<span class="d">${player.deaths}</span>/<span class="a">${player.assists}</span>`;
+            document.getElementById('totalKda').innerHTML =
+                `<span class="k">${player.kills}</span>/<span class="d">${player.deaths}</span>/<span class="a">${player.assists}</span>`;
 
             renderHeroPool(player);
             updateLeftStats(player);
 
             updateViewVisibility();
-            if (currentView === 'radar') { renderStatsWrapper(player); renderRadar(player); }
-            else if (currentView === 'scatter') renderScatterChart(players);
+            if (currentView === 'radar') { renderStatsWrapper(player);
+                renderRadar(player); } else if (currentView === 'scatter') renderScatterChart(players);
             else if (currentView === 'bar') renderBarChart(player);
             else if (currentView === 'heatmap') renderHeatmap(players);
             else if (currentView === 'parallel') renderParallel(player);
@@ -621,6 +1582,7 @@
             radarChart.style.display = currentView === 'radar' ? 'block' : 'none';
             statsWrapper.style.display = currentView === 'radar' ? 'block' : 'none';
             avgNote.style.display = currentView === 'radar' ? 'block' : 'none';
+            radarLegend.style.display = currentView === 'radar' ? 'flex' : 'none';
             document.getElementById('scatterChart').classList.toggle('active', currentView === 'scatter');
             document.getElementById('barChart').classList.toggle('active', currentView === 'bar');
             document.getElementById('heatmapChart').classList.toggle('active', currentView === 'heatmap');
@@ -629,12 +1591,14 @@
 
             if (currentView === 'radar' && myChart) myChart.resize();
             else if (currentView === 'scatter' && currentFilteredPlayers.length) renderScatterChart(currentFilteredPlayers);
-            else if (currentView === 'bar' && currentFilteredPlayers.length) renderBarChart(currentFilteredPlayers[currentPlayerIndex]);
+            else if (currentView === 'bar' && currentFilteredPlayers.length) renderBarChart(currentFilteredPlayers[
+                currentPlayerIndex]);
             else if (currentView === 'heatmap' && currentFilteredPlayers.length) renderHeatmap(currentFilteredPlayers);
-            else if (currentView === 'parallel' && currentFilteredPlayers.length) renderParallel(currentFilteredPlayers[currentPlayerIndex]);
+            else if (currentView === 'parallel' && currentFilteredPlayers.length) renderParallel(currentFilteredPlayers[
+                currentPlayerIndex]);
         }
 
-        // 英雄池渲染
+        // 英雄池渲染（使用代理）
         function renderHeroPool(player) {
             const poolEl = document.getElementById('heroPool');
             const heroes = player.heroes || [{ champion: player.champion || 'Unknown', games: 1, wins: 1 }];
@@ -642,17 +1606,19 @@
             poolEl.innerHTML = heroes.map(h => {
                 const winRate = Math.round((h.wins / h.games) * 100);
                 const champName = h.champion || 'Unknown';
+                const champIconUrl = proxyImageUrl(
+                    `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png`);
                 return `
                     <div class="hero-item">
                         <div class="hero-games">${h.games}</div>
-                        <img class="hero-icon" src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png" crossorigin="anonymous" onerror="this.style.background='#2a2f38';this.alt='${champName}'" loading="lazy">
+                        <img class="hero-icon" src="${champIconUrl}" crossorigin="anonymous" onerror="this.style.background='#2a2f38';this.alt='${champName}'" loading="lazy" alt="${champName}">
                         <div class="hero-win">${winRate}%</div>
                         <div class="hero-kda">${h.games}局</div>
                     </div>`;
             }).join('');
         }
 
-        // 雷达图外围标签
+        // 雷达图外部标签
         function renderStatsWrapper(player) {
             const config = positionConfigs[currentPosition];
             const wrapper = document.getElementById('statsWrapper');
@@ -666,7 +1632,7 @@
                 const displayVal = typeof val === 'number' ? val.toFixed(1) : val;
                 const displayAvg = typeof avgVal === 'number' ? avgVal.toFixed(1) : avgVal;
                 return `
-                    <div class="stat-item pos-${positions[index]}" data-index="${index}" data-key="${key}">
+                    <div class="stat-item pos-${positions[index]}" data-index="${index}" data-key="${key}" title="${config.labels[index]} — 点击高亮">
                         <div class="stat-name">${config.labels[index]}</div>
                         <div><span class="stat-rank">#${rank}</span> <span class="stat-val-blue">${displayVal}</span></div>
                         <div class="stat-val-red">${displayAvg}</div>
@@ -674,13 +1640,15 @@
             }).join('');
         }
 
-        // 雷达图
-        function buildRadarTooltip(player, config, isPlayerSeries) {
+        // 构建雷达图tooltip
+        function buildRadarTooltip(player, config, isPlayerSeries, seriesName) {
             let html = '';
-            const playerName = player.player || '未知选手';
+            const playerName = player.player || seriesName || '未知选手';
             if (isPlayerSeries) {
-                html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#00d4e6;">${playerName}</div>`;
-                html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">KDA: ${player.kills}/${player.deaths}/${player.assists}</div>`;
+                html +=
+                    `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#00d4e6;">${playerName}</div>`;
+                html +=
+                    `<div style="font-size:11px;color:#888;margin-bottom:8px;">KDA: ${player.kills}/${player.deaths}/${player.assists}</div>`;
             } else {
                 html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#ff6b6b;">均值数据</div>`;
                 html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">全选手平均</div>`;
@@ -688,10 +1656,12 @@
             html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:4px 16px;font-size:12px;">`;
             config.keys.forEach((key, index) => {
                 let val = isPlayerSeries ? player[key] : avgStats[config.avgs[index]];
-                if (key === 'kills_assists') val = isPlayerSeries ? (player.kills + player.assists) : avgStats[config.avgs[index]];
+                if (key === 'kills_assists') val = isPlayerSeries ? (player.kills + player.assists) : avgStats[
+                    config.avgs[index]];
                 val = safeVal(val);
                 const displayVal = typeof val === 'number' ? val.toFixed(2) : val;
-                const rank = isPlayerSeries ? (player[config.ranks[index]] !== undefined ? player[config.ranks[index]] : '-') : '-';
+                const rank = isPlayerSeries ? (player[config.ranks[index]] !== undefined ? player[config.ranks[
+                    index]] : '-') : '-';
                 const colorClass = isPlayerSeries ? '#00d4e6' : '#ff6b6b';
                 html += `
                     <span style="color:#aaa;">${config.labels[index]}</span>
@@ -702,46 +1672,80 @@
             return html;
         }
 
+        /**
+         * 【雷达图模块 - 专业优化版】
+         * - 动态最大值使用95分位数，避免极端值扭曲图形
+         * - 添加图例组件
+         * - tooltip使用seriesName精确定位
+         * - 更细腻的渐变填充与阴影
+         */
         function renderRadar(player) {
             const chartDom = document.getElementById('radarChart');
+            const version = ++radarRenderVersion;
             if (!myChart) {
                 myChart = echarts.init(chartDom, 'dark');
                 window.addEventListener('resize', () => { if (myChart) myChart.resize(); });
             }
             const config = positionConfigs[currentPosition];
-            
-            // 修改点：动态计算当前筛选玩家的最大值，防止数据超出雷达范围
+
+            // 动态最大值：使用95分位数 + 10%余量
             const dynamicMaxs = config.keys.map((key, index) => {
-                let maxVal = config.maxs[index] * 0.2; // 保底值
-                currentFilteredPlayers.forEach(p => {
-                    let val = p[key];
-                    if (key === 'kills_assists') val = (p.kills + p.assists);
-                    val = safeVal(val);
-                    if (val > maxVal) maxVal = val;
+                const values = currentFilteredPlayers.map(p => {
+                    let v = p[key];
+                    if (key === 'kills_assists') v = (p.kills + p.assists);
+                    return safeVal(v);
                 });
-                return Math.ceil(maxVal * 1.15); // 留出15%的余量，让图形更好看
+                const p95 = percentile(values, 0.95);
+                const fallback = config.maxs[index] * 0.3;
+                const baseMax = Math.max(p95, fallback);
+                return Math.ceil(baseMax * 1.12);
             });
 
-            const indicator = config.keys.map((key, index) => ({ 
-                name: config.labels[index], 
-                max: dynamicMaxs[index] 
+            const indicator = config.keys.map((key, index) => ({
+                name: config.labels[index],
+                max: dynamicMaxs[index]
             }));
+
             const seriesData = [];
 
+            // 当前选手系列
             let playerValues = config.keys.map(key => {
                 let val = player[key];
                 if (key === 'kills_assists') val = (player.kills + player.assists);
                 return safeVal(val);
             });
             seriesData.push({
-                value: playerValues, name: player.player,
-                itemStyle: { color: '#00d4e6', shadowBlur: 20, shadowColor: 'rgba(0,212,230,0.5)' },
-                lineStyle: { color: '#00d4e6', width: 3, shadowBlur: 15, shadowColor: 'rgba(0,212,230,0.4)' },
-                areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1, [{offset:0,color:'rgba(0,212,230,0.35)'},{offset:0.6,color:'rgba(0,212,230,0.10)'},{offset:1,color:'rgba(0,212,230,0.02)'}]) },
-                symbol: 'circle', symbolSize: 8,
-                emphasis: { lineStyle: { width:4, color:'#00d4e6' }, itemStyle: { color:'#00d4e6', borderColor:'#fff', borderWidth:3, shadowBlur:25, shadowColor:'rgba(0,212,230,0.8)' } }
+                value: playerValues,
+                name: player.player,
+                _seriesType: 'current',
+                itemStyle: {
+                    color: '#00d4e6',
+                    shadowBlur: 25,
+                    shadowColor: 'rgba(0,212,230,0.55)'
+                },
+                lineStyle: {
+                    color: '#00d4e6',
+                    width: 3,
+                    shadowBlur: 18,
+                    shadowColor: 'rgba(0,212,230,0.45)'
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(0,212,230,0.38)' },
+                        { offset: 0.6, color: 'rgba(0,212,230,0.12)' },
+                        { offset: 1, color: 'rgba(0,212,230,0.03)' }
+                    ])
+                },
+                symbol: 'circle',
+                symbolSize: 8,
+                emphasis: {
+                    lineStyle: { width: 4, color: '#00d4e6' },
+                    itemStyle: { color: '#00d4e6', borderColor: '#fff', borderWidth: 3, shadowBlur: 30,
+                        shadowColor: 'rgba(0,212,230,0.85)' }
+                }
             });
 
+            // 对比选手系列
             comparePlayers.forEach((idx, order) => {
                 const compPlayer = currentFilteredPlayers[idx];
                 if (compPlayer) {
@@ -752,132 +1756,222 @@
                     });
                     const color = order === 0 ? '#ff9800' : '#c084fc';
                     seriesData.push({
-                        value: compValues, name: compPlayer.player,
-                        itemStyle: { color, shadowBlur:15, shadowColor: color==='#ff9800'?'rgba(255,152,0,0.5)':'rgba(192,132,252,0.5)' },
-                        lineStyle: { color, width:2.5, shadowBlur:10, shadowColor: color==='#ff9800'?'rgba(255,152,0,0.4)':'rgba(192,132,252,0.4)' },
-                        areaStyle: { color: color==='#ff9800'?'rgba(255,152,0,0.12)':'rgba(192,132,252,0.12)' },
-                        symbol: 'circle', symbolSize: 6,
-                        emphasis: { lineStyle:{ width:3.5, color }, itemStyle:{ color, borderColor:'#fff', borderWidth:2.5 } }
+                        value: compValues,
+                        name: compPlayer.player,
+                        _seriesType: 'compare',
+                        _playerIndex: idx,
+                        itemStyle: {
+                            color,
+                            shadowBlur: 18,
+                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.5)' :
+                                'rgba(192,132,252,0.5)'
+                        },
+                        lineStyle: {
+                            color,
+                            width: 2.5,
+                            shadowBlur: 12,
+                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.4)' :
+                                'rgba(192,132,252,0.4)'
+                        },
+                        areaStyle: {
+                            color: color === '#ff9800' ? 'rgba(255,152,0,0.12)' : 'rgba(192,132,252,0.12)'
+                        },
+                        symbol: 'circle',
+                        symbolSize: 6,
+                        emphasis: {
+                            lineStyle: { width: 3.5, color },
+                            itemStyle: { color, borderColor: '#fff', borderWidth: 2.5 }
+                        }
                     });
                 }
             });
 
+            // 均值系列（虚线）
             let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
             seriesData.push({
-                value: avgValues, name: '均值',
-                itemStyle: { color:'#ff6b6b', shadowBlur:8, shadowColor:'rgba(255,107,107,0.3)' },
-                lineStyle: { color:'#ff6b6b', width:1.8, type:'dashed', shadowBlur:5, shadowColor:'rgba(255,107,107,0.2)' },
-                areaStyle: { color:'transparent' },
-                symbol: 'diamond', symbolSize: 6,
-                emphasis: { lineStyle:{ width:2.5, color:'#ff6b6b' }, itemStyle:{ color:'#ff6b6b', borderColor:'#fff', borderWidth:1.5 } }
+                value: avgValues,
+                name: '均值',
+                _seriesType: 'average',
+                itemStyle: {
+                    color: '#ff6b6b',
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(255,107,107,0.35)'
+                },
+                lineStyle: {
+                    color: '#ff6b6b',
+                    width: 1.8,
+                    type: 'dashed',
+                    shadowBlur: 6,
+                    shadowColor: 'rgba(255,107,107,0.25)'
+                },
+                areaStyle: { color: 'transparent' },
+                symbol: 'diamond',
+                symbolSize: 6,
+                emphasis: {
+                    lineStyle: { width: 2.5, color: '#ff6b6b' },
+                    itemStyle: { color: '#ff6b6b', borderColor: '#fff', borderWidth: 1.5 }
+                }
             });
 
             const option = {
                 backgroundColor: 'transparent',
-                animationDuration: 800,
-                animationDurationUpdate: 600,
+                animationDuration: 900,
+                animationDurationUpdate: 700,
                 animationEasing: 'cubicOut',
                 animationEasingUpdate: 'cubicInOut',
                 tooltip: {
-                    trigger: 'item', confine: true,
-                    backgroundColor: 'rgba(20,23,30,0.95)',
-                    borderColor: 'rgba(122,61,240,0.3)', borderWidth:1, borderRadius:12, padding:[14,18],
-                    extraCssText: 'backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-width: 320px;',
-                    textStyle: { color:'#eee', fontSize:12 },
+                    trigger: 'item',
+                    confine: true,
+                    backgroundColor: 'rgba(20,23,30,0.96)',
+                    borderColor: 'rgba(122,61,240,0.35)',
+                    borderWidth: 1,
+                    borderRadius: 14,
+                    padding: [14, 18],
+                    extraCssText: 'backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-width: 340px;',
+                    textStyle: { color: '#eee', fontSize: 12 },
                     formatter: function(params) {
                         if (!params || params.seriesIndex === undefined) return '';
-                        const seriesIdx = params.seriesIndex;
-                        if (seriesIdx === seriesData.length - 1) return buildRadarTooltip(player, config, false);
-                        else {
-                            const dataPlayer = seriesIdx === 0 ? player : currentFilteredPlayers[comparePlayers[seriesIdx-1]];
-                            return dataPlayer ? buildRadarTooltip(dataPlayer, config, true) : '';
+                        const sIdx = params.seriesIndex;
+                        const sData = seriesData[sIdx];
+                        if (!sData) return '';
+                        if (sData._seriesType === 'average') {
+                            return buildRadarTooltip(player, config, false, '均值');
+                        } else if (sData._seriesType === 'current') {
+                            return buildRadarTooltip(player, config, true, player.player);
+                        } else if (sData._seriesType === 'compare') {
+                            const compP = currentFilteredPlayers[sData._playerIndex];
+                            return compP ? buildRadarTooltip(compP, config, true, compP.player) : '';
                         }
+                        return '';
                     }
                 },
                 radar: {
                     indicator: indicator,
                     center: ['50%', '48%'],
-                    // 修改点：稍微缩小半径，让外部标签更清晰，防止数据溢出
                     radius: '68%',
                     splitNumber: 4,
                     shape: 'polygon',
-                    splitArea: { areaStyle: { color: ['rgba(122,61,240,0.03)', 'rgba(122,61,240,0.07)'] } },
-                    axisLine: { show: true, lineStyle: { color:'rgba(255,255,255,0.12)', width:1.2 } },
-                    splitLine: { lineStyle: { color:'rgba(255,255,255,0.08)', width:1 } },
-                    axisName: {
-                        show: false,  // 隐藏轴标签，使用外部自定义标签
-                    }
+                    splitArea: {
+                        areaStyle: {
+                            color: ['rgba(122,61,240,0.03)', 'rgba(122,61,240,0.08)']
+                        }
+                    },
+                    axisLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.14)', width: 1.2 } },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)', width: 1 } },
+                    axisName: { show: false }
                 },
-                series: [{ type: 'radar', data: seriesData }]
+                series: [{ type: 'radar', data: seriesData, symbolSize: 8 }]
             };
+            // 使用notMerge确保完全重绘
             myChart.setOption(option, true);
             myChart.resize();
         }
 
-        // 气泡图
+        // ============================================================
+        //  气泡图 / 条形图 / 热力图 / 平行坐标（保持不变）
+        // ============================================================
         function renderScatterChart(players) {
             if (!scatterChartInstance) {
                 scatterChartInstance = echarts.init(scatterChartDiv, 'dark');
-                window.addEventListener('resize', () => { if (scatterChartInstance) scatterChartInstance.resize(); });
+                window.addEventListener('resize', () => { if (scatterChartInstance) scatterChartInstance
+                        .resize(); });
                 scatterChartInstance.on('click', function(params) {
                     if (params.data && params.data.playerIndex !== undefined) {
                         const idx = params.data.playerIndex;
                         if (idx === currentPlayerIndex) return;
-                        currentPlayerIndex = idx; comparePlayers = []; updateView();
+                        currentPlayerIndex = idx;
+                        comparePlayers = [];
+                        updateView();
                     }
                 });
             }
             const config = positionConfigs[currentPosition];
-            const xKey = 'goldpm', yKey = 'dmgshare', sizeKey = 'dpm';
-            const xLabel = '分均经济', yLabel = '伤害占比 (%)';
+            const xKey = 'goldpm',
+                yKey = 'dmgshare',
+                sizeKey = 'dpm';
+            const xLabel = '分均经济',
+                yLabel = '伤害占比 (%)';
 
             const allDpm = players.map(p => safeVal(p[sizeKey]));
-            const minDpm = Math.min(...allDpm, 0), maxDpm = Math.max(...allDpm, 1);
+            const minDpm = Math.min(...allDpm, 0),
+                maxDpm = Math.max(...allDpm, 1);
             const allKda = players.map(p => safeVal(p.kda));
-            const minKda = Math.min(...allKda, 0), maxKda = Math.max(...allKda, 1);
-            const avgX = players.reduce((s,p)=>s+safeVal(p[xKey]),0)/players.length;
-            const avgY = players.reduce((s,p)=>s+safeVal(p[yKey]),0)/players.length;
-            const allX = players.map(p=>safeVal(p[xKey])), allY = players.map(p=>safeVal(p[yKey]));
-            const xMin = Math.min(...allX), xMax = Math.max(...allX);
-            const yMin = Math.min(...allY), yMax = Math.max(...allY);
-            const xPad = (xMax-xMin)*0.12 || 50, yPad = (yMax-yMin)*0.15 || 5;
+            const minKda = Math.min(...allKda, 0),
+                maxKda = Math.max(...allKda, 1);
+            const avgX = players.reduce((s, p) => s + safeVal(p[xKey]), 0) / players.length;
+            const avgY = players.reduce((s, p) => s + safeVal(p[yKey]), 0) / players.length;
+            const allX = players.map(p => safeVal(p[xKey])),
+                allY = players.map(p => safeVal(p[yKey]));
+            const xMin = Math.min(...allX),
+                xMax = Math.max(...allX);
+            const yMin = Math.min(...allY),
+                yMax = Math.max(...allY);
+            const xPad = (xMax - xMin) * 0.12 || 50,
+                yPad = (yMax - yMin) * 0.15 || 5;
 
             const data = players.map((p, idx) => {
-                const kda = safeVal(p.kda), dpm = safeVal(p[sizeKey]);
-                const isCurrent = idx === currentPlayerIndex, isCompare = comparePlayers.includes(idx);
-                const sizeRatio = maxDpm>minDpm ? (dpm-minDpm)/(maxDpm-minDpm) : 0.5;
-                let symbolSize = 8 + sizeRatio*20;
+                const kda = safeVal(p.kda),
+                    dpm = safeVal(p[sizeKey]);
+                const isCurrent = idx === currentPlayerIndex,
+                    isCompare = comparePlayers.includes(idx);
+                const sizeRatio = maxDpm > minDpm ? (dpm - minDpm) / (maxDpm - minDpm) : 0.5;
+                let symbolSize = 8 + sizeRatio * 20;
                 if (isCurrent) symbolSize += 7;
                 if (isCompare) symbolSize += 3;
                 return {
                     value: [safeVal(p[xKey]), safeVal(p[yKey]), kda, dpm],
-                    name: p.player, player: p, playerIndex: idx, symbolSize: symbolSize,
+                    name: p.player,
+                    player: p,
+                    playerIndex: idx,
+                    symbolSize: symbolSize,
                     itemStyle: {
-                        opacity: isCurrent?1:(isCompare?0.9:0.72),
-                        borderColor: isCurrent?'#ffffff':(isCompare?'#ff9800':'transparent'),
-                        borderWidth: isCurrent?3:(isCompare?2.5:0),
-                        shadowBlur: isCurrent?30:(isCompare?18:6),
-                        shadowColor: isCurrent?'rgba(255,255,255,0.7)':(isCompare?'rgba(255,152,0,0.6)':'rgba(0,0,0,0.35)')
+                        opacity: isCurrent ? 1 : (isCompare ? 0.9 : 0.72),
+                        borderColor: isCurrent ? '#ffffff' : (isCompare ? '#ff9800' : 'transparent'),
+                        borderWidth: isCurrent ? 3 : (isCompare ? 2.5 : 0),
+                        shadowBlur: isCurrent ? 30 : (isCompare ? 18 : 6),
+                        shadowColor: isCurrent ? 'rgba(255,255,255,0.7)' : (isCompare ?
+                            'rgba(255,152,0,0.6)' : 'rgba(0,0,0,0.35)')
                     },
                     label: {
-                        show: isCurrent||isCompare, formatter:'{b}', position:'top', distance:6,
-                        color: isCurrent?'#ffffff':'#ff9800', fontSize:12, fontWeight:'bold',
-                        textShadowColor:'rgba(0,0,0,0.85)', textShadowBlur:5
+                        show: isCurrent || isCompare,
+                        formatter: '{b}',
+                        position: 'top',
+                        distance: 6,
+                        color: isCurrent ? '#ffffff' : '#ff9800',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        textShadowColor: 'rgba(0,0,0,0.85)',
+                        textShadowBlur: 5
                     },
-                    emphasis: { label:{show:true, fontSize:13}, itemStyle:{ shadowBlur:35, shadowColor:'rgba(255,255,255,0.65)', borderWidth: isCurrent?3:2, borderColor:isCurrent?'#fff':'#ff9800', opacity:1 } }
+                    emphasis: {
+                        label: { show: true, fontSize: 13 },
+                        itemStyle: {
+                            shadowBlur: 35,
+                            shadowColor: 'rgba(255,255,255,0.65)',
+                            borderWidth: isCurrent ? 3 : 2,
+                            borderColor: isCurrent ? '#fff' : '#ff9800',
+                            opacity: 1
+                        }
+                    }
                 };
             });
 
             const option = {
                 backgroundColor: 'transparent',
-                animation: true, animationDuration: 700, animationEasing: 'elasticOut',
-                animationDelay: (idx)=>Math.min(idx*40,600),
+                animation: true,
+                animationDuration: 700,
+                animationEasing: 'elasticOut',
+                animationDelay: (idx) => Math.min(idx * 40, 600),
                 tooltip: {
-                    trigger:'item', confine:true,
-                    backgroundColor:'rgba(18,20,26,0.95)', borderColor:'rgba(0,188,212,0.35)', borderWidth:1,
-                    borderRadius:14, padding:[14,18],
-                    extraCssText:'backdrop-filter: blur(18px); box-shadow: 0 10px 40px rgba(0,0,0,0.65); max-width: 280px;',
-                    textStyle:{ color:'#eee', fontSize:12 },
+                    trigger: 'item',
+                    confine: true,
+                    backgroundColor: 'rgba(18,20,26,0.95)',
+                    borderColor: 'rgba(0,188,212,0.35)',
+                    borderWidth: 1,
+                    borderRadius: 14,
+                    padding: [14, 18],
+                    extraCssText: 'backdrop-filter: blur(18px); box-shadow: 0 10px 40px rgba(0,0,0,0.65); max-width: 280px;',
+                    textStyle: { color: '#eee', fontSize: 12 },
                     formatter: function(params) {
                         if (!params || !params.data) return '';
                         const p = params.data.player;
@@ -897,34 +1991,56 @@
                     }
                 },
                 visualMap: {
-                    dimension:2, min:minKda, max:maxKda, calculable:false,
-                    orient:'vertical', right:4, top:'center', itemWidth:12, itemHeight:80,
-                    text:['高KDA','低KDA'], textStyle:{color:'#888',fontSize:10},
-                    inRange:{color:['#e74c3c','#f39c12','#3a9bd5','#00bcd4','#ffd700']},
+                    dimension: 2,
+                    min: minKda,
+                    max: maxKda,
+                    calculable: false,
+                    orient: 'vertical',
+                    right: 4,
+                    top: 'center',
+                    itemWidth: 12,
+                    itemHeight: 80,
+                    text: ['高KDA', '低KDA'],
+                    textStyle: { color: '#888', fontSize: 10 },
+                    inRange: { color: ['#e74c3c', '#f39c12', '#3a9bd5', '#00bcd4', '#ffd700'] },
                     show: players.length > 3
                 },
-                grid: { left:'8%', right:'16%', top:'12%', bottom:'15%', containLabel:true },
+                grid: { left: '8%', right: '16%', top: '12%', bottom: '15%', containLabel: true },
                 xAxis: {
-                    name:xLabel, nameTextStyle:{color:'#999',fontSize:12,fontWeight:500},
-                    nameLocation:'middle', nameGap:28, min:Math.max(0,xMin-xPad), max:xMax+xPad,
-                    axisLine:{lineStyle:{color:'rgba(255,255,255,0.15)',width:1}},
-                    axisLabel:{color:'#888',fontSize:10},
-                    splitLine:{lineStyle:{color:'rgba(255,255,255,0.04)',type:'dashed'}}
+                    name: xLabel,
+                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
+                    nameLocation: 'middle',
+                    nameGap: 28,
+                    min: Math.max(0, xMin - xPad),
+                    max: xMax + xPad,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
+                    axisLabel: { color: '#888', fontSize: 10 },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } }
                 },
                 yAxis: {
-                    name:yLabel, nameTextStyle:{color:'#999',fontSize:12,fontWeight:500},
-                    nameLocation:'middle', nameGap:40, min:Math.max(0,yMin-yPad), max:yMax+yPad,
-                    axisLine:{lineStyle:{color:'rgba(255,255,255,0.15)',width:1}},
-                    axisLabel:{color:'#888',fontSize:10},
-                    splitLine:{lineStyle:{color:'rgba(255,255,255,0.04)',type:'dashed'}}
+                    name: yLabel,
+                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
+                    nameLocation: 'middle',
+                    nameGap: 40,
+                    min: Math.max(0, yMin - yPad),
+                    max: yMax + yPad,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
+                    axisLabel: { color: '#888', fontSize: 10 },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } }
                 },
                 series: [{
-                    type:'scatter', data:data, cursor:'pointer',
+                    type: 'scatter',
+                    data: data,
+                    cursor: 'pointer',
                     markLine: {
-                        silent:true, symbol:'none',
-                        label:{ show:true, formatter:(p)=>p.data.xAxis!==undefined?'均值X':(p.data.yAxis!==undefined?'均值Y':''), color:'#888', fontSize:9, position:'insideEndTop' },
-                        lineStyle:{ color:'rgba(255,255,255,0.18)', type:'dashed', width:1 },
-                        data:[ {xAxis:avgX},{yAxis:avgY} ], animation:false
+                        silent: true,
+                        symbol: 'none',
+                        label: { show: true, formatter: (p) => p.data.xAxis !== undefined ? '均值X' : (p.data
+                                .yAxis !== undefined ? '均值Y' : ''), color: '#888', fontSize: 9,
+                            position: 'insideEndTop' },
+                        lineStyle: { color: 'rgba(255,255,255,0.18)', type: 'dashed', width: 1 },
+                        data: [{ xAxis: avgX }, { yAxis: avgY }],
+                        animation: false
                     }
                 }]
             };
@@ -932,7 +2048,6 @@
             scatterChartInstance.resize();
         }
 
-        // 条形图
         function renderBarChart(player) {
             if (!barChartInstance) {
                 barChartInstance = echarts.init(document.getElementById('barChart'), 'dark');
@@ -947,8 +2062,11 @@
             });
             const avgValues = config.avgs.map(key => safeVal(avgStats[key]));
             const series = [
-                { name: player.player, type:'bar', data: playerValues, itemStyle:{ color:'#00d4e6', borderRadius:[4,4,0,0] }, barGap:'10%', barCategoryGap:'30%' },
-                { name: '均值', type:'bar', data: avgValues, itemStyle:{ color:'#ff6b6b', borderRadius:[4,4,0,0] } }
+                { name: player.player, type: 'bar', data: playerValues, itemStyle: { color: '#00d4e6',
+                        borderRadius: [4, 4, 0, 0] }, barGap: '10%', barCategoryGap: '30%' },
+                { name: '均值', type: 'bar', data: avgValues, itemStyle: { color: '#ff6b6b', borderRadius: [
+                            4, 4, 0, 0
+                        ] } }
             ];
             comparePlayers.forEach((idx, order) => {
                 const compPlayer = currentFilteredPlayers[idx];
@@ -959,29 +2077,33 @@
                         return safeVal(val);
                     });
                     series.push({
-                        name: compPlayer.player, type:'bar', data: compValues,
-                        itemStyle:{ color: order===0?'#ff9800':'#c084fc', borderRadius:[4,4,0,0] }
+                        name: compPlayer.player,
+                        type: 'bar',
+                        data: compValues,
+                        itemStyle: { color: order === 0 ? '#ff9800' : '#c084fc', borderRadius: [4, 4, 0,
+                                0] }
                     });
                 }
             });
             const option = {
-                backgroundColor:'transparent',
-                tooltip:{ trigger:'axis', axisPointer:{type:'shadow'} },
-                legend:{ data: series.map(s=>s.name), textStyle:{color:'#ccc'}, top:0 },
-                grid:{ left:'10%', right:'5%', top:'15%', bottom:'10%', containLabel:true },
-                xAxis:{ type:'value', axisLabel:{color:'#888'}, splitLine:{lineStyle:{color:'rgba(255,255,255,0.06)'}} },
-                yAxis:{ type:'category', data: categories, axisLabel:{color:'#ddd',fontSize:11}, axisLine:{lineStyle:{color:'#666'}} },
+                backgroundColor: 'transparent',
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                legend: { data: series.map(s => s.name), textStyle: { color: '#ccc' }, top: 0 },
+                grid: { left: '10%', right: '5%', top: '15%', bottom: '10%', containLabel: true },
+                xAxis: { type: 'value', axisLabel: { color: '#888' }, splitLine: { lineStyle: { color: 'rgba(255,255,255,0.06)' } } },
+                yAxis: { type: 'category', data: categories, axisLabel: { color: '#ddd', fontSize: 11 },
+                    axisLine: { lineStyle: { color: '#666' } } },
                 series: series
             };
             barChartInstance.setOption(option, true);
             barChartInstance.resize();
         }
 
-        // 热力图
         function renderHeatmap(players) {
             if (!heatmapChartInstance) {
                 heatmapChartInstance = echarts.init(document.getElementById('heatmapChart'), 'dark');
-                window.addEventListener('resize', () => { if (heatmapChartInstance) heatmapChartInstance.resize(); });
+                window.addEventListener('resize', () => { if (heatmapChartInstance) heatmapChartInstance
+                        .resize(); });
             }
             const config = positionConfigs[currentPosition];
             const indicators = config.labels;
@@ -1008,37 +2130,45 @@
                 maxVals[keyIdx] = maxVal || 1;
             });
             const normalizedData = data.map(item => [item[0], item[1], item[2] / maxVals[item[0]]]);
-
             const option = {
-                backgroundColor:'transparent',
+                backgroundColor: 'transparent',
                 tooltip: {
-                    position:'top',
+                    position: 'top',
                     formatter: function(params) {
-                        const xIdx = params.value[0], yIdx = params.value[1];
-                        const rawVal = data.find(d => d[0]===xIdx && d[1]===yIdx)[2];
+                        const xIdx = params.value[0],
+                            yIdx = params.value[1];
+                        const rawVal = data.find(d => d[0] === xIdx && d[1] === yIdx)[2];
                         return `${selectedPlayers[yIdx].player}<br>${config.labels[xIdx]}: ${rawVal.toFixed(2)}`;
                     }
                 },
-                grid:{ left:'15%', right:'5%', top:'10%', bottom:'15%', containLabel:true },
-                xAxis:{ type:'category', data: config.labels, splitArea:{show:true}, axisLabel:{color:'#ddd',fontSize:10,interval:0,rotate:30} },
-                yAxis:{ type:'category', data: selectedPlayers.map(p=>p.player), splitArea:{show:true}, axisLabel:{color:'#ddd',fontSize:10,width:100,overflow:'truncate'} },
-                visualMap:{ min:0, max:1, calculable:true, orient:'vertical', right:0, top:'center', itemWidth:12, itemHeight:100, text:['高','低'], textStyle:{color:'#888'}, inRange:{color:['#1a1d24','#00bcd4']} },
-                series:[{ type:'heatmap', data: normalizedData, label:{show:false}, emphasis:{itemStyle:{borderColor:'#fff',borderWidth:1}} }]
+                grid: { left: '15%', right: '5%', top: '10%', bottom: '15%', containLabel: true },
+                xAxis: { type: 'category', data: config.labels, splitArea: { show: true }, axisLabel: { color: '#ddd',
+                        fontSize: 10, interval: 0, rotate: 30 } },
+                yAxis: { type: 'category', data: selectedPlayers.map(p => p.player), splitArea: { show: true },
+                    axisLabel: { color: '#ddd', fontSize: 10, width: 100, overflow: 'truncate' } },
+                visualMap: { min: 0, max: 1, calculable: true, orient: 'vertical', right: 0, top: 'center',
+                    itemWidth: 12, itemHeight: 100, text: ['高', '低'], textStyle: { color: '#888' },
+                    inRange: { color: ['#1a1d24', '#00bcd4'] } },
+                series: [{ type: 'heatmap', data: normalizedData, label: { show: false },
+                    emphasis: { itemStyle: { borderColor: '#fff', borderWidth: 1 } } }]
             };
             heatmapChartInstance.setOption(option, true);
             heatmapChartInstance.resize();
         }
 
-        // 平行坐标
         function renderParallel(player) {
             if (!parallelChartInstance) {
                 parallelChartInstance = echarts.init(document.getElementById('parallelChart'), 'dark');
-                window.addEventListener('resize', () => { if (parallelChartInstance) parallelChartInstance.resize(); });
+                window.addEventListener('resize', () => { if (parallelChartInstance) parallelChartInstance
+                        .resize(); });
             }
             const config = positionConfigs[currentPosition];
             const parallelAxis = config.keys.map((key, idx) => ({
-                dim: idx, name: config.labels[idx], max: config.maxs[idx],
-                axisLabel:{color:'#888'}, nameTextStyle:{color:'#ddd'}
+                dim: idx,
+                name: config.labels[idx],
+                max: config.maxs[idx],
+                axisLabel: { color: '#888' },
+                nameTextStyle: { color: '#ddd' }
             }));
             const data = [];
             let playerValues = config.keys.map(key => {
@@ -1046,7 +2176,8 @@
                 if (key === 'kills_assists') val = (player.kills + player.assists);
                 return safeVal(val);
             });
-            data.push({ value: playerValues, name: player.player, lineStyle:{color:'#00d4e6',width:3}, itemStyle:{color:'#00d4e6'} });
+            data.push({ value: playerValues, name: player.player, lineStyle: { color: '#00d4e6', width: 3 },
+                itemStyle: { color: '#00d4e6' } });
             comparePlayers.forEach((idx, order) => {
                 const compPlayer = currentFilteredPlayers[idx];
                 if (compPlayer) {
@@ -1055,61 +2186,124 @@
                         if (key === 'kills_assists') val = (compPlayer.kills + compPlayer.assists);
                         return safeVal(val);
                     });
-                    data.push({ value: compValues, name: compPlayer.player, lineStyle:{color:order===0?'#ff9800':'#c084fc',width:2.5}, itemStyle:{color:order===0?'#ff9800':'#c084fc'} });
+                    data.push({ value: compValues, name: compPlayer.player, lineStyle: { color: order === 0 ?
+                                '#ff9800' : '#c084fc', width: 2.5 }, itemStyle: { color: order === 0 ?
+                                '#ff9800' : '#c084fc' } });
                 }
             });
             let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
-            data.push({ value: avgValues, name:'均值', lineStyle:{color:'#ff6b6b',width:2,type:'dashed'}, itemStyle:{color:'#ff6b6b'} });
-
+            data.push({ value: avgValues, name: '均值', lineStyle: { color: '#ff6b6b', width: 2, type: 'dashed' },
+                itemStyle: { color: '#ff6b6b' } });
             const option = {
-                backgroundColor:'transparent',
-                tooltip:{ trigger:'item', confine:true },
+                backgroundColor: 'transparent',
+                tooltip: { trigger: 'item', confine: true },
                 parallelAxis: parallelAxis,
-                parallel:{ left:'5%', right:'5%', top:'15%', bottom:'10%', parallelAxisDefault:{ axisLine:{lineStyle:{color:'#666'}}, axisLabel:{color:'#888'} } },
-                series:[{ type:'parallel', data:data, lineStyle:{width:3}, animationDuration:800 }]
+                parallel: { left: '5%', right: '5%', top: '15%', bottom: '10%', parallelAxisDefault: { axisLine: { lineStyle: { color: '#666' } },
+                        axisLabel: { color: '#888' } } },
+                series: [{ type: 'parallel', data: data, lineStyle: { width: 3 }, animationDuration: 800 }]
             };
             parallelChartInstance.setOption(option, true);
             parallelChartInstance.resize();
         }
 
-        // 导出图片 (修改点：等待所有图片加载完成后再截图)
-        function exportImage() {
-            loadingOverlay.classList.add('show');
-            loadingOverlay.querySelector('.loading-text').textContent = '图片处理中...';
+        // ============================================================
+        //  【保存图片模块 - 专业优化版】
+        // ============================================================
+        function updateExportProgress(pct, text) {
+            exportProgress.style.display = 'block';
+            exportProgressFill.style.width = pct + '%';
+            if (text) loadingOverlay.querySelector('.loading-text').textContent = text;
+        }
 
-            const mainArea = document.querySelector('.main-area');
-            if (!mainArea) return;
+        async function exportImage() {
+            const overlay = loadingOverlay;
+            const loadingText = overlay.querySelector('.loading-text');
+            overlay.classList.add('show');
+            exportProgress.style.display = 'block';
+            exportProgressFill.style.width = '0%';
+            loadingText.textContent = '准备导出...';
 
-            // 预加载 mainArea 内的所有图片，包括头像和英雄图片
-            const images = mainArea.querySelectorAll('img');
-            const promises = Array.from(images).map(img => {
-                if (img.complete && img.naturalWidth > 0) return Promise.resolve();
-                return new Promise(resolve => {
-                    img.onload = resolve;
-                    img.onerror = resolve;
-                });
-            });
-
-            Promise.all(promises).then(() => {
-                setTimeout(() => {
-                    html2canvas(mainArea, {
-                        backgroundColor:'#0b0d12', scale:2, useCORS:true, allowTaint:false, logging:false,
-                        scrollX:0, scrollY:-window.scrollY,
-                        windowWidth: document.documentElement.offsetWidth,
-                        windowHeight: document.documentElement.offsetHeight,
-                    }).then(canvas => {
-                        const link = document.createElement('a');
-                        link.download = `H武道会_${currentPosition}_${currentTeam}_全景_${new Date().toISOString().slice(0,10)}.png`;
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        loadingOverlay.classList.remove('show');
-                    }).catch(err => { 
-                        console.error('导出失败:', err); 
-                        alert('导出图片失败，请重试'); 
-                        loadingOverlay.classList.remove('show');
+            try {
+                // 步骤1：收集所有需要预加载的图片
+                updateExportProgress(10, '预加载图片资源...');
+                const images = mainArea.querySelectorAll('img');
+                const imagePromises = Array.from(images).map(img => {
+                    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                    return new Promise(resolve => {
+                        const timeout = setTimeout(() => { resolve(); }, 5000); // 5秒超时
+                        img.addEventListener('load', () => { clearTimeout(timeout);
+                            resolve(); }, { once: true });
+                        img.addEventListener('error', () => { clearTimeout(timeout);
+                            resolve(); }, { once: true });
+                        // 如果图片已经加载完成但naturalWidth为0，强制重新加载
+                        if (img.complete && img.naturalWidth === 0) {
+                            const src = img.src;
+                            img.src = '';
+                            img.src = src;
+                        }
                     });
-                }, 300);
-            });
+                });
+                await Promise.all(imagePromises);
+
+                // 步骤2：确保ECharts图表已完成渲染
+                updateExportProgress(35, '等待图表渲染...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                // 触发ECharts resize确保尺寸正确
+                if (myChart) myChart.resize();
+                if (scatterChartInstance) scatterChartInstance.resize();
+                if (barChartInstance) barChartInstance.resize();
+                if (heatmapChartInstance) heatmapChartInstance.resize();
+                if (parallelChartInstance) parallelChartInstance.resize();
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // 步骤3：截图
+                updateExportProgress(55, '生成高清图片...');
+                const canvas = await html2canvas(mainArea, {
+                    backgroundColor: '#0b0d12',
+                    scale: 3, // 提高分辨率到3倍
+                    useCORS: true,
+                    allowTaint: false,
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: -window.scrollY,
+                    windowWidth: document.documentElement.offsetWidth,
+                    windowHeight: document.documentElement.offsetHeight,
+                    onclone: function(clonedDoc) {
+                        // 在克隆文档中修复可能存在的渲染问题
+                        const clonedImages = clonedDoc.querySelectorAll('img');
+                        clonedImages.forEach(img => {
+                            if (img.complete && img.naturalWidth === 0) {
+                                img.style.visibility = 'hidden';
+                            }
+                        });
+                    }
+                });
+
+                // 步骤4：下载
+                updateExportProgress(85, '保存文件...');
+                const playerName = currentFilteredPlayers.length > 0 && currentFilteredPlayers[currentPlayerIndex] ?
+                    currentFilteredPlayers[currentPlayerIndex].player.replace(/[^\w\u4e00-\u9fa5]/g, '_') :
+                    '未知选手';
+                const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
+                const filename =
+                    `H武道会_${currentPosition}_${playerName}_${timestamp}.png`;
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                updateExportProgress(100, '导出完成 ✓');
+                await new Promise(resolve => setTimeout(resolve, 600));
+            } catch (error) {
+                console.error('导出失败:', error);
+                loadingText.textContent = '导出失败，请重试';
+                await new Promise(resolve => setTimeout(resolve, 1200));
+            } finally {
+                overlay.classList.remove('show');
+                exportProgress.style.display = 'none';
+                exportProgressFill.style.width = '0%';
+                loadingText.textContent = '数据加载中...';
+            }
         }
 
         // 启动
