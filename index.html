@@ -6,6 +6,8 @@
     <title>H·武道会 · 数据展示</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+    </script>
     <style>
         /* ===== 全局重置 ===== */
         * {
@@ -754,57 +756,7 @@
             font-weight: 600;
         }
 
-        /* 表格视图 */
-        .table-view {
-            position: absolute;
-            inset: 0;
-            padding: 20px;
-            overflow: auto;
-            display: none;
-            scrollbar-width: thin;
-            scrollbar-color: #7a3df0 transparent;
-        }
-        .table-view.active {
-            display: block;
-        }
-        .table-view table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .table-view th {
-            background: rgba(122, 61, 240, 0.15);
-            color: #ccc;
-            padding: 10px 12px;
-            text-align: left;
-            font-weight: 600;
-            cursor: pointer;
-            user-select: none;
-            position: sticky;
-            top: 0;
-            z-index: 2;
-        }
-        .table-view th:hover {
-            background: rgba(122, 61, 240, 0.25);
-        }
-        .table-view td {
-            padding: 9px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #ddd;
-        }
-        .table-view tr:hover td {
-            background: rgba(255, 255, 255, 0.03);
-        }
-        .table-view .sort-icon {
-            font-size: 10px;
-            margin-left: 4px;
-            opacity: 0.6;
-        }
-
-        /* 散点图容器 */
+        /* ===== 散点图容器 ===== */
         #scatterChart {
             position: absolute;
             inset: 0;
@@ -1038,9 +990,8 @@
             <input type="text" class="search-input" id="playerSearch" placeholder="🔍 搜索选手...">
             <div class="view-switch">
                 <button class="view-btn active" data-view="radar">雷达图</button>
-                <button class="view-btn" data-view="table">表格</button>
                 <button class="view-btn" data-view="scatter">散点图</button>
-                <button class="export-btn" id="exportBtn">导出CSV</button>
+                <button class="export-btn" id="exportBtn">导出图片</button>
             </div>
         </div>
 
@@ -1121,8 +1072,6 @@
                 <div class="avg-note">
                     <span class="red-dot">●</span> 均值 &nbsp;<span class="blue-dot">●</span> 选手
                 </div>
-                <!-- 表格容器 -->
-                <div class="table-view" id="tableView"></div>
                 <!-- 散点图容器 -->
                 <div id="scatterChart"></div>
             </div>
@@ -1208,9 +1157,8 @@
         let isDataLoaded = false;
         let currentFilteredPlayers = [];
         let searchTerm = '';
-        let currentView = 'radar'; // 'radar', 'table', 'scatter'
+        let currentView = 'radar'; // 'radar', 'scatter'
         let comparePlayers = []; // 存储对比的选手索引（最多两个）
-        let sortState = { key: null, asc: true };
 
         // ============================================================
         //  DOM 引用
@@ -1221,9 +1169,9 @@
         const loadingOverlay = document.getElementById('loadingOverlay');
         const playerSearch = document.getElementById('playerSearch');
         const viewBtns = document.querySelectorAll('.view-btn');
-        const tableView = document.getElementById('tableView');
         const scatterChartDiv = document.getElementById('scatterChart');
         const exportBtn = document.getElementById('exportBtn');
+        const rightPanel = document.querySelector('.right-panel');
 
         // ============================================================
         //  工具
@@ -1322,8 +1270,8 @@
                     });
                 });
 
-                // 导出CSV
-                exportBtn.addEventListener('click', exportCSV);
+                // 导出图片
+                exportBtn.addEventListener('click', exportImage);
 
                 updateView();
 
@@ -1496,13 +1444,11 @@
             // 更新左侧指标
             updateLeftStats(player);
 
-            // 更新右侧指标 (雷达图或散点图或表格)
+            // 更新右侧视图
             updateViewVisibility();
             if (currentView === 'radar') {
                 renderStatsWrapper(player);
                 renderRadar(player);
-            } else if (currentView === 'table') {
-                renderTable(players);
             } else if (currentView === 'scatter') {
                 renderScatterChart(players);
             }
@@ -1516,14 +1462,10 @@
             radarChart.style.display = currentView === 'radar' ? 'block' : 'none';
             statsWrapper.style.display = currentView === 'radar' ? 'block' : 'none';
             avgNote.style.display = currentView === 'radar' ? 'block' : 'none';
-            tableView.classList.toggle('active', currentView === 'table');
             scatterChartDiv.classList.toggle('active', currentView === 'scatter');
 
             if (currentView === 'radar' && myChart) {
                 myChart.resize();
-            } else if (currentView === 'table') {
-                // 确保表格最新
-                if (currentFilteredPlayers.length) renderTable(currentFilteredPlayers);
             } else if (currentView === 'scatter') {
                 if (currentFilteredPlayers.length) renderScatterChart(currentFilteredPlayers);
             }
@@ -1646,10 +1588,8 @@
                 max: config.maxs[index]
             }));
 
-            // 准备数据系列
             const seriesData = [];
 
-            // 主选手数据
             let playerValues = config.keys.map(key => {
                 let val = player[key];
                 if (key === 'kills_assists') val = (player.kills + player.assists);
@@ -1676,7 +1616,6 @@
                 }
             });
 
-            // 对比选手数据
             comparePlayers.forEach(idx => {
                 const compPlayer = currentFilteredPlayers[idx];
                 if (compPlayer) {
@@ -1701,7 +1640,6 @@
                 }
             });
 
-            // 均值数据（虚线）
             let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
             seriesData.push({
                 value: avgValues,
@@ -1733,10 +1671,8 @@
                         if (!params || params.seriesIndex === undefined) return '';
                         const seriesIdx = params.seriesIndex;
                         if (seriesIdx === seriesData.length - 1) {
-                            // 均值
                             return buildRadarTooltip(player, config, false);
                         } else {
-                            // 选手数据
                             const dataPlayer = seriesIdx === 0 ? player : currentFilteredPlayers[comparePlayers[
                                 seriesIdx - 1]];
                             return dataPlayer ? buildRadarTooltip(dataPlayer, config, true) : '';
@@ -1765,95 +1701,6 @@
         }
 
         // ============================================================
-        //  渲染表格视图
-        // ============================================================
-        function renderTable(players) {
-            const config = positionConfigs[currentPosition];
-            // 确定显示的列：选手名 + KDA + 其他关键指标
-            const columns = [
-                { key: 'player', label: '选手', sortable: false },
-                { key: 'kda', label: 'KDA', sortable: true },
-                { key: 'kills', label: '击杀', sortable: true },
-                { key: 'deaths', label: '死亡', sortable: true },
-                { key: 'assists', label: '助攻', sortable: true },
-                ...config.keys.filter(k => k !== 'kda' && k !== 'kills_assists').map(k => ({
-                    key: k,
-                    label: config.labels[config.keys.indexOf(k)],
-                    sortable: true
-                }))
-            ];
-
-            // 生成表头
-            let tableHtml = '<table><thead><tr>';
-            columns.forEach(col => {
-                const sortIcon = sortState.key === col.key ? (sortState.asc ? '▲' : '▼') : '';
-                tableHtml +=
-                    `<th data-key="${col.key}" data-sortable="${col.sortable}" style="cursor:${col.sortable ? 'pointer' : 'default'}">${col.label} ${sortIcon}</th>`;
-            });
-            tableHtml += '</tr></thead><tbody>';
-
-            // 排序数据
-            let sortedPlayers = [...players];
-            if (sortState.key) {
-                const key = sortState.key;
-                sortedPlayers.sort((a, b) => {
-                    let va = a[key];
-                    let vb = b[key];
-                    if (key === 'kda') {
-                        va = safeVal(a.kda);
-                        vb = safeVal(b.kda);
-                    } else if (key === 'kills' || key === 'deaths' || key === 'assists') {
-                        va = safeVal(a[key]);
-                        vb = safeVal(b[key]);
-                    } else {
-                        va = safeVal(a[key]);
-                        vb = safeVal(b[key]);
-                    }
-                    if (va === vb) return 0;
-                    return sortState.asc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
-                });
-            }
-
-            // 生成行
-            sortedPlayers.forEach((p, idx) => {
-                const isCurrent = idx === currentPlayerIndex;
-                tableHtml += `<tr style="${isCurrent ? 'background:rgba(122,61,240,0.1);' : ''}">`;
-                columns.forEach(col => {
-                    let val = p[col.key];
-                    if (col.key === 'kda') {
-                        val = `${p.kills}/${p.deaths}/${p.assists}`;
-                    } else if (col.key === 'player') {
-                        val = p.player;
-                    } else if (col.key === 'kills_assists') {
-                        val = p.kills + p.assists;
-                    } else {
-                        val = safeVal(val);
-                        val = typeof val === 'number' ? val.toFixed(1) : val;
-                    }
-                    tableHtml += `<td>${val}</td>`;
-                });
-                tableHtml += '</tr>';
-            });
-
-            tableHtml += '</tbody></table>';
-            tableView.innerHTML = tableHtml;
-
-            // 绑定表头点击排序
-            tableView.querySelectorAll('th[data-sortable="true"]').forEach(th => {
-                th.addEventListener('click', () => {
-                    const key = th.dataset.key;
-                    if (sortState.key === key) {
-                        sortState.asc = !sortState.asc;
-                    } else {
-                        sortState.key = key;
-                        sortState.asc = true;
-                    }
-                    renderTable(players);
-                });
-            });
-        }
-
-        // ============================================================
         //  渲染散点图
         // ============================================================
         function renderScatterChart(players) {
@@ -1864,9 +1711,8 @@
                 });
             }
 
-            // 以伤害占比 vs 经济占比为例，也可以选择其他组合
-            const xKey = 'goldpm'; // 分均经济
-            const yKey = 'dmgshare'; // 伤害占比
+            const xKey = 'goldpm';
+            const yKey = 'dmgshare';
             const xLabel = '分均经济';
             const yLabel = '伤害占比 (%)';
 
@@ -1926,38 +1772,28 @@
         }
 
         // ============================================================
-        //  导出CSV
+        //  导出当前图片
         // ============================================================
-        function exportCSV() {
-            if (!currentFilteredPlayers.length) return;
-            const config = positionConfigs[currentPosition];
-            const headers = ['选手', 'KDA', '击杀', '死亡', '助攻', ...config.labels.map((l, i) => config.keys[i] !== 'kda' &&
-                config.keys[i] !== 'kills_assists' ? l : '').filter(Boolean)];
-
-            let csv = headers.join(',') + '\n';
-            currentFilteredPlayers.forEach(p => {
-                const row = [
-                    p.player,
-                    `${p.kills}/${p.deaths}/${p.assists}`,
-                    p.kills,
-                    p.deaths,
-                    p.assists,
-                    ...config.keys.filter(k => k !== 'kda' && k !== 'kills_assists').map(k => {
-                        let val = p[k];
-                        if (k === 'kills_assists') val = p.kills + p.assists;
-                        return safeVal(val).toFixed(1);
-                    })
-                ];
-                csv += row.join(',') + '\n';
-            });
-
-            // 下载
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `H武道会_${currentPosition}_${currentTeam}_${new Date().toISOString().slice(0,10)}.csv`;
-            link.click();
-            URL.revokeObjectURL(link.href);
+        function exportImage() {
+            // 隐藏加载遮罩（如果有）
+            loadingOverlay.classList.remove('show');
+            // 确保图表已渲染完成
+            setTimeout(() => {
+                html2canvas(rightPanel, {
+                    backgroundColor: '#0b0d12',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `H武道会_${currentPosition}_${currentTeam}_${new Date().toISOString().slice(0,10)}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }).catch(err => {
+                    console.error('导出失败:', err);
+                    alert('导出图片失败，请重试');
+                });
+            }, 300);
         }
 
         // ============================================================
