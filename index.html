@@ -1642,7 +1642,7 @@
         }
 
         // ============================================================
-        //  渲染雷达图（支持对比）
+        //  渲染雷达图（优化版：指标名称、渐变、动画、对比高亮）
         // ============================================================
         function renderRadar(player) {
             const chartDom = document.getElementById('radarChart');
@@ -1655,12 +1655,13 @@
 
             const config = positionConfigs[currentPosition];
             const indicator = config.keys.map((key, index) => ({
-                name: '',
+                name: config.labels[index],
                 max: config.maxs[index]
             }));
 
             const seriesData = [];
 
+            // 当前选手系列
             let playerValues = config.keys.map(key => {
                 let val = player[key];
                 if (key === 'kills_assists') val = (player.kills + player.assists);
@@ -1669,25 +1670,41 @@
             seriesData.push({
                 value: playerValues,
                 name: player.player,
-                itemStyle: { color: '#00d4e6' },
+                itemStyle: {
+                    color: '#00d4e6',
+                    shadowBlur: 20,
+                    shadowColor: 'rgba(0,212,230,0.5)'
+                },
+                lineStyle: {
+                    color: '#00d4e6',
+                    width: 3,
+                    shadowBlur: 15,
+                    shadowColor: 'rgba(0,212,230,0.4)'
+                },
                 areaStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: 'rgba(0,212,230,0.30)' },
-                        { offset: 1, color: 'rgba(0,212,230,0.03)' }
+                        { offset: 0, color: 'rgba(0,212,230,0.35)' },
+                        { offset: 0.6, color: 'rgba(0,212,230,0.10)' },
+                        { offset: 1, color: 'rgba(0,212,230,0.02)' }
                     ])
                 },
-                lineStyle: { color: '#00d4e6', width: 2.5 },
                 symbol: 'circle',
-                symbolSize: 7,
+                symbolSize: 8,
                 emphasis: {
-                    lineStyle: { width: 3.5, color: '#00d4e6' },
-                    itemStyle: { color: '#00d4e6', borderColor: '#fff', borderWidth: 2, shadowBlur: 20,
-                        shadowColor: 'rgba(0,212,230,0.6)' },
-                    areaStyle: { color: 'rgba(0,212,230,0.45)' }
+                    lineStyle: { width: 4, color: '#00d4e6' },
+                    itemStyle: {
+                        color: '#00d4e6',
+                        borderColor: '#fff',
+                        borderWidth: 3,
+                        shadowBlur: 25,
+                        shadowColor: 'rgba(0,212,230,0.8)'
+                    },
+                    areaStyle: { color: 'rgba(0,212,230,0.5)' }
                 }
             });
 
-            comparePlayers.forEach(idx => {
+            // 对比选手系列（最多两个）
+            comparePlayers.forEach((idx, order) => {
                 const compPlayer = currentFilteredPlayers[idx];
                 if (compPlayer) {
                     let compValues = config.keys.map(key => {
@@ -1695,31 +1712,55 @@
                         if (key === 'kills_assists') val = (compPlayer.kills + compPlayer.assists);
                         return safeVal(val);
                     });
+                    const color = order === 0 ? '#ff9800' : '#c084fc';
                     seriesData.push({
                         value: compValues,
                         name: compPlayer.player,
-                        itemStyle: { color: '#ff9800' },
-                        areaStyle: { color: 'rgba(255,152,0,0.15)' },
-                        lineStyle: { color: '#ff9800', width: 2, type: 'solid' },
+                        itemStyle: {
+                            color: color,
+                            shadowBlur: 15,
+                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.5)' : 'rgba(192,132,252,0.5)'
+                        },
+                        lineStyle: {
+                            color: color,
+                            width: 2.5,
+                            type: 'solid',
+                            shadowBlur: 10,
+                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.4)' : 'rgba(192,132,252,0.4)'
+                        },
+                        areaStyle: {
+                            color: color === '#ff9800' ? 'rgba(255,152,0,0.12)' : 'rgba(192,132,252,0.12)'
+                        },
                         symbol: 'circle',
-                        symbolSize: 5,
+                        symbolSize: 6,
                         emphasis: {
-                            lineStyle: { width: 3, color: '#ff9800' },
-                            itemStyle: { color: '#ff9800', borderColor: '#fff', borderWidth: 2 }
+                            lineStyle: { width: 3.5, color: color },
+                            itemStyle: { color: color, borderColor: '#fff', borderWidth: 2.5 }
                         }
                     });
                 }
             });
 
+            // 均值系列
             let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
             seriesData.push({
                 value: avgValues,
                 name: '均值',
-                itemStyle: { color: '#ff6b6b' },
+                itemStyle: {
+                    color: '#ff6b6b',
+                    shadowBlur: 8,
+                    shadowColor: 'rgba(255,107,107,0.3)'
+                },
+                lineStyle: {
+                    color: '#ff6b6b',
+                    width: 1.8,
+                    type: 'dashed',
+                    shadowBlur: 5,
+                    shadowColor: 'rgba(255,107,107,0.2)'
+                },
                 areaStyle: { color: 'transparent' },
-                lineStyle: { color: '#ff6b6b', width: 1.5, type: 'dashed' },
                 symbol: 'diamond',
-                symbolSize: 5,
+                symbolSize: 6,
                 emphasis: {
                     lineStyle: { width: 2.5, color: '#ff6b6b' },
                     itemStyle: { color: '#ff6b6b', borderColor: '#fff', borderWidth: 1.5 }
@@ -1728,6 +1769,10 @@
 
             const option = {
                 backgroundColor: 'transparent',
+                animationDuration: 800,
+                animationDurationUpdate: 600,
+                animationEasing: 'cubicOut',
+                animationEasingUpdate: 'cubicInOut',
                 tooltip: {
                     trigger: 'item',
                     confine: true,
@@ -1753,13 +1798,38 @@
                 radar: {
                     indicator: indicator,
                     center: ['50%', '48%'],
-                    radius: '70%',
+                    radius: '72%',
                     splitNumber: 4,
                     shape: 'polygon',
-                    splitArea: { areaStyle: { color: ['rgba(122,61,240,0.02)', 'rgba(122,61,240,0.05)'] } },
-                    axisLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.07)', width: 1 } },
-                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.06)', width: 1 } },
-                    axisName: { show: false }
+                    splitArea: {
+                        areaStyle: {
+                            color: ['rgba(122,61,240,0.03)', 'rgba(122,61,240,0.07)']
+                        }
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: 'rgba(255,255,255,0.12)',
+                            width: 1.2
+                        }
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(255,255,255,0.08)',
+                            width: 1
+                        }
+                    },
+                    axisName: {
+                        show: true,
+                        color: '#ccc',
+                        fontSize: 11,
+                        fontWeight: 500,
+                        distance: 12,
+                        backgroundColor: 'rgba(0,0,0,0.4)',
+                        borderRadius: 6,
+                        padding: [2, 6],
+                        lineHeight: 16,
+                    }
                 },
                 series: [{
                     type: 'radar',
@@ -1772,7 +1842,7 @@
         }
 
         // ============================================================
-        //  渲染气泡图（改进版）
+        //  渲染气泡图（优化版：颜色映射、动态大小、均值参考线）
         // ============================================================
         function renderScatterChart(players) {
             if (!scatterChartInstance) {
@@ -1780,7 +1850,6 @@
                 window.addEventListener('resize', () => {
                     if (scatterChartInstance) scatterChartInstance.resize();
                 });
-                // 绑定点击事件
                 scatterChartInstance.on('click', function(params) {
                     if (params.data && params.data.playerIndex !== undefined) {
                         const idx = params.data.playerIndex;
@@ -1798,7 +1867,6 @@
             const xLabel = '分均经济';
             const yLabel = '伤害占比 (%)';
 
-            // 计算动态范围
             const allDpm = players.map(p => safeVal(p[sizeKey]));
             const minDpm = Math.min(...allDpm, 0);
             const maxDpm = Math.max(...allDpm, 1);
@@ -1807,11 +1875,9 @@
             const minKda = Math.min(...allKda, 0);
             const maxKda = Math.max(...allKda, 1);
 
-            // 计算均值
             const avgX = players.reduce((sum, p) => sum + safeVal(p[xKey]), 0) / players.length;
             const avgY = players.reduce((sum, p) => sum + safeVal(p[yKey]), 0) / players.length;
 
-            // 轴范围（添加padding）
             const allX = players.map(p => safeVal(p[xKey]));
             const allY = players.map(p => safeVal(p[yKey]));
             const xMin = Math.min(...allX);
@@ -1821,14 +1887,12 @@
             const xPad = (xMax - xMin) * 0.12 || 50;
             const yPad = (yMax - yMin) * 0.15 || 5;
 
-            // 构建数据
             const data = players.map((p, idx) => {
                 const kda = safeVal(p.kda);
                 const dpm = safeVal(p[sizeKey]);
                 const isCurrent = idx === currentPlayerIndex;
                 const isCompare = comparePlayers.includes(idx);
 
-                // 气泡大小：8-28之间映射dpm
                 const sizeRatio = maxDpm > minDpm ? (dpm - minDpm) / (maxDpm - minDpm) : 0.5;
                 let symbolSize = 8 + sizeRatio * 20;
                 if (isCurrent) symbolSize += 7;
@@ -1841,7 +1905,6 @@
                     playerIndex: idx,
                     symbolSize: symbolSize,
                     itemStyle: {
-                        // 不设置color，让visualMap控制
                         opacity: isCurrent ? 1 : (isCompare ? 0.9 : 0.72),
                         borderColor: isCurrent ? '#ffffff' : (isCompare ? '#ff9800' : 'transparent'),
                         borderWidth: isCurrent ? 3 : (isCompare ? 2.5 : 0),
