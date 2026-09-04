@@ -212,6 +212,7 @@
             display: flex;
             gap: 8px;
             margin-left: auto;
+            flex-wrap: wrap;
         }
         .view-btn {
             background: rgba(42, 47, 56, 0.6);
@@ -304,6 +305,7 @@
             flex-shrink: 0;
             white-space: nowrap;
             position: relative;
+            user-select: none;
         }
         .player-chip:hover {
             background: rgba(255, 255, 255, 0.08);
@@ -763,9 +765,60 @@
             display: none;
             width: 100%;
             height: 100%;
+            cursor: pointer;
         }
         #scatterChart.active {
             display: block;
+        }
+
+        /* 散点图图例覆盖层 */
+        .scatter-legend-overlay {
+            position: absolute;
+            left: 14px;
+            bottom: 12px;
+            z-index: 15;
+            display: none;
+            font-size: 10px;
+            color: #888;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 6px 12px;
+            border-radius: 16px;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+            letter-spacing: 0.3px;
+            line-height: 1.6;
+        }
+        .scatter-legend-overlay.show {
+            display: block;
+        }
+        .scatter-legend-overlay .legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .scatter-legend-overlay .legend-dot.white {
+            border: 2px solid #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .scatter-legend-overlay .legend-dot.orange {
+            border: 2px solid #ff9800;
+            background: rgba(255, 152, 0, 0.2);
+        }
+        .scatter-legend-overlay .legend-dot.small {
+            width: 5px;
+            height: 5px;
+            background: #00bcd4;
+            opacity: 0.7;
+        }
+        .scatter-legend-overlay .legend-dot.large {
+            width: 14px;
+            height: 14px;
+            background: #00bcd4;
+            opacity: 0.7;
         }
 
         /* ===== 加载状态 ===== */
@@ -874,6 +927,12 @@
             .pos-left {
                 left: 3.5%;
             }
+            .scatter-legend-overlay {
+                left: 8px;
+                bottom: 6px;
+                font-size: 9px;
+                padding: 4px 10px;
+            }
         }
         @media (max-width: 600px) {
             body {
@@ -964,6 +1023,9 @@
                 padding: 6px 12px;
                 font-size: 11px;
             }
+            .scatter-legend-overlay {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -990,7 +1052,7 @@
             <input type="text" class="search-input" id="playerSearch" placeholder="🔍 搜索选手...">
             <div class="view-switch">
                 <button class="view-btn active" data-view="radar">雷达图</button>
-                <button class="view-btn" data-view="scatter">散点图</button>
+                <button class="view-btn" data-view="scatter">气泡图</button>
                 <button class="export-btn" id="exportBtn">导出图片</button>
             </div>
         </div>
@@ -1074,6 +1136,13 @@
                 </div>
                 <!-- 散点图容器 -->
                 <div id="scatterChart"></div>
+                <!-- 散点图图例 -->
+                <div class="scatter-legend-overlay" id="scatterLegend">
+                    <span><span class="legend-dot small"></span>气泡大小=分均伤害</span><br>
+                    <span><span class="legend-dot" style="background:#e74c3c;"></span>低KDA → <span class="legend-dot" style="background:#ffd700;"></span>高KDA</span><br>
+                    <span><span class="legend-dot white"></span>当前选手</span>
+                    <span style="margin-left:10px;"><span class="legend-dot orange"></span>对比选手</span>
+                </div>
             </div>
         </div>
     </div>
@@ -1172,6 +1241,7 @@
         const scatterChartDiv = document.getElementById('scatterChart');
         const exportBtn = document.getElementById('exportBtn');
         const rightPanel = document.querySelector('.right-panel');
+        const scatterLegend = document.getElementById('scatterLegend');
 
         // ============================================================
         //  工具
@@ -1463,6 +1533,7 @@
             statsWrapper.style.display = currentView === 'radar' ? 'block' : 'none';
             avgNote.style.display = currentView === 'radar' ? 'block' : 'none';
             scatterChartDiv.classList.toggle('active', currentView === 'scatter');
+            scatterLegend.classList.toggle('show', currentView === 'scatter');
 
             if (currentView === 'radar' && myChart) {
                 myChart.resize();
@@ -1701,7 +1772,7 @@
         }
 
         // ============================================================
-        //  渲染散点图
+        //  渲染气泡图（改进版）
         // ============================================================
         function renderScatterChart(players) {
             if (!scatterChartInstance) {
@@ -1709,62 +1780,221 @@
                 window.addEventListener('resize', () => {
                     if (scatterChartInstance) scatterChartInstance.resize();
                 });
+                // 绑定点击事件
+                scatterChartInstance.on('click', function(params) {
+                    if (params.data && params.data.playerIndex !== undefined) {
+                        const idx = params.data.playerIndex;
+                        if (idx === currentPlayerIndex) return;
+                        currentPlayerIndex = idx;
+                        comparePlayers = [];
+                        updateView();
+                    }
+                });
             }
 
             const xKey = 'goldpm';
             const yKey = 'dmgshare';
+            const sizeKey = 'dpm';
             const xLabel = '分均经济';
             const yLabel = '伤害占比 (%)';
 
-            const data = players.map(p => ({
-                value: [safeVal(p[xKey]), safeVal(p[yKey])],
-                name: p.player,
-                player: p,
-                symbolSize: 12,
-                itemStyle: { color: '#00bcd4' }
-            }));
+            // 计算动态范围
+            const allDpm = players.map(p => safeVal(p[sizeKey]));
+            const minDpm = Math.min(...allDpm, 0);
+            const maxDpm = Math.max(...allDpm, 1);
+
+            const allKda = players.map(p => safeVal(p.kda));
+            const minKda = Math.min(...allKda, 0);
+            const maxKda = Math.max(...allKda, 1);
+
+            // 计算均值
+            const avgX = players.reduce((sum, p) => sum + safeVal(p[xKey]), 0) / players.length;
+            const avgY = players.reduce((sum, p) => sum + safeVal(p[yKey]), 0) / players.length;
+
+            // 轴范围（添加padding）
+            const allX = players.map(p => safeVal(p[xKey]));
+            const allY = players.map(p => safeVal(p[yKey]));
+            const xMin = Math.min(...allX);
+            const xMax = Math.max(...allX);
+            const yMin = Math.min(...allY);
+            const yMax = Math.max(...allY);
+            const xPad = (xMax - xMin) * 0.12 || 50;
+            const yPad = (yMax - yMin) * 0.15 || 5;
+
+            // 构建数据
+            const data = players.map((p, idx) => {
+                const kda = safeVal(p.kda);
+                const dpm = safeVal(p[sizeKey]);
+                const isCurrent = idx === currentPlayerIndex;
+                const isCompare = comparePlayers.includes(idx);
+
+                // 气泡大小：8-28之间映射dpm
+                const sizeRatio = maxDpm > minDpm ? (dpm - minDpm) / (maxDpm - minDpm) : 0.5;
+                let symbolSize = 8 + sizeRatio * 20;
+                if (isCurrent) symbolSize += 7;
+                if (isCompare) symbolSize += 3;
+
+                return {
+                    value: [safeVal(p[xKey]), safeVal(p[yKey]), kda, dpm],
+                    name: p.player,
+                    player: p,
+                    playerIndex: idx,
+                    symbolSize: symbolSize,
+                    itemStyle: {
+                        // 不设置color，让visualMap控制
+                        opacity: isCurrent ? 1 : (isCompare ? 0.9 : 0.72),
+                        borderColor: isCurrent ? '#ffffff' : (isCompare ? '#ff9800' : 'transparent'),
+                        borderWidth: isCurrent ? 3 : (isCompare ? 2.5 : 0),
+                        shadowBlur: isCurrent ? 30 : (isCompare ? 18 : 6),
+                        shadowColor: isCurrent ? 'rgba(255,255,255,0.7)' : (isCompare ? 'rgba(255,152,0,0.6)' :
+                            'rgba(0,0,0,0.35)'),
+                    },
+                    label: {
+                        show: isCurrent || isCompare,
+                        formatter: '{b}',
+                        position: 'top',
+                        distance: 6,
+                        color: isCurrent ? '#ffffff' : '#ff9800',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        textShadowColor: 'rgba(0,0,0,0.85)',
+                        textShadowBlur: 5,
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 13,
+                        },
+                        itemStyle: {
+                            shadowBlur: 35,
+                            shadowColor: 'rgba(255,255,255,0.65)',
+                            borderWidth: isCurrent ? 3 : 2,
+                            borderColor: isCurrent ? '#fff' : '#ff9800',
+                            opacity: 1,
+                        }
+                    }
+                };
+            });
 
             const option = {
                 backgroundColor: 'transparent',
+                animation: true,
+                animationDuration: 700,
+                animationEasing: 'elasticOut',
+                animationDelay: function(idx) {
+                    return Math.min(idx * 40, 600);
+                },
                 tooltip: {
                     trigger: 'item',
+                    confine: true,
+                    backgroundColor: 'rgba(18,20,26,0.95)',
+                    borderColor: 'rgba(0,188,212,0.35)',
+                    borderWidth: 1,
+                    borderRadius: 14,
+                    padding: [14, 18],
+                    extraCssText: 'backdrop-filter: blur(18px); box-shadow: 0 10px 40px rgba(0,0,0,0.65); max-width: 280px;',
+                    textStyle: { color: '#eee', fontSize: 12 },
                     formatter: function(params) {
+                        if (!params || !params.data) return '';
                         const p = params.data.player;
-                        return `<strong>${p.player}</strong><br/>
-                                分均经济: ${safeVal(p.goldpm).toFixed(1)}<br/>
-                                伤害占比: ${safeVal(p.dmgshare).toFixed(1)}%<br/>
-                                KDA: ${p.kills}/${p.deaths}/${p.assists}`;
+                        const isCur = params.data.playerIndex === currentPlayerIndex;
+                        const isComp = comparePlayers.includes(params.data.playerIndex);
+                        const badge = isCur ? '⭐ 当前选手' : (isComp ? '🔶 对比选手' : '');
+                        return `
+                                <div style="font-weight:700;font-size:14px;margin-bottom:4px;color:${isCur ? '#fff' : (isComp ? '#ff9800' : '#00d4e6')};">
+                                    ${p.player} ${badge ? '<span style="font-size:10px;color:#fcd34d;">'+badge+'</span>' : ''}
+                                </div>
+                                <div style="font-size:11px;color:#888;margin-bottom:10px;">KDA: ${p.kills}/${p.deaths}/${p.assists}</div>
+                                <div style="display:grid;grid-template-columns:1fr auto;gap:3px 18px;font-size:12px;">
+                                    <span style="color:#aaa;">分均经济</span>
+                                    <span style="color:#00d4e6;font-weight:600;">${safeVal(p[xKey]).toFixed(1)}</span>
+                                    <span style="color:#aaa;">伤害占比</span>
+                                    <span style="color:#00d4e6;font-weight:600;">${safeVal(p[yKey]).toFixed(1)}%</span>
+                                    <span style="color:#aaa;">分均伤害</span>
+                                    <span style="color:#00d4e6;font-weight:600;">${safeVal(p[sizeKey]).toFixed(0)}</span>
+                                    <span style="color:#aaa;">KDA值</span>
+                                    <span style="color:#fcd34d;font-weight:700;">${safeVal(p.kda).toFixed(2)}</span>
+                                </div>
+                                <div style="margin-top:8px;font-size:10px;color:#666;">💡 点击切换选手 | Ctrl+点击对比</div>
+                            `;
                     }
                 },
+                visualMap: {
+                    dimension: 2,
+                    min: minKda,
+                    max: maxKda,
+                    calculable: false,
+                    orient: 'vertical',
+                    right: 4,
+                    top: 'center',
+                    itemWidth: 12,
+                    itemHeight: 80,
+                    text: ['高KDA', '低KDA'],
+                    textStyle: { color: '#888', fontSize: 10 },
+                    inRange: {
+                        color: ['#e74c3c', '#f39c12', '#3a9bd5', '#00bcd4', '#ffd700']
+                    },
+                    show: players.length > 3,
+                },
                 grid: {
-                    left: '10%',
-                    right: '10%',
-                    top: '15%',
+                    left: '8%',
+                    right: '16%',
+                    top: '12%',
                     bottom: '15%',
-                    containLabel: true
+                    containLabel: true,
                 },
                 xAxis: {
                     name: xLabel,
-                    nameTextStyle: { color: '#aaa' },
-                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
-                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
+                    nameLocation: 'middle',
+                    nameGap: 28,
+                    min: Math.max(0, xMin - xPad),
+                    max: xMax + xPad,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
+                    axisLabel: { color: '#888', fontSize: 10 },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } },
                 },
                 yAxis: {
                     name: yLabel,
-                    nameTextStyle: { color: '#aaa' },
-                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
-                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
+                    nameLocation: 'middle',
+                    nameGap: 40,
+                    min: Math.max(0, yMin - yPad),
+                    max: yMax + yPad,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
+                    axisLabel: { color: '#888', fontSize: 10 },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } },
                 },
                 series: [{
                     type: 'scatter',
                     data: data,
-                    label: {
-                        show: false
+                    cursor: 'pointer',
+                    markLine: {
+                        silent: true,
+                        symbol: 'none',
+                        label: {
+                            show: true,
+                            formatter: function(params) {
+                                if (params.data.xAxis !== undefined) return '均值X';
+                                if (params.data.yAxis !== undefined) return '均值Y';
+                                return '';
+                            },
+                            color: '#888',
+                            fontSize: 9,
+                            position: 'insideEndTop',
+                        },
+                        lineStyle: {
+                            color: 'rgba(255,255,255,0.18)',
+                            type: 'dashed',
+                            width: 1,
+                        },
+                        data: [
+                            { xAxis: avgX, label: { formatter: '均值X', color: '#888', fontSize: 9 } },
+                            { yAxis: avgY, label: { formatter: '均值Y', color: '#888', fontSize: 9 } },
+                        ],
+                        animation: false,
                     },
-                    emphasis: {
-                        label: { show: true, formatter: '{b}', position: 'top' }
-                    }
-                }]
+                }],
             };
 
             scatterChartInstance.setOption(option, true);
@@ -1775,9 +2005,7 @@
         //  导出当前图片
         // ============================================================
         function exportImage() {
-            // 隐藏加载遮罩（如果有）
             loadingOverlay.classList.remove('show');
-            // 确保图表已渲染完成
             setTimeout(() => {
                 html2canvas(rightPanel, {
                     backgroundColor: '#0b0d12',
