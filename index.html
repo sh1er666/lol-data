@@ -3,32 +3,33 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>H·武道会 · 雷达图优化</title>
+    <title>H·武道会 · 数据展示</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js">
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js">
+    </script>
     <style>
-        :root {
-            --bg-deep: #0b0d12;
-            --panel-bg: rgba(21, 24, 30, 0.82);
-            --accent-purple: #7a3df0;
-            --accent-cyan: #00d4e6;
-            --accent-orange: #ff9800;
-            --accent-red: #ff6b6b;
-            --accent-amber: #fcd34d;
-            --accent-lilac: #c084fc;
-            --text-primary: #f0f0f0;
-            --text-secondary: #999;
-            --border-subtle: rgba(255, 255, 255, 0.06);
-            --radius-lg: 24px;
-            --radius-md: 14px;
-            --radius-pill: 40px;
-            --shadow-glow-purple: 0 6px 28px rgba(122, 61, 240, 0.4);
-            --transition-smooth: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+        :root {
+            --bg-deep: #0b0d12;
+            --panel-bg: rgba(21, 24, 30, 0.78);
+            --accent-purple: #7a3df0;
+            --accent-cyan: #00bcd4;
+            --accent-amber: #fcd34d;
+            --accent-red: #ff5252;
+            --text-primary: #f0f0f0;
+            --text-secondary: #999;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-pill: 40px;
+            --shadow-glow-purple: 0 4px 24px rgba(122, 61, 240, 0.35);
+            --transition-smooth: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         body {
             background: var(--bg-deep);
@@ -49,7 +50,7 @@
             left: -20%;
             width: 80%;
             height: 80%;
-            background: radial-gradient(circle at 30% 40%, rgba(122, 61, 240, 0.14) 0%, transparent 70%);
+            background: radial-gradient(circle at 30% 40%, rgba(122, 61, 240, 0.12) 0%, transparent 70%);
             animation: aurora 12s ease-in-out infinite alternate;
             z-index: 0;
             pointer-events: none;
@@ -61,7 +62,7 @@
             right: -20%;
             width: 80%;
             height: 80%;
-            background: radial-gradient(circle at 70% 60%, rgba(0, 188, 212, 0.10) 0%, transparent 70%);
+            background: radial-gradient(circle at 70% 60%, rgba(0, 188, 212, 0.08) 0%, transparent 70%);
             animation: aurora2 15s ease-in-out infinite alternate;
             z-index: 0;
             pointer-events: none;
@@ -87,12 +88,12 @@
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 1400px;
+            max-width: 1380px;
             background: var(--panel-bg);
-            backdrop-filter: blur(28px) saturate(1.25);
+            backdrop-filter: blur(24px) saturate(1.2);
             border-radius: var(--radius-lg);
             padding: 28px 32px 32px;
-            border: 1px solid rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(122, 61, 240, 0.08) inset;
         }
 
@@ -112,7 +113,7 @@
             bottom: -1px;
             left: 50%;
             transform: translateX(-50%);
-            width: 120px;
+            width: 100px;
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--accent-purple), var(--accent-cyan), transparent);
             border-radius: 4px;
@@ -130,7 +131,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             margin-top: 16px;
             flex-wrap: wrap;
         }
@@ -144,6 +145,7 @@
             font-weight: 500;
             cursor: pointer;
             outline: none;
+            appearance: none;
             text-align: center;
             backdrop-filter: blur(4px);
             transition: var(--transition-smooth);
@@ -274,6 +276,7 @@
             scrollbar-color: #7a3df0 transparent;
             flex-wrap: nowrap;
             min-height: 62px;
+            transition: var(--transition-smooth);
         }
         .player-selector::-webkit-scrollbar {
             height: 4px;
@@ -305,6 +308,7 @@
             transition: var(--transition-smooth);
             flex-shrink: 0;
             white-space: nowrap;
+            position: relative;
             user-select: none;
         }
         .player-chip:hover {
@@ -313,13 +317,13 @@
         }
         .player-chip.active {
             background: rgba(122, 61, 240, 0.25);
-            border-color: rgba(122, 61, 240, 0.45);
-            box-shadow: 0 0 20px rgba(122, 61, 240, 0.12);
+            border-color: rgba(122, 61, 240, 0.4);
+            box-shadow: 0 0 20px rgba(122, 61, 240, 0.1);
         }
         .player-chip.compare {
-            background: rgba(0, 188, 212, 0.22);
-            border-color: rgba(0, 188, 212, 0.55);
-            box-shadow: 0 0 15px rgba(0, 188, 212, 0.18);
+            background: rgba(0, 188, 212, 0.2);
+            border-color: rgba(0, 188, 212, 0.5);
+            box-shadow: 0 0 15px rgba(0, 188, 212, 0.15);
         }
         .player-chip img {
             width: 32px;
@@ -623,8 +627,8 @@
             overflow: hidden;
         }
         #radarChart {
-            width: 540px;
-            height: 540px;
+            width: 520px;
+            height: 520px;
             position: absolute;
             top: 48%;
             left: 50%;
@@ -632,8 +636,8 @@
             transition: opacity 0.3s;
         }
         .stats-wrapper {
-            width: 540px;
-            height: 540px;
+            width: 520px;
+            height: 520px;
             position: absolute;
             top: 48%;
             left: 50%;
@@ -651,7 +655,7 @@
             transform: translate(-50%, -50%);
             line-height: 1.35;
             min-width: 72px;
-            padding: 4px 10px;
+            padding: 5px 10px;
             border-radius: 8px;
             background: rgba(0, 0, 0, 0.88);
             backdrop-filter: blur(8px);
@@ -663,9 +667,9 @@
         }
         .stat-item:hover {
             background: rgba(0, 0, 0, 0.96);
-            border-color: rgba(122, 61, 240, 0.4);
-            transform: translate(-50%, -50%) scale(1.06);
-            box-shadow: 0 0 24px rgba(122, 61, 240, 0.25);
+            border-color: rgba(122, 61, 240, 0.35);
+            transform: translate(-50%, -50%) scale(1.07);
+            box-shadow: 0 0 24px rgba(122, 61, 240, 0.2);
             z-index: 10;
         }
         .stat-name {
@@ -693,41 +697,41 @@
             margin-top: 1px;
         }
 
-        /* 8个顶点的标签位置（针对优化后的雷达图） */
+        /* 精确的雷达图顶点标签定位（针对8指标多边形） */
         .pos-top {
-            top: 9.5%;
+            top: 10.5%;
             left: 50%;
         }
         .pos-topright {
-            top: 19%;
-            left: 78.5%;
+            top: 20.5%;
+            left: 77.5%;
         }
         .pos-right {
-            top: 47%;
-            left: 88.5%;
+            top: 48%;
+            left: 87.5%;
         }
         .pos-bottomright {
-            bottom: 22%;
-            left: 78.5%;
+            bottom: 24.5%;
+            left: 77.5%;
             top: auto;
         }
         .pos-bottom {
-            bottom: 12.5%;
+            bottom: 14.5%;
             left: 50%;
             top: auto;
         }
         .pos-bottomleft {
-            bottom: 22%;
-            left: 21.5%;
+            bottom: 24.5%;
+            left: 22.5%;
             top: auto;
         }
         .pos-left {
-            top: 47%;
-            left: 11.5%;
+            top: 48%;
+            left: 12.5%;
         }
         .pos-topleft {
-            top: 19%;
-            left: 21.5%;
+            top: 20.5%;
+            left: 22.5%;
         }
 
         .avg-note {
@@ -747,18 +751,19 @@
             pointer-events: none;
         }
         .avg-note .red-dot {
-            color: #ff6b6b;
+            color: #ff5252;
             font-weight: 600;
         }
         .avg-note .blue-dot {
-            color: #00d4e6;
+            color: #00bcd4;
             font-weight: 600;
         }
 
+        /* 雷达图图例 */
         .radar-legend {
             position: absolute;
-            left: 14px;
-            bottom: 12px;
+            left: 16px;
+            bottom: 14px;
             z-index: 12;
             display: flex;
             flex-direction: column;
@@ -793,7 +798,74 @@
             border: 1.5px solid #fff;
         }
 
-        /* 加载遮罩 */
+        /* 新图表容器 */
+        #scatterChart,
+        #barChart,
+        #heatmapChart,
+        #parallelChart {
+            position: absolute;
+            inset: 0;
+            display: none;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        #scatterChart.active,
+        #barChart.active,
+        #heatmapChart.active,
+        #parallelChart.active {
+            display: block;
+        }
+
+        .scatter-legend-overlay {
+            position: absolute;
+            left: 14px;
+            bottom: 12px;
+            z-index: 15;
+            display: none;
+            font-size: 10px;
+            color: #888;
+            background: rgba(0, 0, 0, 0.55);
+            padding: 6px 12px;
+            border-radius: 16px;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+            letter-spacing: 0.3px;
+            line-height: 1.6;
+        }
+        .scatter-legend-overlay.show {
+            display: block;
+        }
+        .scatter-legend-overlay .legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .scatter-legend-overlay .legend-dot.white {
+            border: 2px solid #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .scatter-legend-overlay .legend-dot.orange {
+            border: 2px solid #ff9800;
+            background: rgba(255, 152, 0, 0.2);
+        }
+        .scatter-legend-overlay .legend-dot.small {
+            width: 5px;
+            height: 5px;
+            background: #00bcd4;
+            opacity: 0.7;
+        }
+        .scatter-legend-overlay .legend-dot.large {
+            width: 14px;
+            height: 14px;
+            background: #00bcd4;
+            opacity: 0.7;
+        }
+
         .loading-overlay {
             display: none;
             position: absolute;
@@ -827,6 +899,21 @@
             color: #aaa;
             font-size: 14px;
             letter-spacing: 1px;
+        }
+        .export-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .export-progress .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #7a3df0, #00bcd4);
+            border-radius: 4px;
+            transition: width 0.3s ease;
         }
 
         @media (max-width: 1100px) {
@@ -881,35 +968,41 @@
                 font-size: 9px;
             }
             .pos-top {
-                top: 6.5%;
+                top: 7.5%;
             }
             .pos-topright {
-                top: 15%;
+                top: 18%;
                 left: 80%;
             }
             .pos-right {
                 left: 90%;
             }
             .pos-bottomright {
-                bottom: 18%;
+                bottom: 21%;
                 left: 80%;
             }
             .pos-bottom {
-                bottom: 9%;
+                bottom: 11%;
             }
             .pos-bottomleft {
-                bottom: 18%;
+                bottom: 21%;
                 left: 20%;
             }
             .pos-left {
                 left: 10%;
             }
             .pos-topleft {
-                top: 15%;
+                top: 18%;
                 left: 20%;
             }
+            .scatter-legend-overlay {
+                left: 8px;
+                bottom: 6px;
+                font-size: 9px;
+                padding: 4px 10px;
+            }
             .radar-legend {
-                left: 6px;
+                left: 8px;
                 bottom: 6px;
                 font-size: 9px;
                 padding: 6px 10px;
@@ -966,34 +1059,64 @@
                 font-size: 7px;
             }
             .pos-top {
-                top: 3%;
+                top: 4%;
             }
             .pos-topright {
-                top: 10%;
+                top: 12%;
                 left: 82%;
             }
             .pos-right {
-                left: 93%;
-                top: 45%;
+                left: 92%;
+                top: 46%;
             }
             .pos-bottomright {
-                bottom: 12%;
+                bottom: 15%;
                 left: 82%;
             }
             .pos-bottom {
-                bottom: 3%;
+                bottom: 4%;
             }
             .pos-bottomleft {
-                bottom: 12%;
+                bottom: 15%;
                 left: 18%;
             }
             .pos-left {
-                left: 7%;
-                top: 45%;
+                left: 8%;
+                top: 46%;
             }
             .pos-topleft {
-                top: 10%;
+                top: 12%;
                 left: 18%;
+            }
+            .player-selector {
+                padding: 8px 12px;
+                gap: 6px;
+                min-height: 50px;
+            }
+            .player-chip {
+                padding: 4px 10px 4px 6px;
+            }
+            .player-chip img {
+                width: 26px;
+                height: 26px;
+            }
+            .player-chip .chip-name {
+                font-size: 11px;
+            }
+            .player-chip .chip-kda {
+                font-size: 10px;
+            }
+            .search-input {
+                font-size: 12px;
+                padding: 7px 14px;
+            }
+            .view-btn,
+            .export-btn {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            .scatter-legend-overlay {
+                display: none !important;
             }
             .radar-legend {
                 display: none !important;
@@ -1009,7 +1132,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="title">H·武道会<span class="sub">SEASON DATA · RADAR OPTIMIZED</span></div>
+        <div class="title">H·武道会<span class="sub">SEASON DATA</span></div>
 
         <div class="control-bar">
             <select class="team-select" id="teamSelect"></select>
@@ -1101,6 +1224,9 @@
                 <div class="loading-overlay" id="loadingOverlay">
                     <div class="loading-spinner"></div>
                     <div class="loading-text">数据加载中...</div>
+                    <div class="export-progress" id="exportProgress" style="display:none;">
+                        <div class="progress-fill" id="exportProgressFill"></div>
+                    </div>
                 </div>
                 <div id="radarChart"></div>
                 <div class="stats-wrapper" id="statsWrapper"></div>
@@ -1125,75 +1251,85 @@
                 <div class="avg-note">
                     <span class="red-dot">●</span> 均值 &nbsp;<span class="blue-dot">●</span> 选手
                 </div>
+                <div id="scatterChart"></div>
+                <div id="barChart"></div>
+                <div id="heatmapChart"></div>
+                <div id="parallelChart"></div>
+                <div class="scatter-legend-overlay" id="scatterLegend">
+                    <span><span class="legend-dot small"></span>气泡大小=分均伤害</span><br>
+                    <span><span class="legend-dot" style="background:#e74c3c;"></span>低KDA → <span class="legend-dot" style="background:#ffd700;"></span>高KDA</span><br>
+                    <span><span class="legend-dot white"></span>当前选手</span>
+                    <span style="margin-left:10px;"><span class="legend-dot orange"></span>对比选手</span>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        //  位置动态指标配置表（优化版：确保伤害占比、分均经济、分均补刀在雷达图中）
+        //  位置动态指标配置表
         // ============================================================
         const positionConfigs = {
             'TOP': {
-                keys: ['kda', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'damage_taken_per_death',
-                    'lane_diff'
+                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold',
+                    'damage_taken_per_death'
                 ],
-                labels: ['KDA', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '每死承伤', '对位等级差'],
-                avgs: ['avg_kda', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold',
-                    'avg_damage_taken_per_death', 'avg_lane_diff'
+                labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '每死承伤'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_dmgtoGold', 'avg_damage_taken_per_death'
                 ],
-                ranks: ['rank_kda', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold',
-                    'rank_damage_taken_per_death', 'rank_lane_diff'
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_dmgtoGold', 'rank_damage_taken_per_death'
                 ],
-                maxs: [10, 1800, 14, 750, 40, 280, 11000, 4]
+                maxs: [10, 15, 2000, 15, 800, 40, 300, 12000]
             },
             'JUNGLE': {
-                keys: ['kda', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'participation', 'damage_taken_per_death',
-                    'lane_diff'
+                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'participation',
+                    'damage_taken_per_death'
                 ],
-                labels: ['KDA', '分均伤害', '分均补刀', '分均经济', '伤害占比', '参团率', '每死承伤', '对位等级差'],
-                avgs: ['avg_kda', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_participation',
-                    'avg_damage_taken_per_death', 'avg_lane_diff'
+                labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '参团率', '每死承伤'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_participation', 'avg_damage_taken_per_death'
                 ],
-                ranks: ['rank_kda', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_participation',
-                    'rank_damage_taken_per_death', 'rank_lane_diff'
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_participation', 'rank_damage_taken_per_death'
                 ],
-                maxs: [10, 1800, 14, 750, 40, 100, 11000, 4]
+                maxs: [10, 15, 2000, 15, 800, 40, 100, 12000]
             },
             'MIDDLE': {
-                keys: ['kda', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival', 'lane_diff'],
-                labels: ['KDA', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力', '对位等级差'],
-                avgs: ['avg_kda', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold',
-                    'avg_survival', 'avg_lane_diff'
+                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival'],
+                labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_dmgtoGold', 'avg_survival'
                 ],
-                ranks: ['rank_kda', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold',
-                    'rank_survival', 'rank_lane_diff'
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_dmgtoGold', 'rank_survival'
                 ],
-                maxs: [10, 1800, 14, 750, 40, 280, 5, 4]
+                maxs: [10, 15, 2000, 15, 800, 40, 300, 5]
             },
             'BOTTOM': {
-                keys: ['kda', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival', 'lane_diff'],
-                labels: ['KDA', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力', '对位等级差'],
-                avgs: ['avg_kda', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare', 'avg_dmgtoGold',
-                    'avg_survival', 'avg_lane_diff'
+                keys: ['kda', 'kills_assists', 'dpm', 'cspm', 'goldpm', 'dmgshare', 'dmgtoGold', 'survival'],
+                labels: ['KDA', '击杀助攻', '分均伤害', '分均补刀', '分均经济', '伤害占比', '伤转', '生存能力'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_dpm', 'avg_cspm', 'avg_goldpm', 'avg_dmgshare',
+                    'avg_dmgtoGold', 'avg_survival'
                 ],
-                ranks: ['rank_kda', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare', 'rank_dmgtoGold',
-                    'rank_survival', 'rank_lane_diff'
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_dpm', 'rank_cspm', 'rank_goldpm', 'rank_dmgshare',
+                    'rank_dmgtoGold', 'rank_survival'
                 ],
-                maxs: [10, 1800, 14, 750, 40, 280, 5, 4]
+                maxs: [10, 15, 2000, 15, 800, 40, 300, 5]
             },
             'UTILITY': {
-                keys: ['kda', 'goldpm', 'participation', 'dmgshare', 'damage_taken_share', 'vision_per_min',
-                    'damage_taken_per_death', 'lane_diff'
+                keys: ['kda', 'kills_assists', 'goldpm', 'participation', 'dmgshare', 'damage_taken_share',
+                    'vision_per_min', 'damage_taken_per_death'
                 ],
-                labels: ['KDA', '分均经济', '参团率', '伤害占比', '承伤占比', '分均视野', '每死承伤', '对位等级差'],
-                avgs: ['avg_kda', 'avg_goldpm', 'avg_participation', 'avg_dmgshare', 'avg_damage_taken_share',
-                    'avg_vision_per_min', 'avg_damage_taken_per_death', 'avg_lane_diff'
+                labels: ['KDA', '击杀助攻', '分均经济', '参团率', '伤害占比', '承伤占比', '分均视野', '每死承伤'],
+                avgs: ['avg_kda', 'avg_kills_assists', 'avg_goldpm', 'avg_participation', 'avg_dmgshare',
+                    'avg_damage_taken_share', 'avg_vision_per_min', 'avg_damage_taken_per_death'
                 ],
-                ranks: ['rank_kda', 'rank_goldpm', 'rank_participation', 'rank_dmgshare', 'rank_damage_taken_share',
-                    'rank_vision_per_min', 'rank_damage_taken_per_death', 'rank_lane_diff'
+                ranks: ['rank_kda', 'rank_kills_assists', 'rank_goldpm', 'rank_participation', 'rank_dmgshare',
+                    'rank_damage_taken_share', 'rank_vision_per_min', 'rank_damage_taken_per_death'
                 ],
-                maxs: [10, 750, 100, 40, 40, 5, 11000, 4]
+                maxs: [10, 15, 800, 100, 40, 40, 5, 12000]
             }
         };
 
@@ -1206,6 +1342,10 @@
         let currentTeam = 'ALL';
         let currentPlayerIndex = 0;
         let myChart = null;
+        let scatterChartInstance = null;
+        let barChartInstance = null;
+        let heatmapChartInstance = null;
+        let parallelChartInstance = null;
         let isDataLoaded = false;
         let currentFilteredPlayers = [];
         let searchTerm = '';
@@ -1220,15 +1360,21 @@
         const loadingOverlay = document.getElementById('loadingOverlay');
         const playerSearch = document.getElementById('playerSearch');
         const viewBtns = document.querySelectorAll('.view-btn');
+        const scatterChartDiv = document.getElementById('scatterChart');
         const exportBtn = document.getElementById('exportBtn');
-        const mainArea = document.getElementById('mainArea');
+        const rightPanel = document.getElementById('rightPanel');
+        const scatterLegend = document.getElementById('scatterLegend');
         const radarLegend = document.getElementById('radarLegend');
+        const mainArea = document.getElementById('mainArea');
+        const exportProgress = document.getElementById('exportProgress');
+        const exportProgressFill = document.getElementById('exportProgressFill');
 
         // 工具函数
         function safeVal(v, fallback = 0) { const n = parseFloat(v); return isNaN(n) ? fallback : n; }
 
         function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
+        /** 百分位数计算（用于雷达图动态最大值） */
         function percentile(values, pct) {
             if (!values.length) return 0;
             const sorted = [...values].sort((a, b) => a - b);
@@ -1236,23 +1382,24 @@
             return sorted[idx] || 0;
         }
 
+        /** 代理图片URL */
         function proxyImageUrl(originalUrl) {
             return `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}`;
         }
 
-        // ============================================================
-        //  数据加载
-        // ============================================================
+        // 加载数据
         async function loadData() {
             loadingOverlay.classList.add('show');
             loadingOverlay.querySelector('.loading-text').textContent = '数据加载中...';
+            exportProgress.style.display = 'none';
             try {
                 const res = await fetch('./data.json');
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const json = await res.json();
                 const avgObj = json.find(item => item.avg_kda !== undefined);
                 if (avgObj) avgStats = avgObj;
-                else avgStats = {};
+                else { console.warn('未找到均值数据');
+                    avgStats = {}; }
                 allPlayers = json.filter(item => item.avg_kda === undefined);
                 isDataLoaded = true;
 
@@ -1284,7 +1431,7 @@
                         viewBtns.forEach(b => b.classList.remove('active'));
                         e.target.classList.add('active');
                         currentView = e.target.dataset.view;
-                        updateView();
+                        updateViewVisibility();
                     });
                 });
                 exportBtn.addEventListener('click', exportImage);
@@ -1353,7 +1500,7 @@
         function updateLeftStats(player) {
             const mappings = [
                 { stat: 'lane', rank: 'rank-lane', bar: 'bar-lane', key: 'lane_diff', rankKey: 'rank_lane_diff',
-                    max: 4, isRed: false },
+                    max: 3, isRed: false },
                 { stat: 'gdiff', rank: 'rank-gdiff', bar: 'bar-gdiff', key: 'gold_diff', rankKey: 'rank_gold_diff',
                     max: 3000, isRed: false },
                 { stat: 'partrate', rank: 'rank-partrate', bar: 'bar-partrate', key: 'participation',
@@ -1395,6 +1542,11 @@
                 document.getElementById('statsWrapper').innerHTML = '';
                 renderPlayerChips([]);
                 if (myChart) myChart.clear();
+                if (scatterChartInstance) scatterChartInstance.clear();
+                if (barChartInstance) barChartInstance.clear();
+                if (heatmapChartInstance) heatmapChartInstance.clear();
+                if (parallelChartInstance) parallelChartInstance.clear();
+                updateViewVisibility();
                 return;
             }
             if (currentPlayerIndex >= players.length) currentPlayerIndex = 0;
@@ -1415,13 +1567,38 @@
             renderHeroPool(player);
             updateLeftStats(player);
 
-            if (currentView === 'radar') {
-                renderStatsWrapper(player);
-                renderRadar(player);
-            }
-            // 其他视图暂不实现，保持雷达图焦点
+            updateViewVisibility();
+            if (currentView === 'radar') { renderStatsWrapper(player);
+                renderRadar(player); } else if (currentView === 'scatter') renderScatterChart(players);
+            else if (currentView === 'bar') renderBarChart(player);
+            else if (currentView === 'heatmap') renderHeatmap(players);
+            else if (currentView === 'parallel') renderParallel(player);
         }
 
+        function updateViewVisibility() {
+            const radarChart = document.getElementById('radarChart');
+            const statsWrapper = document.getElementById('statsWrapper');
+            const avgNote = document.querySelector('.avg-note');
+            radarChart.style.display = currentView === 'radar' ? 'block' : 'none';
+            statsWrapper.style.display = currentView === 'radar' ? 'block' : 'none';
+            avgNote.style.display = currentView === 'radar' ? 'block' : 'none';
+            radarLegend.style.display = currentView === 'radar' ? 'flex' : 'none';
+            document.getElementById('scatterChart').classList.toggle('active', currentView === 'scatter');
+            document.getElementById('barChart').classList.toggle('active', currentView === 'bar');
+            document.getElementById('heatmapChart').classList.toggle('active', currentView === 'heatmap');
+            document.getElementById('parallelChart').classList.toggle('active', currentView === 'parallel');
+            scatterLegend.classList.toggle('show', currentView === 'scatter');
+
+            if (currentView === 'radar' && myChart) myChart.resize();
+            else if (currentView === 'scatter' && currentFilteredPlayers.length) renderScatterChart(currentFilteredPlayers);
+            else if (currentView === 'bar' && currentFilteredPlayers.length) renderBarChart(currentFilteredPlayers[
+                currentPlayerIndex]);
+            else if (currentView === 'heatmap' && currentFilteredPlayers.length) renderHeatmap(currentFilteredPlayers);
+            else if (currentView === 'parallel' && currentFilteredPlayers.length) renderParallel(currentFilteredPlayers[
+                currentPlayerIndex]);
+        }
+
+        // 英雄池渲染（使用代理）
         function renderHeroPool(player) {
             const poolEl = document.getElementById('heroPool');
             const heroes = player.heroes || [{ champion: player.champion || 'Unknown', games: 1, wins: 1 }];
@@ -1441,15 +1618,15 @@
             }).join('');
         }
 
-        // ============================================================
-        //  雷达图外部标签（同步优化：精确对齐8个顶点）
-        // ============================================================
+        // 雷达图外部标签
         function renderStatsWrapper(player) {
             const config = positionConfigs[currentPosition];
             const wrapper = document.getElementById('statsWrapper');
             const positions = ['top', 'topright', 'right', 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft'];
             wrapper.innerHTML = config.keys.map((key, index) => {
-                let val = safeVal(player[key]);
+                let val = player[key];
+                if (key === 'kills_assists') val = (player.kills + player.assists);
+                val = safeVal(val);
                 let avgVal = safeVal(avgStats[config.avgs[index]]);
                 let rank = player[config.ranks[index]] !== undefined ? player[config.ranks[index]] : '-';
                 const displayVal = typeof val === 'number' ? val.toFixed(1) : val;
@@ -1463,9 +1640,7 @@
             }).join('');
         }
 
-        // ============================================================
-        //  雷达图Tooltip构建
-        // ============================================================
+        // 构建雷达图tooltip
         function buildRadarTooltip(player, config, isPlayerSeries, seriesName) {
             let html = '';
             const playerName = player.player || seriesName || '未知选手';
@@ -1481,6 +1656,8 @@
             html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:4px 16px;font-size:12px;">`;
             config.keys.forEach((key, index) => {
                 let val = isPlayerSeries ? player[key] : avgStats[config.avgs[index]];
+                if (key === 'kills_assists') val = isPlayerSeries ? (player.kills + player.assists) : avgStats[
+                    config.avgs[index]];
                 val = safeVal(val);
                 const displayVal = typeof val === 'number' ? val.toFixed(2) : val;
                 const rank = isPlayerSeries ? (player[config.ranks[index]] !== undefined ? player[config.ranks[
@@ -1495,13 +1672,13 @@
             return html;
         }
 
-        // ============================================================
-        //  【核心】雷达图渲染 - 优化版
-        //  - 动态最大值使用90分位数，避免极值扭曲
-        //  - 伤害占比、分均经济、分均补刀等指标醒目展示
-        //  - 更细腻的渐变填充与阴影
-        //  - 均值虚线清晰可辨
-        // ============================================================
+        /**
+         * 【雷达图模块 - 专业优化版】
+         * - 动态最大值使用95分位数，避免极端值扭曲图形
+         * - 添加图例组件
+         * - tooltip使用seriesName精确定位
+         * - 更细腻的渐变填充与阴影
+         */
         function renderRadar(player) {
             const chartDom = document.getElementById('radarChart');
             const version = ++radarRenderVersion;
@@ -1511,13 +1688,17 @@
             }
             const config = positionConfigs[currentPosition];
 
-            // 动态最大值：使用90分位数，更稳健
+            // 动态最大值：使用95分位数 + 10%余量
             const dynamicMaxs = config.keys.map((key, index) => {
-                const values = currentFilteredPlayers.map(p => safeVal(p[key]));
-                const p90 = percentile(values, 0.90);
-                const fallback = config.maxs[index] * 0.25;
-                const baseMax = Math.max(p90, fallback);
-                return Math.ceil(baseMax * 1.15);
+                const values = currentFilteredPlayers.map(p => {
+                    let v = p[key];
+                    if (key === 'kills_assists') v = (p.kills + p.assists);
+                    return safeVal(v);
+                });
+                const p95 = percentile(values, 0.95);
+                const fallback = config.maxs[index] * 0.3;
+                const baseMax = Math.max(p95, fallback);
+                return Math.ceil(baseMax * 1.12);
             });
 
             const indicator = config.keys.map((key, index) => ({
@@ -1528,35 +1709,39 @@
             const seriesData = [];
 
             // 当前选手系列
-            let playerValues = config.keys.map(key => safeVal(player[key]));
+            let playerValues = config.keys.map(key => {
+                let val = player[key];
+                if (key === 'kills_assists') val = (player.kills + player.assists);
+                return safeVal(val);
+            });
             seriesData.push({
                 value: playerValues,
                 name: player.player,
                 _seriesType: 'current',
                 itemStyle: {
                     color: '#00d4e6',
-                    shadowBlur: 28,
-                    shadowColor: 'rgba(0,212,230,0.6)'
+                    shadowBlur: 25,
+                    shadowColor: 'rgba(0,212,230,0.55)'
                 },
                 lineStyle: {
                     color: '#00d4e6',
-                    width: 3.2,
-                    shadowBlur: 20,
-                    shadowColor: 'rgba(0,212,230,0.5)'
+                    width: 3,
+                    shadowBlur: 18,
+                    shadowColor: 'rgba(0,212,230,0.45)'
                 },
                 areaStyle: {
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                        { offset: 0, color: 'rgba(0,212,230,0.42)' },
-                        { offset: 0.6, color: 'rgba(0,212,230,0.14)' },
-                        { offset: 1, color: 'rgba(0,212,230,0.04)' }
+                        { offset: 0, color: 'rgba(0,212,230,0.38)' },
+                        { offset: 0.6, color: 'rgba(0,212,230,0.12)' },
+                        { offset: 1, color: 'rgba(0,212,230,0.03)' }
                     ])
                 },
                 symbol: 'circle',
-                symbolSize: 9,
+                symbolSize: 8,
                 emphasis: {
-                    lineStyle: { width: 4.2, color: '#00d4e6' },
-                    itemStyle: { color: '#00d4e6', borderColor: '#fff', borderWidth: 3, shadowBlur: 32,
-                        shadowColor: 'rgba(0,212,230,0.9)' }
+                    lineStyle: { width: 4, color: '#00d4e6' },
+                    itemStyle: { color: '#00d4e6', borderColor: '#fff', borderWidth: 3, shadowBlur: 30,
+                        shadowColor: 'rgba(0,212,230,0.85)' }
                 }
             });
 
@@ -1564,7 +1749,11 @@
             comparePlayers.forEach((idx, order) => {
                 const compPlayer = currentFilteredPlayers[idx];
                 if (compPlayer) {
-                    let compValues = config.keys.map(key => safeVal(compPlayer[key]));
+                    let compValues = config.keys.map(key => {
+                        let val = compPlayer[key];
+                        if (key === 'kills_assists') val = (compPlayer.kills + compPlayer.assists);
+                        return safeVal(val);
+                    });
                     const color = order === 0 ? '#ff9800' : '#c084fc';
                     seriesData.push({
                         value: compValues,
@@ -1573,31 +1762,31 @@
                         _playerIndex: idx,
                         itemStyle: {
                             color,
-                            shadowBlur: 20,
-                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.55)' :
-                                'rgba(192,132,252,0.55)'
+                            shadowBlur: 18,
+                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.5)' :
+                                'rgba(192,132,252,0.5)'
                         },
                         lineStyle: {
                             color,
-                            width: 2.8,
-                            shadowBlur: 14,
-                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.45)' :
-                                'rgba(192,132,252,0.45)'
+                            width: 2.5,
+                            shadowBlur: 12,
+                            shadowColor: color === '#ff9800' ? 'rgba(255,152,0,0.4)' :
+                                'rgba(192,132,252,0.4)'
                         },
                         areaStyle: {
-                            color: color === '#ff9800' ? 'rgba(255,152,0,0.14)' : 'rgba(192,132,252,0.14)'
+                            color: color === '#ff9800' ? 'rgba(255,152,0,0.12)' : 'rgba(192,132,252,0.12)'
                         },
                         symbol: 'circle',
-                        symbolSize: 7,
+                        symbolSize: 6,
                         emphasis: {
-                            lineStyle: { width: 3.8, color },
-                            itemStyle: { color, borderColor: '#fff', borderWidth: 2.8 }
+                            lineStyle: { width: 3.5, color },
+                            itemStyle: { color, borderColor: '#fff', borderWidth: 2.5 }
                         }
                     });
                 }
             });
 
-            // 均值系列（虚线，突出显示）
+            // 均值系列（虚线）
             let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
             seriesData.push({
                 value: avgValues,
@@ -1605,40 +1794,40 @@
                 _seriesType: 'average',
                 itemStyle: {
                     color: '#ff6b6b',
-                    shadowBlur: 12,
-                    shadowColor: 'rgba(255,107,107,0.4)'
+                    shadowBlur: 10,
+                    shadowColor: 'rgba(255,107,107,0.35)'
                 },
                 lineStyle: {
                     color: '#ff6b6b',
-                    width: 2,
+                    width: 1.8,
                     type: 'dashed',
-                    shadowBlur: 8,
-                    shadowColor: 'rgba(255,107,107,0.3)'
+                    shadowBlur: 6,
+                    shadowColor: 'rgba(255,107,107,0.25)'
                 },
                 areaStyle: { color: 'transparent' },
                 symbol: 'diamond',
-                symbolSize: 7,
+                symbolSize: 6,
                 emphasis: {
-                    lineStyle: { width: 2.8, color: '#ff6b6b' },
-                    itemStyle: { color: '#ff6b6b', borderColor: '#fff', borderWidth: 1.8 }
+                    lineStyle: { width: 2.5, color: '#ff6b6b' },
+                    itemStyle: { color: '#ff6b6b', borderColor: '#fff', borderWidth: 1.5 }
                 }
             });
 
             const option = {
                 backgroundColor: 'transparent',
-                animationDuration: 800,
-                animationDurationUpdate: 600,
+                animationDuration: 900,
+                animationDurationUpdate: 700,
                 animationEasing: 'cubicOut',
                 animationEasingUpdate: 'cubicInOut',
                 tooltip: {
                     trigger: 'item',
                     confine: true,
-                    backgroundColor: 'rgba(18,20,26,0.97)',
-                    borderColor: 'rgba(122,61,240,0.4)',
+                    backgroundColor: 'rgba(20,23,30,0.96)',
+                    borderColor: 'rgba(122,61,240,0.35)',
                     borderWidth: 1,
                     borderRadius: 14,
                     padding: [14, 18],
-                    extraCssText: 'backdrop-filter: blur(22px); box-shadow: 0 8px 32px rgba(0,0,0,0.7); max-width: 360px;',
+                    extraCssText: 'backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-width: 340px;',
                     textStyle: { color: '#eee', fontSize: 12 },
                     formatter: function(params) {
                         if (!params || params.seriesIndex === undefined) return '';
@@ -1659,7 +1848,7 @@
                 radar: {
                     indicator: indicator,
                     center: ['50%', '48%'],
-                    radius: '66%',
+                    radius: '68%',
                     splitNumber: 4,
                     shape: 'polygon',
                     splitArea: {
@@ -1667,34 +1856,411 @@
                             color: ['rgba(122,61,240,0.03)', 'rgba(122,61,240,0.08)']
                         }
                     },
-                    axisLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1.2 } },
+                    axisLine: { show: true, lineStyle: { color: 'rgba(255,255,255,0.14)', width: 1.2 } },
                     splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)', width: 1 } },
                     axisName: { show: false }
                 },
-                series: [{ type: 'radar', data: seriesData, symbolSize: 9 }]
+                series: [{ type: 'radar', data: seriesData, symbolSize: 8 }]
             };
+            // 使用notMerge确保完全重绘
             myChart.setOption(option, true);
             myChart.resize();
         }
 
         // ============================================================
-        //  导出图片
+        //  气泡图 / 条形图 / 热力图 / 平行坐标（保持不变）
         // ============================================================
+        function renderScatterChart(players) {
+            if (!scatterChartInstance) {
+                scatterChartInstance = echarts.init(scatterChartDiv, 'dark');
+                window.addEventListener('resize', () => { if (scatterChartInstance) scatterChartInstance
+                        .resize(); });
+                scatterChartInstance.on('click', function(params) {
+                    if (params.data && params.data.playerIndex !== undefined) {
+                        const idx = params.data.playerIndex;
+                        if (idx === currentPlayerIndex) return;
+                        currentPlayerIndex = idx;
+                        comparePlayers = [];
+                        updateView();
+                    }
+                });
+            }
+            const config = positionConfigs[currentPosition];
+            const xKey = 'goldpm',
+                yKey = 'dmgshare',
+                sizeKey = 'dpm';
+            const xLabel = '分均经济',
+                yLabel = '伤害占比 (%)';
+
+            const allDpm = players.map(p => safeVal(p[sizeKey]));
+            const minDpm = Math.min(...allDpm, 0),
+                maxDpm = Math.max(...allDpm, 1);
+            const allKda = players.map(p => safeVal(p.kda));
+            const minKda = Math.min(...allKda, 0),
+                maxKda = Math.max(...allKda, 1);
+            const avgX = players.reduce((s, p) => s + safeVal(p[xKey]), 0) / players.length;
+            const avgY = players.reduce((s, p) => s + safeVal(p[yKey]), 0) / players.length;
+            const allX = players.map(p => safeVal(p[xKey])),
+                allY = players.map(p => safeVal(p[yKey]));
+            const xMin = Math.min(...allX),
+                xMax = Math.max(...allX);
+            const yMin = Math.min(...allY),
+                yMax = Math.max(...allY);
+            const xPad = (xMax - xMin) * 0.12 || 50,
+                yPad = (yMax - yMin) * 0.15 || 5;
+
+            const data = players.map((p, idx) => {
+                const kda = safeVal(p.kda),
+                    dpm = safeVal(p[sizeKey]);
+                const isCurrent = idx === currentPlayerIndex,
+                    isCompare = comparePlayers.includes(idx);
+                const sizeRatio = maxDpm > minDpm ? (dpm - minDpm) / (maxDpm - minDpm) : 0.5;
+                let symbolSize = 8 + sizeRatio * 20;
+                if (isCurrent) symbolSize += 7;
+                if (isCompare) symbolSize += 3;
+                return {
+                    value: [safeVal(p[xKey]), safeVal(p[yKey]), kda, dpm],
+                    name: p.player,
+                    player: p,
+                    playerIndex: idx,
+                    symbolSize: symbolSize,
+                    itemStyle: {
+                        opacity: isCurrent ? 1 : (isCompare ? 0.9 : 0.72),
+                        borderColor: isCurrent ? '#ffffff' : (isCompare ? '#ff9800' : 'transparent'),
+                        borderWidth: isCurrent ? 3 : (isCompare ? 2.5 : 0),
+                        shadowBlur: isCurrent ? 30 : (isCompare ? 18 : 6),
+                        shadowColor: isCurrent ? 'rgba(255,255,255,0.7)' : (isCompare ?
+                            'rgba(255,152,0,0.6)' : 'rgba(0,0,0,0.35)')
+                    },
+                    label: {
+                        show: isCurrent || isCompare,
+                        formatter: '{b}',
+                        position: 'top',
+                        distance: 6,
+                        color: isCurrent ? '#ffffff' : '#ff9800',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        textShadowColor: 'rgba(0,0,0,0.85)',
+                        textShadowBlur: 5
+                    },
+                    emphasis: {
+                        label: { show: true, fontSize: 13 },
+                        itemStyle: {
+                            shadowBlur: 35,
+                            shadowColor: 'rgba(255,255,255,0.65)',
+                            borderWidth: isCurrent ? 3 : 2,
+                            borderColor: isCurrent ? '#fff' : '#ff9800',
+                            opacity: 1
+                        }
+                    }
+                };
+            });
+
+            const option = {
+                backgroundColor: 'transparent',
+                animation: true,
+                animationDuration: 700,
+                animationEasing: 'elasticOut',
+                animationDelay: (idx) => Math.min(idx * 40, 600),
+                tooltip: {
+                    trigger: 'item',
+                    confine: true,
+                    backgroundColor: 'rgba(18,20,26,0.95)',
+                    borderColor: 'rgba(0,188,212,0.35)',
+                    borderWidth: 1,
+                    borderRadius: 14,
+                    padding: [14, 18],
+                    extraCssText: 'backdrop-filter: blur(18px); box-shadow: 0 10px 40px rgba(0,0,0,0.65); max-width: 280px;',
+                    textStyle: { color: '#eee', fontSize: 12 },
+                    formatter: function(params) {
+                        if (!params || !params.data) return '';
+                        const p = params.data.player;
+                        const isCur = params.data.playerIndex === currentPlayerIndex;
+                        const isComp = comparePlayers.includes(params.data.playerIndex);
+                        const badge = isCur ? '⭐ 当前选手' : (isComp ? '🔶 对比选手' : '');
+                        return `
+                            <div style="font-weight:700;font-size:14px;margin-bottom:4px;color:${isCur?'#fff':(isComp?'#ff9800':'#00d4e6')};">${p.player} ${badge?'<span style="font-size:10px;color:#fcd34d;">'+badge+'</span>':''}</div>
+                            <div style="font-size:11px;color:#888;margin-bottom:10px;">KDA: ${p.kills}/${p.deaths}/${p.assists}</div>
+                            <div style="display:grid;grid-template-columns:1fr auto;gap:3px 18px;font-size:12px;">
+                                <span style="color:#aaa;">分均经济</span><span style="color:#00d4e6;font-weight:600;">${safeVal(p[xKey]).toFixed(1)}</span>
+                                <span style="color:#aaa;">伤害占比</span><span style="color:#00d4e6;font-weight:600;">${safeVal(p[yKey]).toFixed(1)}%</span>
+                                <span style="color:#aaa;">分均伤害</span><span style="color:#00d4e6;font-weight:600;">${safeVal(p[sizeKey]).toFixed(0)}</span>
+                                <span style="color:#aaa;">KDA值</span><span style="color:#fcd34d;font-weight:700;">${safeVal(p.kda).toFixed(2)}</span>
+                            </div>
+                            <div style="margin-top:8px;font-size:10px;color:#666;">💡 点击切换选手 | Ctrl+点击对比</div>`;
+                    }
+                },
+                visualMap: {
+                    dimension: 2,
+                    min: minKda,
+                    max: maxKda,
+                    calculable: false,
+                    orient: 'vertical',
+                    right: 4,
+                    top: 'center',
+                    itemWidth: 12,
+                    itemHeight: 80,
+                    text: ['高KDA', '低KDA'],
+                    textStyle: { color: '#888', fontSize: 10 },
+                    inRange: { color: ['#e74c3c', '#f39c12', '#3a9bd5', '#00bcd4', '#ffd700'] },
+                    show: players.length > 3
+                },
+                grid: { left: '8%', right: '16%', top: '12%', bottom: '15%', containLabel: true },
+                xAxis: {
+                    name: xLabel,
+                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
+                    nameLocation: 'middle',
+                    nameGap: 28,
+                    min: Math.max(0, xMin - xPad),
+                    max: xMax + xPad,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
+                    axisLabel: { color: '#888', fontSize: 10 },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } }
+                },
+                yAxis: {
+                    name: yLabel,
+                    nameTextStyle: { color: '#999', fontSize: 12, fontWeight: 500 },
+                    nameLocation: 'middle',
+                    nameGap: 40,
+                    min: Math.max(0, yMin - yPad),
+                    max: yMax + yPad,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.15)', width: 1 } },
+                    axisLabel: { color: '#888', fontSize: 10 },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)', type: 'dashed' } }
+                },
+                series: [{
+                    type: 'scatter',
+                    data: data,
+                    cursor: 'pointer',
+                    markLine: {
+                        silent: true,
+                        symbol: 'none',
+                        label: { show: true, formatter: (p) => p.data.xAxis !== undefined ? '均值X' : (p.data
+                                .yAxis !== undefined ? '均值Y' : ''), color: '#888', fontSize: 9,
+                            position: 'insideEndTop' },
+                        lineStyle: { color: 'rgba(255,255,255,0.18)', type: 'dashed', width: 1 },
+                        data: [{ xAxis: avgX }, { yAxis: avgY }],
+                        animation: false
+                    }
+                }]
+            };
+            scatterChartInstance.setOption(option, true);
+            scatterChartInstance.resize();
+        }
+
+        function renderBarChart(player) {
+            if (!barChartInstance) {
+                barChartInstance = echarts.init(document.getElementById('barChart'), 'dark');
+                window.addEventListener('resize', () => { if (barChartInstance) barChartInstance.resize(); });
+            }
+            const config = positionConfigs[currentPosition];
+            const categories = config.labels;
+            const playerValues = config.keys.map(key => {
+                let val = player[key];
+                if (key === 'kills_assists') val = (player.kills + player.assists);
+                return safeVal(val);
+            });
+            const avgValues = config.avgs.map(key => safeVal(avgStats[key]));
+            const series = [
+                { name: player.player, type: 'bar', data: playerValues, itemStyle: { color: '#00d4e6',
+                        borderRadius: [4, 4, 0, 0] }, barGap: '10%', barCategoryGap: '30%' },
+                { name: '均值', type: 'bar', data: avgValues, itemStyle: { color: '#ff6b6b', borderRadius: [
+                            4, 4, 0, 0
+                        ] } }
+            ];
+            comparePlayers.forEach((idx, order) => {
+                const compPlayer = currentFilteredPlayers[idx];
+                if (compPlayer) {
+                    let compValues = config.keys.map(key => {
+                        let val = compPlayer[key];
+                        if (key === 'kills_assists') val = (compPlayer.kills + compPlayer.assists);
+                        return safeVal(val);
+                    });
+                    series.push({
+                        name: compPlayer.player,
+                        type: 'bar',
+                        data: compValues,
+                        itemStyle: { color: order === 0 ? '#ff9800' : '#c084fc', borderRadius: [4, 4, 0,
+                                0] }
+                    });
+                }
+            });
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                legend: { data: series.map(s => s.name), textStyle: { color: '#ccc' }, top: 0 },
+                grid: { left: '10%', right: '5%', top: '15%', bottom: '10%', containLabel: true },
+                xAxis: { type: 'value', axisLabel: { color: '#888' }, splitLine: { lineStyle: { color: 'rgba(255,255,255,0.06)' } } },
+                yAxis: { type: 'category', data: categories, axisLabel: { color: '#ddd', fontSize: 11 },
+                    axisLine: { lineStyle: { color: '#666' } } },
+                series: series
+            };
+            barChartInstance.setOption(option, true);
+            barChartInstance.resize();
+        }
+
+        function renderHeatmap(players) {
+            if (!heatmapChartInstance) {
+                heatmapChartInstance = echarts.init(document.getElementById('heatmapChart'), 'dark');
+                window.addEventListener('resize', () => { if (heatmapChartInstance) heatmapChartInstance
+                        .resize(); });
+            }
+            const config = positionConfigs[currentPosition];
+            const indicators = config.labels;
+            const topN = Math.min(players.length, 30);
+            const selectedPlayers = players.slice(0, topN);
+            const data = [];
+            selectedPlayers.forEach((p, idx) => {
+                config.keys.forEach((key, keyIdx) => {
+                    let val = p[key];
+                    if (key === 'kills_assists') val = (p.kills + p.assists);
+                    val = safeVal(val);
+                    data.push([keyIdx, idx, val]);
+                });
+            });
+            const maxVals = {};
+            config.keys.forEach((key, keyIdx) => {
+                let maxVal = 0;
+                selectedPlayers.forEach(p => {
+                    let val = p[key];
+                    if (key === 'kills_assists') val = (p.kills + p.assists);
+                    val = safeVal(val);
+                    if (val > maxVal) maxVal = val;
+                });
+                maxVals[keyIdx] = maxVal || 1;
+            });
+            const normalizedData = data.map(item => [item[0], item[1], item[2] / maxVals[item[0]]]);
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    position: 'top',
+                    formatter: function(params) {
+                        const xIdx = params.value[0],
+                            yIdx = params.value[1];
+                        const rawVal = data.find(d => d[0] === xIdx && d[1] === yIdx)[2];
+                        return `${selectedPlayers[yIdx].player}<br>${config.labels[xIdx]}: ${rawVal.toFixed(2)}`;
+                    }
+                },
+                grid: { left: '15%', right: '5%', top: '10%', bottom: '15%', containLabel: true },
+                xAxis: { type: 'category', data: config.labels, splitArea: { show: true }, axisLabel: { color: '#ddd',
+                        fontSize: 10, interval: 0, rotate: 30 } },
+                yAxis: { type: 'category', data: selectedPlayers.map(p => p.player), splitArea: { show: true },
+                    axisLabel: { color: '#ddd', fontSize: 10, width: 100, overflow: 'truncate' } },
+                visualMap: { min: 0, max: 1, calculable: true, orient: 'vertical', right: 0, top: 'center',
+                    itemWidth: 12, itemHeight: 100, text: ['高', '低'], textStyle: { color: '#888' },
+                    inRange: { color: ['#1a1d24', '#00bcd4'] } },
+                series: [{ type: 'heatmap', data: normalizedData, label: { show: false },
+                    emphasis: { itemStyle: { borderColor: '#fff', borderWidth: 1 } } }]
+            };
+            heatmapChartInstance.setOption(option, true);
+            heatmapChartInstance.resize();
+        }
+
+        function renderParallel(player) {
+            if (!parallelChartInstance) {
+                parallelChartInstance = echarts.init(document.getElementById('parallelChart'), 'dark');
+                window.addEventListener('resize', () => { if (parallelChartInstance) parallelChartInstance
+                        .resize(); });
+            }
+            const config = positionConfigs[currentPosition];
+            const parallelAxis = config.keys.map((key, idx) => ({
+                dim: idx,
+                name: config.labels[idx],
+                max: config.maxs[idx],
+                axisLabel: { color: '#888' },
+                nameTextStyle: { color: '#ddd' }
+            }));
+            const data = [];
+            let playerValues = config.keys.map(key => {
+                let val = player[key];
+                if (key === 'kills_assists') val = (player.kills + player.assists);
+                return safeVal(val);
+            });
+            data.push({ value: playerValues, name: player.player, lineStyle: { color: '#00d4e6', width: 3 },
+                itemStyle: { color: '#00d4e6' } });
+            comparePlayers.forEach((idx, order) => {
+                const compPlayer = currentFilteredPlayers[idx];
+                if (compPlayer) {
+                    let compValues = config.keys.map(key => {
+                        let val = compPlayer[key];
+                        if (key === 'kills_assists') val = (compPlayer.kills + compPlayer.assists);
+                        return safeVal(val);
+                    });
+                    data.push({ value: compValues, name: compPlayer.player, lineStyle: { color: order === 0 ?
+                                '#ff9800' : '#c084fc', width: 2.5 }, itemStyle: { color: order === 0 ?
+                                '#ff9800' : '#c084fc' } });
+                }
+            });
+            let avgValues = config.avgs.map(key => safeVal(avgStats[key]));
+            data.push({ value: avgValues, name: '均值', lineStyle: { color: '#ff6b6b', width: 2, type: 'dashed' },
+                itemStyle: { color: '#ff6b6b' } });
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: { trigger: 'item', confine: true },
+                parallelAxis: parallelAxis,
+                parallel: { left: '5%', right: '5%', top: '15%', bottom: '10%', parallelAxisDefault: { axisLine: { lineStyle: { color: '#666' } },
+                        axisLabel: { color: '#888' } } },
+                series: [{ type: 'parallel', data: data, lineStyle: { width: 3 }, animationDuration: 800 }]
+            };
+            parallelChartInstance.setOption(option, true);
+            parallelChartInstance.resize();
+        }
+
+        // ============================================================
+        //  【保存图片模块 - 专业优化版】
+        // ============================================================
+        function updateExportProgress(pct, text) {
+            exportProgress.style.display = 'block';
+            exportProgressFill.style.width = pct + '%';
+            if (text) loadingOverlay.querySelector('.loading-text').textContent = text;
+        }
+
         async function exportImage() {
             const overlay = loadingOverlay;
             const loadingText = overlay.querySelector('.loading-text');
             overlay.classList.add('show');
+            exportProgress.style.display = 'block';
+            exportProgressFill.style.width = '0%';
             loadingText.textContent = '准备导出...';
+
             try {
-                await new Promise(resolve => setTimeout(resolve, 600));
+                // 步骤1：收集所有需要预加载的图片
+                updateExportProgress(10, '预加载图片资源...');
+                const images = mainArea.querySelectorAll('img');
+                const imagePromises = Array.from(images).map(img => {
+                    if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+                    return new Promise(resolve => {
+                        const timeout = setTimeout(() => { resolve(); }, 5000); // 5秒超时
+                        img.addEventListener('load', () => { clearTimeout(timeout);
+                            resolve(); }, { once: true });
+                        img.addEventListener('error', () => { clearTimeout(timeout);
+                            resolve(); }, { once: true });
+                        // 如果图片已经加载完成但naturalWidth为0，强制重新加载
+                        if (img.complete && img.naturalWidth === 0) {
+                            const src = img.src;
+                            img.src = '';
+                            img.src = src;
+                        }
+                    });
+                });
+                await Promise.all(imagePromises);
+
+                // 步骤2：确保ECharts图表已完成渲染
+                updateExportProgress(35, '等待图表渲染...');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                // 触发ECharts resize确保尺寸正确
                 if (myChart) myChart.resize();
+                if (scatterChartInstance) scatterChartInstance.resize();
+                if (barChartInstance) barChartInstance.resize();
+                if (heatmapChartInstance) heatmapChartInstance.resize();
+                if (parallelChartInstance) parallelChartInstance.resize();
                 await new Promise(resolve => setTimeout(resolve, 300));
-                loadingText.textContent = '生成高清图片...';
-                const html2canvas = (await import(
-                    'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js')).default;
+
+                // 步骤3：截图
+                updateExportProgress(55, '生成高清图片...');
                 const canvas = await html2canvas(mainArea, {
                     backgroundColor: '#0b0d12',
-                    scale: 3,
+                    scale: 3, // 提高分辨率到3倍
                     useCORS: true,
                     allowTaint: false,
                     logging: false,
@@ -1702,7 +2268,19 @@
                     scrollY: -window.scrollY,
                     windowWidth: document.documentElement.offsetWidth,
                     windowHeight: document.documentElement.offsetHeight,
+                    onclone: function(clonedDoc) {
+                        // 在克隆文档中修复可能存在的渲染问题
+                        const clonedImages = clonedDoc.querySelectorAll('img');
+                        clonedImages.forEach(img => {
+                            if (img.complete && img.naturalWidth === 0) {
+                                img.style.visibility = 'hidden';
+                            }
+                        });
+                    }
                 });
+
+                // 步骤4：下载
+                updateExportProgress(85, '保存文件...');
                 const playerName = currentFilteredPlayers.length > 0 && currentFilteredPlayers[currentPlayerIndex] ?
                     currentFilteredPlayers[currentPlayerIndex].player.replace(/[^\w\u4e00-\u9fa5]/g, '_') :
                     '未知选手';
@@ -1713,14 +2291,17 @@
                 link.download = filename;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                loadingText.textContent = '导出完成 ✓';
-                await new Promise(resolve => setTimeout(resolve, 500));
+
+                updateExportProgress(100, '导出完成 ✓');
+                await new Promise(resolve => setTimeout(resolve, 600));
             } catch (error) {
                 console.error('导出失败:', error);
                 loadingText.textContent = '导出失败，请重试';
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await new Promise(resolve => setTimeout(resolve, 1200));
             } finally {
                 overlay.classList.remove('show');
+                exportProgress.style.display = 'none';
+                exportProgressFill.style.width = '0%';
                 loadingText.textContent = '数据加载中...';
             }
         }
