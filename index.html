@@ -176,33 +176,146 @@
         box-shadow: 0 4px 20px rgba(0, 188, 212, 0.2);
     }
 
+    /* ============================================================
+       选手选择器（改造：换行 + 纵向滚动 + 展开收起 + 对比信息）
+       ============================================================ */
     .player-selector {
-        display: flex; align-items: center; gap: 10px;
-        margin-top: 14px; padding: 10px 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 8px 10px;
+        margin-top: 14px;
+        padding: 8px 14px 12px;
         background: rgba(0, 0, 0, 0.25);
         border-radius: var(--radius-md);
         border: 1px solid rgba(255, 255, 255, 0.04);
-        overflow-x: auto;
-        scrollbar-width: thin; scrollbar-color: #7a3df0 transparent;
-        flex-wrap: nowrap; min-height: 62px;
-        transition: var(--transition-smooth);
+        max-height: 138px;                            /* 约两行 chip */
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(122, 61, 240, 0.6) transparent;
+        transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                    border-color 0.3s ease;
     }
-    .player-selector::-webkit-scrollbar { height: 4px; }
+    .player-selector.expanded { max-height: 460px; }
+    .player-selector::-webkit-scrollbar { width: 5px; }
     .player-selector::-webkit-scrollbar-track { background: transparent; }
-    .player-selector::-webkit-scrollbar-thumb { background: #7a3df0; border-radius: 8px; }
-    .player-selector .label {
-        color: #888; font-size: 12px; font-weight: 500;
-        letter-spacing: 0.5px; flex-shrink: 0; margin-right: 4px;
+    .player-selector::-webkit-scrollbar-thumb {
+        background: rgba(122, 61, 240, 0.5); border-radius: 8px;
     }
+    .player-selector::-webkit-scrollbar-thumb:hover {
+        background: rgba(122, 61, 240, 0.85);
+    }
+
+    /* 顶部信息条：粘性固定，滚动时始终可见 */
+    .player-selector .label {
+        flex: 0 0 100%;
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #888;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        line-height: 1.4;
+        padding: 4px 2px 6px;
+        margin: -8px -14px 0;
+        padding-left: 14px;
+        padding-right: 14px;
+        background: linear-gradient(180deg,
+            rgba(15, 17, 23, 0.98) 0%,
+            rgba(15, 17, 23, 0.92) 70%,
+            rgba(15, 17, 23, 0) 100%);
+        pointer-events: none;
+    }
+    .player-selector .label > * { pointer-events: auto; }
+    .player-selector .label .label-title {
+        display: inline-flex; align-items: center; gap: 6px;
+        flex-shrink: 0;
+    }
+    .player-selector .label .count {
+        color: #b9a0ff;
+        font-weight: 700;
+        background: rgba(122, 61, 240, 0.18);
+        padding: 1px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+    }
+    .player-selector .label .hint {
+        color: #555;
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0.3px;
+        margin-left: auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .player-selector .label .compare-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: auto;
+        font-size: 11px;
+        color: #ffb74d;
+        font-weight: 500;
+        overflow: hidden;
+    }
+    .player-selector .label .compare-info .vs {
+        color: #666;
+        font-size: 10px;
+    }
+    .player-selector .label .compare-info .tag {
+        color: #fff;
+        background: rgba(255, 152, 0, 0.22);
+        border: 1px solid rgba(255, 152, 0, 0.4);
+        padding: 1px 8px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 500;
+        white-space: nowrap;
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .player-selector .label .expand-btn {
+        flex-shrink: 0;
+        background: rgba(122, 61, 240, 0.15);
+        border: 1px solid rgba(122, 61, 240, 0.3);
+        color: #b9a0ff;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        letter-spacing: 0.5px;
+        transition: var(--transition-smooth);
+        font-family: inherit;
+    }
+    .player-selector .label .expand-btn:hover {
+        background: rgba(122, 61, 240, 0.3);
+        color: #fff;
+        border-color: rgba(122, 61, 240, 0.6);
+        transform: translateY(-1px);
+    }
+
     .player-chip {
-        display: flex; align-items: center; gap: 8px;
-        padding: 5px 14px 5px 8px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 12px 5px 6px;
         border-radius: 30px;
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid transparent;
-        cursor: pointer; transition: var(--transition-smooth);
-        flex-shrink: 0; white-space: nowrap;
-        position: relative; user-select: none;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        flex-shrink: 0;
+        white-space: nowrap;
+        position: relative;
+        user-select: none;
     }
     .player-chip:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-2px); }
     .player-chip.active {
@@ -214,6 +327,11 @@
         background: rgba(0, 188, 212, 0.2);
         border-color: rgba(0, 188, 212, 0.5);
         box-shadow: 0 0 15px rgba(0, 188, 212, 0.15);
+    }
+    /* 当前选手 + 对比 同时存在时的双色提示 */
+    .player-chip.active.compare {
+        border-color: rgba(0, 229, 255, 0.75);
+        box-shadow: 0 0 22px rgba(0, 229, 255, 0.3), 0 0 12px rgba(122, 61, 240, 0.4);
     }
     .player-chip img {
         width: 32px; height: 32px; border-radius: 50%;
@@ -378,7 +496,6 @@
         padding: 8px;
         overflow: hidden;
     }
-    /* 雷达图背后的柔和光晕（仅雷达视图显示） */
     .right-panel.radar-glow::before {
         content: '';
         position: absolute;
@@ -418,7 +535,6 @@
         z-index: 5;
     }
 
-    /* ===== 雷达图顶点数据标签 ===== */
     .stat-item {
         position: absolute;
         display: flex;
@@ -498,7 +614,6 @@
     .stat-avg.below .arrow { color: #ff7b7b; }
     .stat-avg.same  .arrow { color: #666; }
 
-    /* 八个顶点位置（围绕雷达图等比分布） */
     .pos-top        { top: 8%;  left: 50%; }
     .pos-topright   { top: 20%; left: 77%; }
     .pos-right      { top: 50%; left: 96%; }
@@ -523,7 +638,6 @@
     .avg-note .red-dot { color: #ff5252; font-weight: 600; }
     .avg-note .blue-dot { color: #00bcd4; font-weight: 600; }
 
-    /* 雷达图图例 */
     .radar-legend {
         position: absolute;
         left: 16px; bottom: 14px;
@@ -546,7 +660,6 @@
     }
     .radar-legend .legend-dot.glow { box-shadow: 0 0 8px currentColor; }
 
-    /* 其他图表容器 */
     #scatterChart, #barChart, #heatmapChart {
         position: absolute;
         inset: 0;
@@ -657,11 +770,18 @@
         .pos-bottomleft { top: 90%; left: 12%; }
         .pos-left       { top: 50%; left: 3%; }
         .pos-topleft    { top: 16%; left: 18%; }
-        .player-selector { padding: 8px 12px; gap: 6px; min-height: 50px; }
-        .player-chip { padding: 4px 10px 4px 6px; }
+
+        /* 手机端：单列紧凑布局 */
+        .player-selector { max-height: 116px; padding: 6px 10px 10px; gap: 6px 6px; }
+        .player-selector.expanded { max-height: 340px; }
+        .player-selector .label { padding-left: 10px; padding-right: 10px; margin-left: -10px; margin-right: -10px; }
+        .player-selector .label .hint { display: none; }
+        .player-selector .label .compare-info { max-width: 55%; }
+        .player-chip { padding: 4px 10px 4px 6px; gap: 6px; }
         .player-chip img { width: 26px; height: 26px; }
         .player-chip .chip-name { font-size: 11px; }
         .player-chip .chip-kda { font-size: 10px; }
+
         .search-input { font-size: 12px; padding: 7px 14px; }
         .view-btn, .export-btn { padding: 6px 12px; font-size: 11px; }
         .scatter-legend-overlay, .radar-legend { display: none !important; }
@@ -836,7 +956,6 @@ let currentView = 'radar';
 let comparePlayers = [];
 let currentSortKey = 'kda';
 
-// DOM 引用
 const teamSelect = document.getElementById('teamSelect');
 const sortSelect = document.getElementById('sortSelect');
 const posBtns = document.querySelectorAll('.pos-btn');
@@ -856,7 +975,6 @@ const exportProgressFill = document.getElementById('exportProgressFill');
 // 工具函数
 function safeVal(v, fallback = 0) { const n = parseFloat(v); return isNaN(n) ? fallback : n; }
 
-/** 百分位数计算（用于雷达图动态最大值） */
 function percentile(values, pct) {
     if (!values.length) return 0;
     const sorted = [...values].sort((a, b) => a - b);
@@ -864,12 +982,10 @@ function percentile(values, pct) {
     return sorted[idx] || 0;
 }
 
-/** 代理图片URL */
 function proxyImageUrl(originalUrl) {
     return `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}`;
 }
 
-/** 数值格式化 */
 function fmtVal(key, v) {
     const n = safeVal(v);
     if (key === 'kills_assists') return String(Math.round(n));
@@ -877,13 +993,14 @@ function fmtVal(key, v) {
     return n.toFixed(2);
 }
 
-/** 取选手某一维度的原始值（含特殊处理） */
 function getDimValue(player, key) {
     if (key === 'kills_assists') return safeVal(player.kills) + safeVal(player.assists);
     return safeVal(player[key]);
 }
 
-// 加载数据
+// ============================================================
+//  加载数据
+// ============================================================
 async function loadData() {
     loadingOverlay.classList.add('show');
     loadingOverlay.querySelector('.loading-text').textContent = '数据加载中...';
@@ -941,7 +1058,7 @@ async function loadData() {
         });
         exportBtn.addEventListener('click', exportImage);
 
-        // 键盘导航：← → 切换选手，Esc 清空对比
+        // 键盘导航
         document.addEventListener('keydown', (e) => {
             const tag = (e.target.tagName || '').toLowerCase();
             if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
@@ -977,32 +1094,62 @@ function getFilteredPlayers() {
     let filtered = allPlayers.filter(p => p.position === currentPosition);
     if (currentTeam !== 'ALL') filtered = filtered.filter(p => p.player.startsWith(currentTeam));
     if (searchTerm) filtered = filtered.filter(p => p.player.toLowerCase().includes(searchTerm));
-
-    const key = currentSortKey;
-    filtered.sort((a, b) => getDimValue(b, key) - getDimValue(a, key));
+    filtered.sort((a, b) => getDimValue(b, currentSortKey) - getDimValue(a, currentSortKey));
     return filtered;
 }
 
+// ============================================================
+//  选手选择器渲染（改造版）
+// ============================================================
 function renderPlayerChips(players) {
     const container = playerSelector;
-    let html = `<span class="label">👥 选手</span>`;
+    const isExpanded = container.classList.contains('expanded');
+    const needExpand = players.length > 10;
+
+    // 对比选手名称
+    const compareNames = comparePlayers
+        .map(i => players[i]?.player)
+        .filter(Boolean);
+
+    // 顶部信息条右侧内容
+    let rightContent;
+    if (compareNames.length) {
+        rightContent = `<span class="compare-info">
+            <span>对比</span>
+            ${compareNames.map(n => `<span class="tag">${n}</span>`).join('<span class="vs">vs</span>')}
+        </span>`;
+    } else {
+        rightContent = `<span class="hint">← → 切换选手 · Ctrl/⌘+点击对比</span>`;
+    }
+
+    let html = `
+        <span class="label">
+            <span class="label-title">👥 选手 <span class="count">${players.length}</span></span>
+            ${rightContent}
+            ${needExpand ? `<button class="expand-btn" id="expandPlayersBtn" type="button">${isExpanded ? '收起 ▲' : '展开全部 ▼'}</button>` : ''}
+        </span>`;
+
     if (players.length === 0) {
         html += `<span style="color:#666;font-size:13px;padding:6px 0;">暂无选手</span>`;
         container.innerHTML = html;
         return;
     }
+
     players.forEach((p, idx) => {
         const active = idx === currentPlayerIndex ? 'active' : '';
         const compare = comparePlayers.includes(idx) ? 'compare' : '';
         const avatar = proxyImageUrl(`https://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`);
         html += `
-            <div class="player-chip ${active} ${compare}" data-index="${idx}" title="点击选择 · Ctrl/⌘+点击加入对比">
+            <div class="player-chip ${active} ${compare}" data-index="${idx}"
+                 title="${p.player} · ${p.kills}/${p.deaths}/${p.assists}">
                 <img src="${avatar}" crossorigin="anonymous" onerror="this.src='https://via.placeholder.com/32'" loading="lazy" />
                 <span class="chip-name">${p.player}</span>
                 <span class="chip-kda"><span class="k">${p.kills}</span>/<span class="d">${p.deaths}</span>/<span class="a">${p.assists}</span></span>
             </div>`;
     });
     container.innerHTML = html;
+
+    // chip 交互
     container.querySelectorAll('.player-chip').forEach(el => {
         el.addEventListener('click', (e) => {
             const idx = parseInt(el.dataset.index, 10);
@@ -1023,8 +1170,38 @@ function renderPlayerChips(players) {
             }
         });
     });
+
+    // 展开/收起按钮
+    const expandBtn = document.getElementById('expandPlayersBtn');
+    if (expandBtn) {
+        expandBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            container.classList.toggle('expanded');
+            expandBtn.textContent = container.classList.contains('expanded') ? '收起 ▲' : '展开全部 ▼';
+        });
+    }
+
+    // 自动把当前选手滚动到可视区（键盘导航、切换排序后尤其有用）
+    requestAnimationFrame(() => {
+        const activeChip = container.querySelector('.player-chip.active');
+        if (!activeChip) return;
+        const cRect = container.getBoundingClientRect();
+        const aRect = activeChip.getBoundingClientRect();
+        // 顶部留出 34px 给粘性信息条
+        const topEdge = cRect.top + 34;
+        if (aRect.top < topEdge || aRect.bottom > cRect.bottom - 4) {
+            const delta = aRect.top - topEdge;
+            container.scrollTo({
+                top: Math.max(0, container.scrollTop + delta - 6),
+                behavior: 'smooth'
+            });
+        }
+    });
 }
 
+// ============================================================
+//  主视图更新
+// ============================================================
 function updateView() {
     if (!isDataLoaded) return;
     const players = getFilteredPlayers();
@@ -1150,7 +1327,6 @@ function renderStatsWrapper(player) {
     }).join('');
 }
 
-// 构建雷达图 tooltip
 function buildRadarTooltip(player, config, isPlayerSeries) {
     let html = '';
     const playerName = player.player || '未知选手';
@@ -1189,7 +1365,6 @@ function renderRadar(player) {
     }
     const config = positionConfigs[currentPosition];
 
-    // 动态最大值：95 分位数 + 12% 余量
     const dynamicMaxs = config.keys.map((key, index) => {
         const values = currentFilteredPlayers.map(p => getDimValue(p, key));
         const p95 = percentile(values, 0.95);
@@ -1208,7 +1383,7 @@ function renderRadar(player) {
     const seriesData = [];
     const metaMap = [];
 
-    // 0) 当前选手主体
+    // 当前选手主体
     seriesData.push({
         value: playerValues,
         name: player.player,
@@ -1242,7 +1417,7 @@ function renderRadar(player) {
     });
     metaMap.push({ type: 'current' });
 
-    // 1) 当前选手顶点光晕（不可交互）
+    // 当前选手顶点光晕
     seriesData.push({
         value: playerValues,
         name: player.player + '__glow',
@@ -1262,7 +1437,7 @@ function renderRadar(player) {
     });
     metaMap.push({ type: 'glow' });
 
-    // 2) 对比选手
+    // 对比选手
     comparePlayers.forEach((idx, order) => {
         const compPlayer = currentFilteredPlayers[idx];
         if (!compPlayer) return;
@@ -1301,7 +1476,7 @@ function renderRadar(player) {
         metaMap.push({ type: 'compare', player: compPlayer });
     });
 
-    // 3) 均值
+    // 均值
     const avgValues = config.avgs.map(key => safeVal(avgStats[key]));
     seriesData.push({
         value: avgValues,
