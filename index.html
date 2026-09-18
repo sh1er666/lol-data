@@ -177,7 +177,7 @@
     }
 
     /* ============================================================
-       选手选择器（改造：换行 + 纵向滚动 + 展开收起 + 对比信息）
+       选手选择器（换行 + 纵向滚动 + 展开收起 + 对比信息）
        ============================================================ */
     .player-selector {
         display: flex;
@@ -189,7 +189,7 @@
         background: rgba(0, 0, 0, 0.25);
         border-radius: var(--radius-md);
         border: 1px solid rgba(255, 255, 255, 0.04);
-        max-height: 138px;                            /* 约两行 chip */
+        max-height: 138px;
         overflow-y: auto;
         overflow-x: hidden;
         scrollbar-width: thin;
@@ -207,7 +207,6 @@
         background: rgba(122, 61, 240, 0.85);
     }
 
-    /* 顶部信息条：粘性固定，滚动时始终可见 */
     .player-selector .label {
         flex: 0 0 100%;
         position: sticky;
@@ -328,7 +327,6 @@
         border-color: rgba(0, 188, 212, 0.5);
         box-shadow: 0 0 15px rgba(0, 188, 212, 0.15);
     }
-    /* 当前选手 + 对比 同时存在时的双色提示 */
     .player-chip.active.compare {
         border-color: rgba(0, 229, 255, 0.75);
         box-shadow: 0 0 22px rgba(0, 229, 255, 0.3), 0 0 12px rgba(122, 61, 240, 0.4);
@@ -574,6 +572,19 @@
         box-shadow: 0 0 24px rgba(122, 61, 240, 0.25);
         z-index: 10;
     }
+    /* 提示可点击的小角标 */
+    .stat-item::after {
+        content: '';
+        position: absolute;
+        top: 3px; right: 3px;
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: rgba(122, 61, 240, 0.55);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+    .stat-item:hover::after { opacity: 1; }
+
     .stat-rank {
         color: #fcd34d;
         font-size: 11px;
@@ -723,6 +734,325 @@
         border-radius: 4px; transition: width 0.3s ease;
     }
 
+    /* ============================================================
+       数据标签弹窗（排行榜）
+       ============================================================ */
+    .stat-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 8, 12, 0.72);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.28s ease;
+    }
+    .stat-modal-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .stat-modal {
+        width: 100%;
+        max-width: 580px;
+        max-height: min(80vh, 760px);
+        background: linear-gradient(180deg, rgba(26, 29, 38, 0.99), rgba(16, 18, 24, 0.99));
+        border: 1px solid rgba(122, 61, 240, 0.28);
+        border-radius: 22px;
+        box-shadow:
+            0 28px 90px rgba(0, 0, 0, 0.75),
+            0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+            0 0 80px rgba(122, 61, 240, 0.12);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transform: translateY(20px) scale(0.96);
+        transition: transform 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .stat-modal-overlay.show .stat-modal {
+        transform: translateY(0) scale(1);
+    }
+
+    .stat-modal-header {
+        position: relative;
+        padding: 18px 56px 16px 22px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background:
+            radial-gradient(circle at 0% 0%, rgba(122, 61, 240, 0.24), transparent 62%),
+            radial-gradient(circle at 100% 100%, rgba(0, 188, 212, 0.14), transparent 58%),
+            linear-gradient(180deg, rgba(32, 35, 45, 0.92), rgba(20, 22, 28, 0.92));
+    }
+    .stat-modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .stat-modal-title .accent-icon {
+        width: 5px;
+        height: 20px;
+        border-radius: 3px;
+        background: linear-gradient(180deg, #7a3df0, #00e5ff);
+        box-shadow: 0 0 14px rgba(122, 61, 240, 0.85);
+        flex-shrink: 0;
+    }
+    .stat-modal-title .pos-chip {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: #b9a0ff;
+        background: rgba(122, 61, 240, 0.18);
+        border: 1px solid rgba(122, 61, 240, 0.35);
+        padding: 2px 9px;
+        border-radius: 10px;
+    }
+    .stat-modal-sub {
+        font-size: 12px;
+        color: #888;
+        margin-top: 7px;
+        letter-spacing: 0.3px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        align-items: center;
+    }
+    .stat-modal-sub .hl { color: #fcd34d; font-weight: 700; }
+    .stat-modal-sub .hl-cyan { color: #00e5ff; font-weight: 700; }
+    .stat-modal-sub .hl-red { color: #ff7b7b; font-weight: 700; }
+
+    .stat-modal-close {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+        color: #aaa;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-smooth);
+        font-family: inherit;
+        padding: 0;
+    }
+    .stat-modal-close:hover {
+        background: rgba(255, 82, 82, 0.22);
+        border-color: rgba(255, 82, 82, 0.5);
+        color: #fff;
+        transform: rotate(90deg) scale(1.08);
+    }
+
+    .stat-modal-body {
+        overflow-y: auto;
+        padding: 12px 14px 16px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(122, 61, 240, 0.6) transparent;
+    }
+    .stat-modal-body::-webkit-scrollbar { width: 6px; }
+    .stat-modal-body::-webkit-scrollbar-track { background: transparent; }
+    .stat-modal-body::-webkit-scrollbar-thumb {
+        background: rgba(122, 61, 240, 0.5);
+        border-radius: 8px;
+    }
+    .stat-modal-body::-webkit-scrollbar-thumb:hover {
+        background: rgba(122, 61, 240, 0.85);
+    }
+
+    /* 排行榜行 */
+    .rank-row {
+        display: grid;
+        grid-template-columns: 34px 38px 1fr 92px;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+        border: 1px solid transparent;
+        margin-bottom: 3px;
+        animation: rowIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes rowIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .rank-row:hover {
+        background: rgba(255, 255, 255, 0.055);
+        transform: translateX(3px);
+    }
+    .rank-row.is-current {
+        background: linear-gradient(90deg, rgba(122, 61, 240, 0.22), rgba(122, 61, 240, 0.06));
+        border-color: rgba(122, 61, 240, 0.42);
+        box-shadow: 0 0 20px rgba(122, 61, 240, 0.14);
+    }
+    .rank-row.is-compare {
+        border-color: rgba(0, 188, 212, 0.4);
+        background: rgba(0, 188, 212, 0.08);
+    }
+
+    .rank-badge {
+        font-size: 13px;
+        font-weight: 700;
+        color: #7a7f8a;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.3px;
+    }
+    .rank-badge.gold   { color: #ffd700; text-shadow: 0 0 12px rgba(255, 215, 0, 0.65); }
+    .rank-badge.silver { color: #cfd6dc; text-shadow: 0 0 10px rgba(207, 214, 220, 0.5); }
+    .rank-badge.bronze { color: #d1874a; text-shadow: 0 0 10px rgba(209, 135, 74, 0.5); }
+
+    .rank-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #1a1d24;
+        border: 2px solid rgba(255, 255, 255, 0.08);
+        transition: border-color 0.25s ease;
+    }
+    .rank-row.is-current .rank-avatar {
+        border-color: rgba(122, 61, 240, 0.75);
+        box-shadow: 0 0 14px rgba(122, 61, 240, 0.5);
+    }
+    .rank-row.is-compare .rank-avatar {
+        border-color: rgba(0, 188, 212, 0.7);
+    }
+
+    .rank-info {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .rank-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #e8e8e8;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+    .rank-name .tag-current {
+        font-size: 9px;
+        font-weight: 700;
+        color: #d6c4ff;
+        background: rgba(122, 61, 240, 0.35);
+        border: 1px solid rgba(122, 61, 240, 0.55);
+        padding: 1px 6px;
+        border-radius: 7px;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+    }
+    .rank-name .tag-compare {
+        font-size: 9px;
+        font-weight: 700;
+        color: #a8ecff;
+        background: rgba(0, 188, 212, 0.28);
+        border: 1px solid rgba(0, 188, 212, 0.5);
+        padding: 1px 6px;
+        border-radius: 7px;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+    }
+
+    .rank-bar {
+        height: 4px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+        position: relative;
+    }
+    .rank-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        background: linear-gradient(90deg, #7a3df0, #00e5ff);
+        box-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        transition: width 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+    }
+    .rank-row.is-current .rank-bar-fill {
+        background: linear-gradient(90deg, #7a3df0, #c084fc, #00e5ff);
+        box-shadow: 0 0 14px rgba(122, 61, 240, 0.8);
+    }
+    .rank-row.is-compare .rank-bar-fill {
+        background: linear-gradient(90deg, #ff9800, #ffcc80);
+        box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
+    }
+
+    .rank-value {
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+    .rank-num {
+        font-size: 15px;
+        font-weight: 700;
+        color: #00e5ff;
+        letter-spacing: 0.2px;
+        font-variant-numeric: tabular-nums;
+        text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+    .rank-row.is-current .rank-num { color: #fff; text-shadow: 0 0 12px rgba(255,255,255,0.35); }
+    .rank-delta {
+        font-size: 10px;
+        font-weight: 600;
+        color: #ff6b6b;
+        opacity: 0.85;
+        letter-spacing: 0.2px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 3px;
+        font-variant-numeric: tabular-nums;
+    }
+    .rank-delta .arrow { font-size: 8px; }
+    .rank-delta.above .arrow { color: #4ade80; }
+    .rank-delta.below .arrow { color: #ff7b7b; }
+    .rank-delta.same  .arrow { color: #666; }
+
+    .stat-modal-footer {
+        padding: 10px 20px 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 11px;
+        color: #666;
+        text-align: center;
+        letter-spacing: 0.3px;
+        background: rgba(0, 0, 0, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+    .stat-modal-footer .dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+    .stat-modal-footer .dot.purple { background: #7a3df0; box-shadow: 0 0 8px #7a3df0; }
+    .stat-modal-footer .dot.cyan   { background: #00bcd4; box-shadow: 0 0 8px #00bcd4; }
+    .stat-modal-footer .dot.orange { background: #ff9800; box-shadow: 0 0 8px #ff9800; }
+
     /* ===== 响应式 ===== */
     @media (max-width: 1180px) {
         .container { padding: 20px; }
@@ -771,7 +1101,6 @@
         .pos-left       { top: 50%; left: 3%; }
         .pos-topleft    { top: 16%; left: 18%; }
 
-        /* 手机端：单列紧凑布局 */
         .player-selector { max-height: 116px; padding: 6px 10px 10px; gap: 6px 6px; }
         .player-selector.expanded { max-height: 340px; }
         .player-selector .label { padding-left: 10px; padding-right: 10px; margin-left: -10px; margin-right: -10px; }
@@ -786,6 +1115,23 @@
         .view-btn, .export-btn { padding: 6px 12px; font-size: 11px; }
         .scatter-legend-overlay, .radar-legend { display: none !important; }
         .avg-note { font-size: 9px; padding: 3px 8px; right: 8px; top: 8px; }
+
+        /* 弹窗移动端 */
+        .stat-modal-overlay { padding: 12px; align-items: flex-end; }
+        .stat-modal { max-width: 100%; max-height: 88vh; border-radius: 20px 20px 16px 16px; }
+        .stat-modal-header { padding: 16px 48px 14px 18px; }
+        .stat-modal-title { font-size: 16px; }
+        .stat-modal-body { padding: 10px 10px 14px; }
+        .rank-row {
+            grid-template-columns: 28px 34px 1fr 78px;
+            gap: 9px;
+            padding: 7px 9px;
+        }
+        .rank-avatar { width: 32px; height: 32px; }
+        .rank-name { font-size: 12px; }
+        .rank-num { font-size: 13px; }
+        .rank-delta { font-size: 9px; }
+        .stat-modal-footer { font-size: 10px; gap: 10px; }
     }
 </style>
 </head>
@@ -895,6 +1241,19 @@
     </div>
 </div>
 
+<!-- ===== 数据标签弹窗 ===== -->
+<div class="stat-modal-overlay" id="statModalOverlay" aria-hidden="true">
+    <div class="stat-modal" role="dialog" aria-modal="true" aria-labelledby="statModalTitle">
+        <div class="stat-modal-header" id="statModalHeader"></div>
+        <div class="stat-modal-body" id="statModalBody"></div>
+        <div class="stat-modal-footer">
+            <span><span class="dot purple"></span>当前选手</span>
+            <span><span class="dot cyan"></span>对比选手</span>
+            <span><span class="dot orange"></span>点击行可切换</span>
+        </div>
+    </div>
+</div>
+
 <script>
 // ============================================================
 //  位置动态指标配置表
@@ -971,6 +1330,9 @@ const radarLegend = document.getElementById('radarLegend');
 const mainArea = document.getElementById('mainArea');
 const exportProgress = document.getElementById('exportProgress');
 const exportProgressFill = document.getElementById('exportProgressFill');
+const statModalOverlay = document.getElementById('statModalOverlay');
+const statModalHeader = document.getElementById('statModalHeader');
+const statModalBody = document.getElementById('statModalBody');
 
 // 工具函数
 function safeVal(v, fallback = 0) { const n = parseFloat(v); return isNaN(n) ? fallback : n; }
@@ -997,6 +1359,140 @@ function getDimValue(player, key) {
     if (key === 'kills_assists') return safeVal(player.kills) + safeVal(player.assists);
     return safeVal(player[key]);
 }
+
+// ============================================================
+//  数据标签弹窗
+// ============================================================
+function closeStatModal() {
+    if (statModalOverlay.classList.contains('show')) {
+        statModalOverlay.classList.remove('show');
+        statModalOverlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+}
+
+function openStatModal(key, index) {
+    if (!currentFilteredPlayers.length) return;
+    const config = positionConfigs[currentPosition];
+    const label = config.labels[index];
+    const avgKey = config.avgs[index];
+    const rankKey = config.ranks[index];
+    const avgVal = safeVal(avgStats[avgKey]);
+
+    // 按该指标降序排列
+    const sorted = currentFilteredPlayers
+        .map((p, origIndex) => ({ p, origIndex }))
+        .sort((a, b) => getDimValue(b.p, key) - getDimValue(a.p, key));
+
+    const maxVal = sorted.length ? getDimValue(sorted[0].p, key) : 0;
+
+    // 头部
+    const posNameMap = { TOP: '上单', JUNGLE: '打野', MIDDLE: '中单', BOTTOM: '下路', UTILITY: '辅助' };
+    statModalHeader.innerHTML = `
+        <div class="stat-modal-title" id="statModalTitle">
+            <span class="accent-icon"></span>
+            <span>${label} · 排行榜</span>
+            <span class="pos-chip">${posNameMap[currentPosition] || currentPosition}</span>
+        </div>
+        <div class="stat-modal-sub">
+            <span>共 <span class="hl">${sorted.length}</span> 位选手</span>
+            <span>·</span>
+            <span>均值 <span class="hl-red">${fmtVal(key, avgVal)}</span></span>
+            <span>·</span>
+            <span>最高 <span class="hl-cyan">${fmtVal(key, maxVal)}</span></span>
+        </div>
+        <button class="stat-modal-close" type="button" aria-label="关闭" id="statModalCloseBtn">✕</button>
+    `;
+
+    // 列表
+    const rowsHtml = sorted.map((item, i) => {
+        const p = item.p;
+        const val = getDimValue(p, key);
+        const rankNum = (p[rankKey] !== undefined && p[rankKey] !== null && p[rankKey] !== '')
+            ? p[rankKey]
+            : (i + 1);
+        const isCurrent = item.origIndex === currentPlayerIndex;
+        const isCompare = comparePlayers.includes(item.origIndex);
+
+        const pct = maxVal > 0 ? Math.max(4, Math.min(100, (val / maxVal) * 100)) : 4;
+
+        let badgeCls = '';
+        if (rankNum === 1 || rankNum === '1') badgeCls = 'gold';
+        else if (rankNum === 2 || rankNum === '2') badgeCls = 'silver';
+        else if (rankNum === 3 || rankNum === '3') badgeCls = 'bronze';
+
+        const delta = val - avgVal;
+        const deltaCls = delta > 0.0001 ? 'above' : (delta < -0.0001 ? 'below' : 'same');
+        const deltaArrow = deltaCls === 'above' ? '▲' : (deltaCls === 'below' ? '▼' : '—');
+
+        const avatar = proxyImageUrl(`https://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`);
+        const delay = Math.min(i * 16, 380);
+
+        const badgeHtml = isCurrent
+            ? `<span class="tag-current">当前</span>`
+            : (isCompare ? `<span class="tag-compare">对比</span>` : '');
+
+        return `
+            <div class="rank-row ${isCurrent ? 'is-current' : ''} ${isCompare ? 'is-compare' : ''}"
+                 data-index="${item.origIndex}"
+                 style="animation-delay:${delay}ms"
+                 title="点击切换为当前选手">
+                <div class="rank-badge ${badgeCls}">${rankNum}</div>
+                <img class="rank-avatar" src="${avatar}" crossorigin="anonymous"
+                     onerror="this.src='https://via.placeholder.com/36'" loading="lazy" alt="" />
+                <div class="rank-info">
+                    <div class="rank-name">${p.player}${badgeHtml}</div>
+                    <div class="rank-bar"><div class="rank-bar-fill" style="width:${pct}%"></div></div>
+                </div>
+                <div class="rank-value">
+                    <div class="rank-num">${fmtVal(key, val)}</div>
+                    <div class="rank-delta ${deltaCls}">${fmtVal(key, avgVal)}<span class="arrow">${deltaArrow}</span></div>
+                </div>
+            </div>`;
+    }).join('');
+
+    statModalBody.innerHTML = rowsHtml;
+
+    // 关闭按钮
+    document.getElementById('statModalCloseBtn').addEventListener('click', closeStatModal);
+
+    // 行点击 → 切换当前选手
+    statModalBody.querySelectorAll('.rank-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const idx = parseInt(row.dataset.index, 10);
+            if (!isNaN(idx)) {
+                if (idx !== currentPlayerIndex) {
+                    currentPlayerIndex = idx;
+                    comparePlayers = comparePlayers.filter(i => i !== idx);
+                    updateView();
+                }
+            }
+            closeStatModal();
+        });
+    });
+
+    // 显示
+    statModalOverlay.classList.add('show');
+    statModalOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    // 滚动到当前选手所在行
+    requestAnimationFrame(() => {
+        const curRow = statModalBody.querySelector('.rank-row.is-current');
+        if (curRow) {
+            const bodyRect = statModalBody.getBoundingClientRect();
+            const rowRect = curRow.getBoundingClientRect();
+            if (rowRect.top < bodyRect.top || rowRect.bottom > bodyRect.bottom) {
+                statModalBody.scrollTop = curRow.offsetTop - 60;
+            }
+        }
+    });
+}
+
+// 遮罩点击关闭
+statModalOverlay.addEventListener('click', (e) => {
+    if (e.target === statModalOverlay) closeStatModal();
+});
 
 // ============================================================
 //  加载数据
@@ -1060,6 +1556,14 @@ async function loadData() {
 
         // 键盘导航
         document.addEventListener('keydown', (e) => {
+            // 优先处理弹窗关闭
+            if (statModalOverlay.classList.contains('show')) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeStatModal();
+                }
+                return;
+            }
             const tag = (e.target.tagName || '').toLowerCase();
             if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
             if (!currentFilteredPlayers.length) return;
@@ -1099,19 +1603,17 @@ function getFilteredPlayers() {
 }
 
 // ============================================================
-//  选手选择器渲染（改造版）
+//  选手选择器渲染
 // ============================================================
 function renderPlayerChips(players) {
     const container = playerSelector;
     const isExpanded = container.classList.contains('expanded');
     const needExpand = players.length > 10;
 
-    // 对比选手名称
     const compareNames = comparePlayers
         .map(i => players[i]?.player)
         .filter(Boolean);
 
-    // 顶部信息条右侧内容
     let rightContent;
     if (compareNames.length) {
         rightContent = `<span class="compare-info">
@@ -1149,7 +1651,6 @@ function renderPlayerChips(players) {
     });
     container.innerHTML = html;
 
-    // chip 交互
     container.querySelectorAll('.player-chip').forEach(el => {
         el.addEventListener('click', (e) => {
             const idx = parseInt(el.dataset.index, 10);
@@ -1171,7 +1672,6 @@ function renderPlayerChips(players) {
         });
     });
 
-    // 展开/收起按钮
     const expandBtn = document.getElementById('expandPlayersBtn');
     if (expandBtn) {
         expandBtn.addEventListener('click', (e) => {
@@ -1181,13 +1681,11 @@ function renderPlayerChips(players) {
         });
     }
 
-    // 自动把当前选手滚动到可视区（键盘导航、切换排序后尤其有用）
     requestAnimationFrame(() => {
         const activeChip = container.querySelector('.player-chip.active');
         if (!activeChip) return;
         const cRect = container.getBoundingClientRect();
         const aRect = activeChip.getBoundingClientRect();
-        // 顶部留出 34px 给粘性信息条
         const topEdge = cRect.top + 34;
         if (aRect.top < topEdge || aRect.bottom > cRect.bottom - 4) {
             const delta = aRect.top - topEdge;
@@ -1316,7 +1814,7 @@ function renderStatsWrapper(player) {
 
         return `
             <div class="stat-item pos-${positions[index]} ${cls}" data-index="${index}" data-key="${key}"
-                 title="${config.labels[index]}｜选手 ${fmtVal(key, val)} · 均值 ${fmtVal(key, avgVal)}">
+                 title="${config.labels[index]}｜点击查看完整排行榜">
                 <div class="stat-rank">#${rank}</div>
                 <div class="stat-main">
                     <span class="stat-val">${fmtVal(key, val)}</span>
@@ -1325,6 +1823,16 @@ function renderStatsWrapper(player) {
                 <div class="stat-avg ${cls}">${fmtVal(key, avgVal)}<span class="arrow">${arrow}</span></div>
             </div>`;
     }).join('');
+
+    // 点击数据标签 → 打开弹窗
+    wrapper.querySelectorAll('.stat-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const key = el.dataset.key;
+            const index = parseInt(el.dataset.index, 10);
+            openStatModal(key, index);
+        });
+    });
 }
 
 function buildRadarTooltip(player, config, isPlayerSeries) {
@@ -1383,7 +1891,6 @@ function renderRadar(player) {
     const seriesData = [];
     const metaMap = [];
 
-    // 当前选手主体
     seriesData.push({
         value: playerValues,
         name: player.player,
@@ -1417,7 +1924,6 @@ function renderRadar(player) {
     });
     metaMap.push({ type: 'current' });
 
-    // 当前选手顶点光晕
     seriesData.push({
         value: playerValues,
         name: player.player + '__glow',
@@ -1437,7 +1943,6 @@ function renderRadar(player) {
     });
     metaMap.push({ type: 'glow' });
 
-    // 对比选手
     comparePlayers.forEach((idx, order) => {
         const compPlayer = currentFilteredPlayers[idx];
         if (!compPlayer) return;
@@ -1476,7 +1981,6 @@ function renderRadar(player) {
         metaMap.push({ type: 'compare', player: compPlayer });
     });
 
-    // 均值
     const avgValues = config.avgs.map(key => safeVal(avgStats[key]));
     seriesData.push({
         value: avgValues,
