@@ -70,13 +70,13 @@
         box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(122, 61, 240, 0.08) inset;
     }
 
+    /* ===== 标题（扫光动画） ===== */
     .title {
         text-align: center;
         font-size: 32px;
         font-weight: 700;
         letter-spacing: 6px;
         padding: 8px 0 18px;
-        color: var(--text-primary);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         position: relative;
     }
@@ -89,9 +89,27 @@
         background: linear-gradient(90deg, transparent, var(--accent-purple), var(--accent-cyan), transparent);
         border-radius: 4px;
     }
+    .title-text {
+        display: inline-block;
+        background: linear-gradient(90deg,
+            #f0f0f0 0%, #b9a0ff 25%, #00e5ff 50%, #b9a0ff 75%, #f0f0f0 100%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+        animation: titleShine 6s linear infinite;
+    }
+    @keyframes titleShine {
+        0%   { background-position: 0% center; }
+        100% { background-position: 200% center; }
+    }
     .title .sub {
-        font-weight: 300; font-size: 14px; color: #888;
-        letter-spacing: 2px; display: block; margin-top: 2px;
+        font-weight: 300; font-size: 14px;
+        color: #888;
+        letter-spacing: 2px;
+        display: block;
+        margin-top: 2px;
     }
 
     .control-bar {
@@ -123,6 +141,7 @@
         font-size: 13px; font-weight: 600;
         cursor: pointer; transition: var(--transition-smooth);
         backdrop-filter: blur(4px); letter-spacing: 0.5px;
+        font-family: inherit;
     }
     .pos-btn:hover { background: rgba(60, 65, 80, 0.8); color: #fff; transform: translateY(-1px); }
     .pos-btn.active {
@@ -157,6 +176,7 @@
         font-size: 13px; font-weight: 600;
         cursor: pointer; transition: var(--transition-smooth);
         backdrop-filter: blur(4px); letter-spacing: 0.5px;
+        font-family: inherit;
     }
     .view-btn:hover, .export-btn:hover {
         background: rgba(60, 65, 80, 0.8); color: #fff; transform: translateY(-1px);
@@ -177,7 +197,7 @@
     }
 
     /* ============================================================
-       选手选择器（换行 + 纵向滚动 + 展开收起 + 对比信息）
+       选手选择器
        ============================================================ */
     .player-selector {
         display: flex;
@@ -244,7 +264,7 @@
         font-size: 11px;
     }
     .player-selector .label .hint {
-        color: #555;
+        color: #777;
         font-size: 11px;
         font-weight: 400;
         letter-spacing: 0.3px;
@@ -437,6 +457,28 @@
     .hero-kda .d { color: var(--accent-red); }
     .hero-kda .a { color: var(--accent-amber); }
 
+    /* 英雄熟练度徽章 */
+    .hero-item.tier-gold .hero-icon {
+        border-color: rgba(252, 211, 77, 0.75);
+        box-shadow: 0 0 18px rgba(252, 211, 77, 0.4);
+    }
+    .hero-item.winrate-high .hero-win {
+        color: #4ade80;
+        text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+    }
+    .hero-item.winrate-high::after {
+        content: '🔥';
+        position: absolute;
+        top: -6px; right: 2px;
+        font-size: 12px;
+        filter: drop-shadow(0 0 6px rgba(255, 152, 0, 0.8));
+        animation: flameBob 1.6s ease-in-out infinite;
+    }
+    @keyframes flameBob {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50%      { transform: translateY(-2px) scale(1.1); }
+    }
+
     /* 中间：选手信息 */
     .player-info {
         flex: 0 0 auto;
@@ -456,10 +498,42 @@
         box-shadow: 0 0 40px rgba(122, 61, 240, 0.15);
         transition: var(--transition-smooth);
         cursor: pointer;
+        isolation: isolate;
+    }
+    .player-avatar-wrap::before {
+        content: '';
+        position: absolute;
+        inset: -14px;
+        border-radius: 26px;
+        background: conic-gradient(from 0deg,
+            transparent 0deg,
+            rgba(122, 61, 240, 0.55) 80deg,
+            transparent 160deg,
+            rgba(0, 229, 255, 0.55) 260deg,
+            transparent 340deg);
+        animation: avatarSpin 5s linear infinite;
+        opacity: 0.65;
+        z-index: -2;
+        filter: blur(8px);
+    }
+    .player-avatar-wrap::after {
+        content: '';
+        position: absolute;
+        inset: -6px;
+        border-radius: 20px;
+        background: radial-gradient(circle at 50% 50%, transparent 55%, rgba(122, 61, 240, 0.35) 100%);
+        animation: avatarPulse 2.6s ease-in-out infinite;
+        z-index: -1;
+        pointer-events: none;
+    }
+    @keyframes avatarSpin { to { transform: rotate(360deg); } }
+    @keyframes avatarPulse {
+        0%, 100% { opacity: 0.35; transform: scale(1); }
+        50%      { opacity: 0.85; transform: scale(1.06); }
     }
     .player-avatar-wrap:hover {
         box-shadow: 0 0 60px rgba(122, 61, 240, 0.5);
-        transform: scale(1.05);
+        transform: scale(1.04);
     }
     .player-avatar {
         width: 150px; height: 150px;
@@ -574,7 +648,6 @@
     }
     .stat-item.above::before { background: linear-gradient(180deg, transparent, #4ade80, transparent); }
     .stat-item.below::before { background: linear-gradient(180deg, transparent, #ff5252, transparent); }
-
     .stat-item:hover {
         background: rgba(8, 9, 13, 0.96);
         border-color: rgba(122, 61, 240, 0.4);
@@ -611,6 +684,7 @@
         font-weight: 700;
         letter-spacing: 0.2px;
         text-shadow: 0 0 12px rgba(0, 212, 230, 0.35);
+        font-variant-numeric: tabular-nums;
     }
     .stat-name {
         color: #ddd;
@@ -744,7 +818,7 @@
     }
 
     /* ============================================================
-       数据标签弹窗（单项排行榜）
+       单项排行榜弹窗
        ============================================================ */
     .stat-modal-overlay {
         position: fixed;
@@ -761,10 +835,7 @@
         pointer-events: none;
         transition: opacity 0.28s ease;
     }
-    .stat-modal-overlay.show {
-        opacity: 1;
-        pointer-events: auto;
-    }
+    .stat-modal-overlay.show { opacity: 1; pointer-events: auto; }
     .stat-modal {
         width: 100%;
         max-width: 580px;
@@ -782,9 +853,7 @@
         transform: translateY(20px) scale(0.96);
         transition: transform 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .stat-modal-overlay.show .stat-modal {
-        transform: translateY(0) scale(1);
-    }
+    .stat-modal-overlay.show .stat-modal { transform: translateY(0) scale(1); }
 
     .stat-modal-header {
         position: relative;
@@ -805,8 +874,7 @@
         gap: 12px;
     }
     .stat-modal-title .accent-icon {
-        width: 5px;
-        height: 20px;
+        width: 5px; height: 20px;
         border-radius: 3px;
         background: linear-gradient(180deg, #7a3df0, #00e5ff);
         box-shadow: 0 0 14px rgba(122, 61, 240, 0.85);
@@ -838,10 +906,8 @@
 
     .stat-modal-close {
         position: absolute;
-        right: 16px;
-        top: 16px;
-        width: 30px;
-        height: 30px;
+        right: 16px; top: 16px;
+        width: 30px; height: 30px;
         border-radius: 50%;
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(255, 255, 255, 0.04);
@@ -874,9 +940,7 @@
         background: rgba(122, 61, 240, 0.5);
         border-radius: 8px;
     }
-    .stat-modal-body::-webkit-scrollbar-thumb:hover {
-        background: rgba(122, 61, 240, 0.85);
-    }
+    .stat-modal-body::-webkit-scrollbar-thumb:hover { background: rgba(122, 61, 240, 0.85); }
 
     .rank-row {
         display: grid;
@@ -895,10 +959,7 @@
         from { opacity: 0; transform: translateY(10px); }
         to   { opacity: 1; transform: translateY(0); }
     }
-    .rank-row:hover {
-        background: rgba(255, 255, 255, 0.055);
-        transform: translateX(3px);
-    }
+    .rank-row:hover { background: rgba(255, 255, 255, 0.055); transform: translateX(3px); }
     .rank-row.is-current {
         background: linear-gradient(90deg, rgba(122, 61, 240, 0.22), rgba(122, 61, 240, 0.06));
         border-color: rgba(122, 61, 240, 0.42);
@@ -922,8 +983,7 @@
     .rank-badge.bronze { color: #d1874a; text-shadow: 0 0 10px rgba(209, 135, 74, 0.5); }
 
     .rank-avatar {
-        width: 36px;
-        height: 36px;
+        width: 36px; height: 36px;
         border-radius: 50%;
         object-fit: cover;
         background: #1a1d24;
@@ -934,9 +994,7 @@
         border-color: rgba(122, 61, 240, 0.75);
         box-shadow: 0 0 14px rgba(122, 61, 240, 0.5);
     }
-    .rank-row.is-compare .rank-avatar {
-        border-color: rgba(0, 188, 212, 0.7);
-    }
+    .rank-row.is-compare .rank-avatar { border-color: rgba(0, 188, 212, 0.7); }
 
     .rank-info {
         min-width: 0;
@@ -1051,8 +1109,7 @@
     }
     .stat-modal-footer .dot {
         display: inline-block;
-        width: 6px;
-        height: 6px;
+        width: 6px; height: 6px;
         border-radius: 50%;
         margin-right: 5px;
         vertical-align: middle;
@@ -1062,7 +1119,7 @@
     .stat-modal-footer .dot.orange { background: #ff9800; box-shadow: 0 0 8px #ff9800; }
 
     /* ============================================================
-       全量数据表格弹窗（新增）
+       全量数据表格弹窗
        ============================================================ */
     .full-stats-modal-overlay {
         position: fixed;
@@ -1078,10 +1135,7 @@
         pointer-events: none;
         transition: opacity 0.3s ease;
     }
-    .full-stats-modal-overlay.show {
-        opacity: 1;
-        pointer-events: auto;
-    }
+    .full-stats-modal-overlay.show { opacity: 1; pointer-events: auto; }
     .full-stats-modal {
         width: 100%;
         max-width: 1100px;
@@ -1096,9 +1150,7 @@
         transform: translateY(20px) scale(0.96);
         transition: transform 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .full-stats-modal-overlay.show .full-stats-modal {
-        transform: translateY(0) scale(1);
-    }
+    .full-stats-modal-overlay.show .full-stats-modal { transform: translateY(0) scale(1); }
     .full-stats-header {
         position: relative;
         padding: 18px 56px 16px 22px;
@@ -1118,18 +1170,15 @@
         gap: 12px;
     }
     .full-stats-title .accent-icon {
-        width: 5px;
-        height: 20px;
+        width: 5px; height: 20px;
         border-radius: 3px;
         background: linear-gradient(180deg, #7a3df0, #00e5ff);
         box-shadow: 0 0 14px rgba(122, 61, 240, 0.85);
     }
     .full-stats-close {
         position: absolute;
-        right: 16px;
-        top: 16px;
-        width: 30px;
-        height: 30px;
+        right: 16px; top: 16px;
+        width: 30px; height: 30px;
         border-radius: 50%;
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(255, 255, 255, 0.04);
@@ -1140,6 +1189,7 @@
         align-items: center;
         justify-content: center;
         transition: all 0.3s;
+        font-family: inherit;
     }
     .full-stats-close:hover {
         background: rgba(255, 82, 82, 0.22);
@@ -1184,9 +1234,7 @@
         border-bottom: 1px solid rgba(255,255,255,0.02);
         transition: background 0.2s;
     }
-    .data-table tr:hover td {
-        background: rgba(255,255,255,0.06);
-    }
+    .data-table tr:hover td { background: rgba(255,255,255,0.06); }
     .data-table tr.is-current td {
         background: rgba(122, 61, 240, 0.15);
         border-bottom: 1px solid rgba(122, 61, 240, 0.3);
@@ -1199,8 +1247,7 @@
         padding-left: 10px;
     }
     .data-table .player-cell img {
-        width: 28px;
-        height: 28px;
+        width: 28px; height: 28px;
         border-radius: 50%;
         border: 1px solid rgba(255,255,255,0.1);
         object-fit: cover;
@@ -1295,7 +1342,6 @@
         .scatter-legend-overlay, .radar-legend { display: none !important; }
         .avg-note { font-size: 9px; padding: 3px 8px; right: 8px; top: 8px; }
 
-        /* 单项排行榜弹窗移动端 */
         .stat-modal-overlay { padding: 12px; align-items: flex-end; }
         .stat-modal { max-width: 100%; max-height: 88vh; border-radius: 20px 20px 16px 16px; }
         .stat-modal-header { padding: 16px 48px 14px 18px; }
@@ -1312,7 +1358,6 @@
         .rank-delta { font-size: 9px; }
         .stat-modal-footer { font-size: 10px; gap: 10px; }
 
-        /* 全量表格弹窗移动端 */
         .full-stats-modal-overlay { padding: 10px; align-items: flex-end; }
         .full-stats-modal { max-height: 90vh; border-radius: 20px 20px 16px 16px; }
         .full-stats-header { padding: 14px 44px 12px 16px; }
@@ -1325,11 +1370,22 @@
         .data-table .val-highlight { font-size: 12px; }
         .data-table .val-avg { font-size: 9px; }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
 </style>
 </head>
 <body>
 <div class="container">
-    <div class="title">H·武道会<span class="sub">SEASON DATA</span></div>
+    <div class="title">
+        <span class="title-text">H·武道会</span>
+        <span class="sub">SEASON DATA</span>
+    </div>
 
     <div class="control-bar">
         <select class="team-select" id="teamSelect"></select>
@@ -1364,13 +1420,11 @@
     </div>
 
     <div class="main-area" id="mainArea">
-        <!-- 左：英雄池 -->
         <div class="left-panel">
             <div class="hero-pool-title">英雄池 (<span id="heroCount">0</span>)</div>
             <div class="hero-pool-grid" id="heroPool"></div>
         </div>
 
-        <!-- 中：选手信息 -->
         <div class="player-info">
             <div class="player-avatar-wrap" id="playerAvatarWrap" title="点击查看全量数据排行榜">
                 <img class="player-avatar" id="playerAvatar" src=""
@@ -1383,7 +1437,6 @@
             </div>
         </div>
 
-        <!-- 右：图表 -->
         <div class="right-panel" id="rightPanel">
             <div class="loading-overlay" id="loadingOverlay">
                 <div class="loading-spinner"></div>
@@ -1411,12 +1464,12 @@
                 </div>
                 <div class="legend-row">
                     <span class="legend-line" style="background:#ff6b6b;border-top:1.5px dashed #ff6b6b;"></span>
-                    <span>全选手均值</span>
+                    <span>同位置均值</span>
                 </div>
             </div>
 
             <div class="avg-note">
-                <span class="red-dot">●</span> 均值 &nbsp;<span class="blue-dot">●</span> 选手
+                <span class="red-dot">●</span> 同位置均值 &nbsp;<span class="blue-dot">●</span> 选手
             </div>
 
             <div id="scatterChart"></div>
@@ -1433,7 +1486,7 @@
     </div>
 </div>
 
-<!-- ===== 数据标签弹窗（单项排行榜） ===== -->
+<!-- ===== 单项排行榜弹窗 ===== -->
 <div class="stat-modal-overlay" id="statModalOverlay" aria-hidden="true">
     <div class="stat-modal" role="dialog" aria-modal="true" aria-labelledby="statModalTitle">
         <div class="stat-modal-header" id="statModalHeader"></div>
@@ -1446,7 +1499,7 @@
     </div>
 </div>
 
-<!-- ===== 全量数据表格弹窗（新增） ===== -->
+<!-- ===== 全量数据表格弹窗 ===== -->
 <div class="full-stats-modal-overlay" id="fullStatsModalOverlay" aria-hidden="true">
     <div class="full-stats-modal" role="dialog" aria-modal="true">
         <div class="full-stats-header">
@@ -1456,9 +1509,7 @@
             </div>
             <button class="full-stats-close" type="button" id="fullStatsCloseBtn" aria-label="关闭">✕</button>
         </div>
-        <div class="full-stats-body" id="fullStatsBody">
-            <!-- 表格动态生成 -->
-        </div>
+        <div class="full-stats-body" id="fullStatsBody"></div>
     </div>
 </div>
 
@@ -1508,7 +1559,8 @@ const positionConfigs = {
 //  状态
 // ============================================================
 let allPlayers = [];
-let avgStats = {};
+let avgStats = {};             // data.json 里的全局均值（作为兜底）
+let positionAvgStats = {};     // 按位置分组的均值（主用）
 let currentPosition = 'MIDDLE';
 let currentTeam = 'ALL';
 let currentPlayerIndex = 0;
@@ -1541,8 +1593,13 @@ const exportProgressFill = document.getElementById('exportProgressFill');
 const statModalOverlay = document.getElementById('statModalOverlay');
 const statModalHeader = document.getElementById('statModalHeader');
 const statModalBody = document.getElementById('statModalBody');
+const fullStatsModalOverlay = document.getElementById('fullStatsModalOverlay');
+const fullStatsBody = document.getElementById('fullStatsBody');
+const fullStatsTitle = document.getElementById('fullStatsTitle');
 
-// 工具函数
+// ============================================================
+//  工具函数
+// ============================================================
 function safeVal(v, fallback = 0) { const n = parseFloat(v); return isNaN(n) ? fallback : n; }
 
 function percentile(values, pct) {
@@ -1569,7 +1626,95 @@ function getDimValue(player, key) {
 }
 
 // ============================================================
-//  单项排行榜弹窗（点击雷达图标签触发）
+//  ⭐ 按位置计算均值（核心改动）
+// ============================================================
+function computePositionAverages() {
+    // 每个 avg_* 键 → 用什么字段取原始值
+    const avgKeyMap = {
+        'avg_kda':                     p => safeVal(p.kda),
+        'avg_kills_assists':           p => safeVal(p.kills) + safeVal(p.assists),
+        'avg_dpm':                     p => safeVal(p.dpm),
+        'avg_cspm':                    p => safeVal(p.cspm),
+        'avg_goldpm':                  p => safeVal(p.goldpm),
+        'avg_dmgshare':                p => safeVal(p.dmgshare),
+        'avg_dmgtoGold':               p => safeVal(p.dmgtoGold),
+        'avg_survival':                p => safeVal(p.survival),
+        'avg_participation':           p => safeVal(p.participation),
+        'avg_damage_taken_share':      p => safeVal(p.damage_taken_share),
+        'avg_vision_per_min':          p => safeVal(p.vision_per_min),
+        'avg_damage_taken_per_death':  p => safeVal(p.damage_taken_per_death),
+        'avg_gold_diff':               p => safeVal(p.gold_diff),
+        'avg_lane_diff':               p => safeVal(p.lane_diff)
+    };
+
+    const positions = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
+    positions.forEach(pos => {
+        const list = allPlayers.filter(p => p.position === pos);
+        if (!list.length) return;
+        const obj = {};
+        Object.entries(avgKeyMap).forEach(([avgKey, getter]) => {
+            const sum = list.reduce((s, p) => s + getter(p), 0);
+            obj[avgKey] = sum / list.length;
+        });
+        positionAvgStats[pos] = obj;
+    });
+}
+
+// ⭐ 取当前位置的均值；找不到则退回 data.json 里的全局均值
+function getAvgFor(avgKey) {
+    const posAvg = positionAvgStats[currentPosition];
+    if (posAvg && posAvg[avgKey] !== undefined) return posAvg[avgKey];
+    return safeVal(avgStats[avgKey]);
+}
+
+// ============================================================
+//  数字滚动动画
+// ============================================================
+function animateNumber(el, from, to, duration = 700, formatter = v => v.toFixed(2)) {
+    if (el._animId) cancelAnimationFrame(el._animId);
+    const start = performance.now();
+    const step = (now) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const val = from + (to - from) * eased;
+        el.textContent = formatter(val);
+        if (t < 1) el._animId = requestAnimationFrame(step);
+        else { el._animId = null; el.textContent = formatter(to); }
+    };
+    el._animId = requestAnimationFrame(step);
+}
+
+// ============================================================
+//  图表实例工厂（统一 init + resize）
+// ============================================================
+const chartRegistry = new Map();
+let resizeScheduled = false;
+
+function scheduleResizeAll() {
+    if (resizeScheduled) return;
+    resizeScheduled = true;
+    requestAnimationFrame(() => {
+        resizeScheduled = false;
+        chartRegistry.forEach(chart => { try { chart.resize(); } catch (e) {} });
+    });
+}
+
+function getOrCreateChart(domId, registryKey) {
+    if (chartRegistry.has(registryKey)) {
+        const inst = chartRegistry.get(registryKey);
+        if (!inst.isDisposed()) return inst;
+    }
+    const dom = document.getElementById(domId);
+    if (!dom) return null;
+    const inst = echarts.init(dom, 'dark');
+    chartRegistry.set(registryKey, inst);
+    return inst;
+}
+
+window.addEventListener('resize', scheduleResizeAll);
+
+// ============================================================
+//  单项排行榜弹窗
 // ============================================================
 function closeStatModal() {
     if (statModalOverlay.classList.contains('show')) {
@@ -1585,7 +1730,7 @@ function openStatModal(key, index) {
     const label = config.labels[index];
     const avgKey = config.avgs[index];
     const rankKey = config.ranks[index];
-    const avgVal = safeVal(avgStats[avgKey]);
+    const avgVal = getAvgFor(avgKey);  // ⭐ 改用同位置均值
 
     const sorted = currentFilteredPlayers
         .map((p, origIndex) => ({ p, origIndex }))
@@ -1603,7 +1748,7 @@ function openStatModal(key, index) {
         <div class="stat-modal-sub">
             <span>共 <span class="hl">${sorted.length}</span> 位选手</span>
             <span>·</span>
-            <span>均值 <span class="hl-red">${fmtVal(key, avgVal)}</span></span>
+            <span>同位置均值 <span class="hl-red">${fmtVal(key, avgVal)}</span></span>
             <span>·</span>
             <span>最高 <span class="hl-cyan">${fmtVal(key, maxVal)}</span></span>
         </div>
@@ -1695,23 +1840,16 @@ statModalOverlay.addEventListener('click', (e) => {
 });
 
 // ============================================================
-//  全量数据表格弹窗（点击头像触发）
+//  全量数据表格弹窗
 // ============================================================
-const fullStatsModalOverlay = document.getElementById('fullStatsModalOverlay');
-const fullStatsBody = document.getElementById('fullStatsBody');
-const fullStatsTitle = document.getElementById('fullStatsTitle');
-
 function openFullStatsModal() {
     if (!currentFilteredPlayers.length) return;
     const posNameMap = { TOP: '上单', JUNGLE: '打野', MIDDLE: '中单', BOTTOM: '下路', UTILITY: '辅助' };
     fullStatsTitle.textContent = `${posNameMap[currentPosition] || currentPosition} · 全量数据排行榜`;
 
     const config = positionConfigs[currentPosition];
-    
-    // 按照当前排序方式降序排列
     const sortedPlayers = [...currentFilteredPlayers].sort((a, b) => getDimValue(b, currentSortKey) - getDimValue(a, currentSortKey));
 
-    // 构建表头
     let tableHtml = `
         <table class="data-table">
             <thead>
@@ -1725,7 +1863,6 @@ function openFullStatsModal() {
             <tbody>
     `;
 
-    // 构建表格内容
     sortedPlayers.forEach((p, index) => {
         const originalIndex = currentFilteredPlayers.indexOf(p);
         const isCur = originalIndex === currentPlayerIndex;
@@ -1736,21 +1873,20 @@ function openFullStatsModal() {
         else if (rank === 3) rankClass = 'bronze';
 
         const avatar = proxyImageUrl(`https://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`);
-        
+
         tableHtml += `<tr class="${isCur ? 'is-current' : ''}" data-index="${originalIndex}" style="cursor:pointer;">`;
         tableHtml += `<td><span class="rank-tag ${rankClass}">#${rank}</span></td>`;
         tableHtml += `<td><div class="player-cell"><img src="${avatar}" onerror="this.src='https://via.placeholder.com/28'"><span>${p.player}</span></div></td>`;
         tableHtml += `<td>${p.games || '-'}</td>`;
 
-        // 填充各项数据
         config.keys.forEach((key, idx) => {
             const val = getDimValue(p, key);
             const avgKey = config.avgs[idx];
-            const avgVal = safeVal(avgStats[avgKey]);
+            const avgVal = getAvgFor(avgKey);  // ⭐ 改用同位置均值
             const delta = val - avgVal;
             const arrow = delta > 0.001 ? '▲' : (delta < -0.001 ? '▼' : '—');
             const color = delta > 0.001 ? '#4ade80' : (delta < -0.001 ? '#ff7b7b' : '#666');
-            
+
             tableHtml += `
                 <td>
                     <span class="val-highlight">${fmtVal(key, val)}</span>
@@ -1765,7 +1901,6 @@ function openFullStatsModal() {
     tableHtml += `</tbody></table>`;
     fullStatsBody.innerHTML = tableHtml;
 
-    // 点击行切换当前选手
     fullStatsBody.querySelectorAll('.data-table tbody tr').forEach(row => {
         row.addEventListener('click', () => {
             const idx = parseInt(row.dataset.index, 10);
@@ -1773,7 +1908,7 @@ function openFullStatsModal() {
                 currentPlayerIndex = idx;
                 comparePlayers = comparePlayers.filter(i => i !== idx);
                 updateView();
-                closeFullStatsModal(); // 切换后关闭表格，回到主界面
+                closeFullStatsModal();
             }
         });
     });
@@ -1789,12 +1924,47 @@ function closeFullStatsModal() {
     document.body.style.overflow = '';
 }
 
-// 绑定关闭事件
 fullStatsModalOverlay.addEventListener('click', (e) => {
     if (e.target === fullStatsModalOverlay) closeFullStatsModal();
 });
 document.getElementById('fullStatsCloseBtn').addEventListener('click', closeFullStatsModal);
 
+// ============================================================
+//  选手选择器：事件委托（只绑一次）
+// ============================================================
+playerSelector.addEventListener('click', (e) => {
+    const expandBtn = e.target.closest('.expand-btn');
+    if (expandBtn) {
+        e.stopPropagation();
+        playerSelector.classList.toggle('expanded');
+        expandBtn.textContent = playerSelector.classList.contains('expanded') ? '收起 ▲' : '展开全部 ▼';
+        return;
+    }
+    const chip = e.target.closest('.player-chip');
+    if (!chip) return;
+    if (e.target.tagName === 'IMG') {
+        e.stopPropagation();
+        openFullStatsModal();
+        return;
+    }
+    const idx = parseInt(chip.dataset.index, 10);
+    if (isNaN(idx)) return;
+    if (e.ctrlKey || e.metaKey) {
+        if (comparePlayers.includes(idx)) {
+            comparePlayers = comparePlayers.filter(i => i !== idx);
+        } else {
+            if (comparePlayers.length >= 2) comparePlayers.shift();
+            comparePlayers.push(idx);
+        }
+        updateView();
+    } else {
+        if (idx !== currentPlayerIndex) {
+            currentPlayerIndex = idx;
+            comparePlayers = [];
+            updateView();
+        }
+    }
+});
 
 // ============================================================
 //  加载数据
@@ -1804,14 +1974,26 @@ async function loadData() {
     loadingOverlay.querySelector('.loading-text').textContent = '数据加载中...';
     exportProgress.style.display = 'none';
     try {
-        const res = await fetch('./data.json');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = await res.json();
+        let json = null;
+        const cached = sessionStorage.getItem('hwd_data_cache');
+        if (cached) {
+            try { json = JSON.parse(cached); } catch (e) { json = null; }
+        }
+        if (!json) {
+            const res = await fetch('./data.json');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            json = await res.json();
+            try { sessionStorage.setItem('hwd_data_cache', JSON.stringify(json)); } catch (e) {}
+        }
+
         const avgObj = json.find(item => item.avg_kda !== undefined);
         if (avgObj) avgStats = avgObj;
-        else { console.warn('未找到均值数据'); avgStats = {}; }
+        else { console.warn('未找到全局均值数据'); avgStats = {}; }
         allPlayers = json.filter(item => item.avg_kda === undefined);
         isDataLoaded = true;
+
+        // ⭐ 按位置计算均值
+        computePositionAverages();
 
         const teamSet = new Set(allPlayers.map(p => p.player.split(' ')[0]));
         let optionsHtml = `<option value="ALL">全部战队</option>`;
@@ -1856,7 +2038,6 @@ async function loadData() {
         });
         exportBtn.addEventListener('click', exportImage);
 
-        // 键盘导航
         document.addEventListener('keydown', (e) => {
             if (fullStatsModalOverlay.classList.contains('show')) {
                 if (e.key === 'Escape') { e.preventDefault(); closeFullStatsModal(); }
@@ -1953,45 +2134,9 @@ function renderPlayerChips(players) {
     });
     container.innerHTML = html;
 
-    // 点击整个 chip 切换选手
-    container.querySelectorAll('.player-chip').forEach(el => {
-        el.addEventListener('click', (e) => {
-            const idx = parseInt(el.dataset.index, 10);
-            if (e.ctrlKey || e.metaKey) {
-                if (comparePlayers.includes(idx)) {
-                    comparePlayers = comparePlayers.filter(i => i !== idx);
-                } else {
-                    if (comparePlayers.length >= 2) comparePlayers.shift();
-                    comparePlayers.push(idx);
-                }
-                updateView();
-            } else {
-                if (!isNaN(idx) && idx !== currentPlayerIndex) {
-                    currentPlayerIndex = idx;
-                    comparePlayers = [];
-                    updateView();
-                }
-            }
-        });
-    });
-
-    // 新增：点击选手头像弹出全量数据表格
     container.querySelectorAll('.player-chip img').forEach(img => {
-        img.style.cursor = 'pointer'; // 提示可点击
-        img.addEventListener('click', (e) => {
-            e.stopPropagation(); // 阻止触发切换选手
-            openFullStatsModal();
-        });
+        img.style.cursor = 'pointer';
     });
-
-    const expandBtn = document.getElementById('expandPlayersBtn');
-    if (expandBtn) {
-        expandBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            container.classList.toggle('expanded');
-            expandBtn.textContent = container.classList.contains('expanded') ? '收起 ▲' : '展开全部 ▼';
-        });
-    }
 
     requestAnimationFrame(() => {
         const activeChip = container.querySelector('.player-chip.active');
@@ -2012,6 +2157,8 @@ function renderPlayerChips(players) {
 // ============================================================
 //  主视图更新
 // ============================================================
+let lastRenderedPlayerKey = '';
+
 function updateView() {
     if (!isDataLoaded) return;
     const players = getFilteredPlayers();
@@ -2046,7 +2193,6 @@ function updateView() {
     avatarImg.crossOrigin = "anonymous";
     avatarImg.onerror = function () { this.onerror = null; this.src = 'https://via.placeholder.com/160'; };
 
-    // 绑定大图头像点击事件
     document.getElementById('playerAvatarWrap').onclick = (e) => {
         e.stopPropagation();
         openFullStatsModal();
@@ -2059,7 +2205,14 @@ function updateView() {
     renderHeroPool(player);
     updateViewVisibility();
 
-    if (currentView === 'radar') { renderStatsWrapper(player); renderRadar(player); }
+    const playerKey = `${currentPosition}_${currentTeam}_${currentPlayerIndex}_${searchTerm}`;
+    const shouldAnimate = playerKey !== lastRenderedPlayerKey;
+    lastRenderedPlayerKey = playerKey;
+
+    if (currentView === 'radar') {
+        renderStatsWrapper(player, shouldAnimate);
+        renderRadar(player);
+    }
     else if (currentView === 'scatter') renderScatterChart(players);
     else if (currentView === 'bar') renderBarChart(player);
     else if (currentView === 'heatmap') renderHeatmap(players);
@@ -2089,7 +2242,9 @@ function updateViewVisibility() {
     });
 }
 
-// 英雄池渲染（支持 KDA 与胜率，参考图1）
+// ============================================================
+//  英雄池
+// ============================================================
 function renderHeroPool(player) {
     const poolEl = document.getElementById('heroPool');
     const heroes = player.heroes || [{ champion: player.champion || 'Unknown', games: 1, wins: 1, kills: 0, deaths: 0, assists: 0 }];
@@ -2099,14 +2254,17 @@ function renderHeroPool(player) {
         const champName = h.champion || 'Unknown';
         const champIconUrl = proxyImageUrl(
             `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png`);
-        
-        // 如果有 KDA 数据则展示，否则展示局数
+
         const kdaLine = (h.kills !== undefined && h.deaths !== undefined && h.assists !== undefined)
             ? `<span class="k">${h.kills}</span>/<span class="d">${h.deaths}</span>/<span class="a">${h.assists}</span>`
             : `${h.games}局`;
-            
+
+        const itemClasses = ['hero-item'];
+        if (h.games >= 5) itemClasses.push('tier-gold');
+        if (winRate >= 60 && h.games >= 3) itemClasses.push('winrate-high');
+
         return `
-            <div class="hero-item">
+            <div class="${itemClasses.join(' ')}">
                 <div class="hero-games">${h.games}</div>
                 <img class="hero-icon" src="${champIconUrl}" crossorigin="anonymous"
                      onerror="this.style.background='#2a2f38';this.alt='${champName}'"
@@ -2120,14 +2278,14 @@ function renderHeroPool(player) {
 // ============================================================
 //  雷达图外部数据标签
 // ============================================================
-function renderStatsWrapper(player) {
+function renderStatsWrapper(player, animate = false) {
     const config = positionConfigs[currentPosition];
     const wrapper = document.getElementById('statsWrapper');
     const positions = ['top', 'topright', 'right', 'bottomright', 'bottom', 'bottomleft', 'left', 'topleft'];
 
     wrapper.innerHTML = config.keys.map((key, index) => {
         const val = getDimValue(player, key);
-        const avgVal = safeVal(avgStats[config.avgs[index]]);
+        const avgVal = getAvgFor(config.avgs[index]);  // ⭐ 同位置均值
         const rank = player[config.ranks[index]] !== undefined ? player[config.ranks[index]] : '-';
         const delta = val - avgVal;
         const cls = delta > 0.0001 ? 'above' : (delta < -0.0001 ? 'below' : 'same');
@@ -2138,12 +2296,25 @@ function renderStatsWrapper(player) {
                  title="${config.labels[index]}｜点击查看完整排行榜">
                 <div class="stat-rank">#${rank}</div>
                 <div class="stat-main">
-                    <span class="stat-val">${fmtVal(key, val)}</span>
+                    <span class="stat-val" data-anim-to="${val}" data-fmt="${key === 'kills_assists' ? 'int' : 'float'}">${animate ? '0' : fmtVal(key, val)}</span>
                     <span class="stat-name">${config.labels[index]}</span>
                 </div>
                 <div class="stat-avg ${cls}">${fmtVal(key, avgVal)}<span class="arrow">${arrow}</span></div>
             </div>`;
     }).join('');
+
+    if (animate) {
+        wrapper.querySelectorAll('.stat-val[data-anim-to]').forEach(el => {
+            const target = parseFloat(el.dataset.animTo);
+            const isInt = el.dataset.fmt === 'int';
+            const formatter = isInt
+                ? (v => Math.round(v).toString())
+                : (v => v >= 1000 ? v.toFixed(0) : v.toFixed(2));
+            setTimeout(() => {
+                animateNumber(el, 0, target, 700, formatter);
+            }, 60);
+        });
+    }
 
     wrapper.querySelectorAll('.stat-item').forEach(el => {
         el.addEventListener('click', (e) => {
@@ -2162,12 +2333,13 @@ function buildRadarTooltip(player, config, isPlayerSeries) {
         html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#00e5ff;">${playerName}</div>`;
         html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">KDA: ${player.kills}/${player.deaths}/${player.assists}</div>`;
     } else {
-        html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#ff6b6b;">均值数据</div>`;
-        html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">全选手平均</div>`;
+        html += `<div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#ff6b6b;">同位置均值</div>`;
+        html += `<div style="font-size:11px;color:#888;margin-bottom:8px;">该位置所有选手平均</div>`;
     }
     html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:4px 16px;font-size:12px;">`;
     config.keys.forEach((key, index) => {
-        const val = isPlayerSeries ? getDimValue(player, key) : safeVal(avgStats[config.avgs[index]]);
+        // ⭐ 均值分支使用同位置均值
+        const val = isPlayerSeries ? getDimValue(player, key) : getAvgFor(config.avgs[index]);
         const displayVal = fmtVal(key, val);
         const rank = isPlayerSeries
             ? (player[config.ranks[index]] !== undefined ? player[config.ranks[index]] : '-')
@@ -2183,13 +2355,12 @@ function buildRadarTooltip(player, config, isPlayerSeries) {
 }
 
 // ============================================================
-//  雷达图渲染
+//  雷达图
 // ============================================================
 function renderRadar(player) {
     const chartDom = document.getElementById('radarChart');
     if (!myChart) {
-        myChart = echarts.init(chartDom, 'dark');
-        window.addEventListener('resize', () => { if (myChart) myChart.resize(); });
+        myChart = getOrCreateChart('radarChart', 'radar');
     }
     const config = positionConfigs[currentPosition];
 
@@ -2301,10 +2472,11 @@ function renderRadar(player) {
         metaMap.push({ type: 'compare', player: compPlayer });
     });
 
-    const avgValues = config.avgs.map(key => safeVal(avgStats[key]));
+    // ⭐ 均值分支：使用同位置均值
+    const avgValues = config.avgs.map(key => getAvgFor(key));
     seriesData.push({
         value: avgValues,
-        name: '均值',
+        name: '同位置均值',
         itemStyle: {
             color: '#ff6b6b',
             borderColor: 'rgba(255,107,107,0.6)',
@@ -2374,7 +2546,7 @@ function renderRadar(player) {
         }]
     };
     myChart.setOption(option, true);
-    myChart.resize();
+    scheduleResizeAll();
 }
 
 // ============================================================
@@ -2382,18 +2554,20 @@ function renderRadar(player) {
 // ============================================================
 function renderScatterChart(players) {
     if (!scatterChartInstance) {
-        scatterChartInstance = echarts.init(scatterChartDiv, 'dark');
-        window.addEventListener('resize', () => { if (scatterChartInstance) scatterChartInstance.resize(); });
-        scatterChartInstance.on('click', function (params) {
-            if (params.data && params.data.playerIndex !== undefined) {
-                const idx = params.data.playerIndex;
-                if (idx === currentPlayerIndex) return;
-                currentPlayerIndex = idx;
-                comparePlayers = [];
-                updateView();
-            }
-        });
+        scatterChartInstance = getOrCreateChart('scatterChart', 'scatter');
+        if (scatterChartInstance) {
+            scatterChartInstance.on('click', function (params) {
+                if (params.data && params.data.playerIndex !== undefined) {
+                    const idx = params.data.playerIndex;
+                    if (idx === currentPlayerIndex) return;
+                    currentPlayerIndex = idx;
+                    comparePlayers = [];
+                    updateView();
+                }
+            });
+        }
     }
+    if (!scatterChartInstance) return;
     const xKey = 'goldpm', yKey = 'dmgshare', sizeKey = 'dpm';
     const xLabel = '分均经济', yLabel = '伤害占比 (%)';
 
@@ -2535,22 +2709,23 @@ function renderScatterChart(players) {
             }
         }]
     };
-    scatterChartInstance.setOption(option, true);
-    scatterChartInstance.resize();
+    scatterChartInstance.setOption(option, { lazyUpdate: true, notMerge: true });
+    scheduleResizeAll();
 }
 
 function renderBarChart(player) {
     if (!barChartInstance) {
-        barChartInstance = echarts.init(document.getElementById('barChart'), 'dark');
-        window.addEventListener('resize', () => { if (barChartInstance) barChartInstance.resize(); });
+        barChartInstance = getOrCreateChart('barChart', 'bar');
     }
+    if (!barChartInstance) return;
     const config = positionConfigs[currentPosition];
     const categories = config.labels;
     const playerValues = config.keys.map(key => getDimValue(player, key));
-    const avgValues = config.avgs.map(key => safeVal(avgStats[key]));
+    // ⭐ 同位置均值
+    const avgValues = config.avgs.map(key => getAvgFor(key));
     const series = [
         { name: player.player, type: 'bar', data: playerValues, itemStyle: { color: '#00d4e6', borderRadius: [4, 4, 0, 0] }, barGap: '10%', barCategoryGap: '30%' },
-        { name: '均值', type: 'bar', data: avgValues, itemStyle: { color: '#ff6b6b', borderRadius: [4, 4, 0, 0] } }
+        { name: '同位置均值', type: 'bar', data: avgValues, itemStyle: { color: '#ff6b6b', borderRadius: [4, 4, 0, 0] } }
     ];
     comparePlayers.forEach((idx, order) => {
         const compPlayer = currentFilteredPlayers[idx];
@@ -2578,14 +2753,14 @@ function renderBarChart(player) {
         series: series
     };
     barChartInstance.setOption(option, true);
-    barChartInstance.resize();
+    scheduleResizeAll();
 }
 
 function renderHeatmap(players) {
     if (!heatmapChartInstance) {
-        heatmapChartInstance = echarts.init(document.getElementById('heatmapChart'), 'dark');
-        window.addEventListener('resize', () => { if (heatmapChartInstance) heatmapChartInstance.resize(); });
+        heatmapChartInstance = getOrCreateChart('heatmapChart', 'heatmap');
     }
+    if (!heatmapChartInstance) return;
     const config = positionConfigs[currentPosition];
     const topN = Math.min(players.length, 30);
     const selectedPlayers = players.slice(0, topN);
@@ -2640,7 +2815,7 @@ function renderHeatmap(players) {
         }]
     };
     heatmapChartInstance.setOption(option, true);
-    heatmapChartInstance.resize();
+    scheduleResizeAll();
 }
 
 // ============================================================
@@ -2680,16 +2855,14 @@ async function exportImage() {
 
         updateExportProgress(35, '等待图表渲染...');
         await new Promise(resolve => setTimeout(resolve, 500));
-        if (myChart) myChart.resize();
-        if (scatterChartInstance) scatterChartInstance.resize();
-        if (barChartInstance) barChartInstance.resize();
-        if (heatmapChartInstance) heatmapChartInstance.resize();
+        scheduleResizeAll();
         await new Promise(resolve => setTimeout(resolve, 300));
 
         updateExportProgress(55, '生成高清图片...');
+        const scale = window.devicePixelRatio >= 2 ? 2 : 3;
         const canvas = await html2canvas(mainArea, {
             backgroundColor: '#0b0d12',
-            scale: 3,
+            scale: scale,
             useCORS: true,
             allowTaint: false,
             logging: false,
