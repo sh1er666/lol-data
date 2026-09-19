@@ -335,6 +335,12 @@
         width: 32px; height: 32px; border-radius: 50%;
         border: 2px solid rgba(255, 255, 255, 0.08);
         object-fit: cover; background: #1a1d24;
+        transition: transform 0.2s;
+    }
+    .player-chip img:hover {
+        transform: scale(1.15);
+        border-color: var(--accent-cyan);
+        box-shadow: 0 0 12px rgba(0, 188, 212, 0.6);
     }
     .player-chip .chip-name { color: #eee; font-size: 13px; font-weight: 500; }
     .player-chip .chip-kda { color: #888; font-size: 11px; font-weight: 400; }
@@ -427,6 +433,9 @@
     }
     .hero-win { color: #ccc; font-size: 11px; font-weight: 600; }
     .hero-kda { color: #777; font-size: 10px; margin-top: 2px; }
+    .hero-kda .k { color: var(--accent-cyan); }
+    .hero-kda .d { color: var(--accent-red); }
+    .hero-kda .a { color: var(--accent-amber); }
 
     /* 中间：选手信息 */
     .player-info {
@@ -446,10 +455,11 @@
         background: linear-gradient(135deg, #7a3df0, #00bcd4);
         box-shadow: 0 0 40px rgba(122, 61, 240, 0.15);
         transition: var(--transition-smooth);
+        cursor: pointer;
     }
     .player-avatar-wrap:hover {
-        box-shadow: 0 0 60px rgba(122, 61, 240, 0.3);
-        transform: scale(1.02);
+        box-shadow: 0 0 60px rgba(122, 61, 240, 0.5);
+        transform: scale(1.05);
     }
     .player-avatar {
         width: 150px; height: 150px;
@@ -572,7 +582,6 @@
         box-shadow: 0 0 24px rgba(122, 61, 240, 0.25);
         z-index: 10;
     }
-    /* 提示可点击的小角标 */
     .stat-item::after {
         content: '';
         position: absolute;
@@ -735,7 +744,7 @@
     }
 
     /* ============================================================
-       数据标签弹窗（排行榜）
+       数据标签弹窗（单项排行榜）
        ============================================================ */
     .stat-modal-overlay {
         position: fixed;
@@ -869,7 +878,6 @@
         background: rgba(122, 61, 240, 0.85);
     }
 
-    /* 排行榜行 */
     .rank-row {
         display: grid;
         grid-template-columns: 34px 38px 1fr 92px;
@@ -1053,6 +1061,177 @@
     .stat-modal-footer .dot.cyan   { background: #00bcd4; box-shadow: 0 0 8px #00bcd4; }
     .stat-modal-footer .dot.orange { background: #ff9800; box-shadow: 0 0 8px #ff9800; }
 
+    /* ============================================================
+       全量数据表格弹窗（新增）
+       ============================================================ */
+    .full-stats-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(6, 8, 12, 0.8);
+        backdrop-filter: blur(12px);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .full-stats-modal-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .full-stats-modal {
+        width: 100%;
+        max-width: 1100px;
+        max-height: 85vh;
+        background: linear-gradient(180deg, rgba(26, 29, 38, 0.99), rgba(16, 18, 24, 0.99));
+        border: 1px solid rgba(122, 61, 240, 0.28);
+        border-radius: 22px;
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.85);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transform: translateY(20px) scale(0.96);
+        transition: transform 0.36s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .full-stats-modal-overlay.show .full-stats-modal {
+        transform: translateY(0) scale(1);
+    }
+    .full-stats-header {
+        position: relative;
+        padding: 18px 56px 16px 22px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: radial-gradient(circle at 0% 0%, rgba(122, 61, 240, 0.22), transparent 60%),
+                    radial-gradient(circle at 100% 100%, rgba(0, 188, 212, 0.12), transparent 58%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .full-stats-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .full-stats-title .accent-icon {
+        width: 5px;
+        height: 20px;
+        border-radius: 3px;
+        background: linear-gradient(180deg, #7a3df0, #00e5ff);
+        box-shadow: 0 0 14px rgba(122, 61, 240, 0.85);
+    }
+    .full-stats-close {
+        position: absolute;
+        right: 16px;
+        top: 16px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.04);
+        color: #aaa;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    .full-stats-close:hover {
+        background: rgba(255, 82, 82, 0.22);
+        border-color: rgba(255, 82, 82, 0.5);
+        color: #fff;
+        transform: rotate(90deg) scale(1.08);
+    }
+    .full-stats-body {
+        overflow: auto;
+        padding: 12px 16px 20px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(122, 61, 240, 0.6) transparent;
+    }
+    .full-stats-body::-webkit-scrollbar { width: 6px; height: 6px; }
+    .full-stats-body::-webkit-scrollbar-thumb { background: rgba(122, 61, 240, 0.5); border-radius: 8px; }
+    .full-stats-body::-webkit-scrollbar-thumb:hover { background: rgba(122, 61, 240, 0.85); }
+
+    .data-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 4px;
+        white-space: nowrap;
+        font-size: 12px;
+        min-width: 900px;
+    }
+    .data-table th {
+        color: #888;
+        font-weight: 500;
+        padding: 8px 10px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        position: sticky;
+        top: 0;
+        background: rgba(20, 22, 28, 0.95);
+        backdrop-filter: blur(4px);
+        z-index: 2;
+    }
+    .data-table td {
+        padding: 10px;
+        text-align: center;
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid rgba(255,255,255,0.02);
+        transition: background 0.2s;
+    }
+    .data-table tr:hover td {
+        background: rgba(255,255,255,0.06);
+    }
+    .data-table tr.is-current td {
+        background: rgba(122, 61, 240, 0.15);
+        border-bottom: 1px solid rgba(122, 61, 240, 0.3);
+    }
+    .data-table .player-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-align: left;
+        padding-left: 10px;
+    }
+    .data-table .player-cell img {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.1);
+        object-fit: cover;
+        background: #1a1d24;
+    }
+    .data-table .player-cell span {
+        font-weight: 600;
+        color: #eee;
+    }
+    .data-table .rank-tag {
+        font-size: 11px;
+        font-weight: 700;
+        color: #888;
+        display: inline-block;
+        width: 28px;
+    }
+    .data-table .rank-tag.gold { color: #ffd700; text-shadow: 0 0 8px rgba(255,215,0,0.5); }
+    .data-table .rank-tag.silver { color: #cfd6dc; text-shadow: 0 0 8px rgba(207,214,220,0.4); }
+    .data-table .rank-tag.bronze { color: #d1874a; text-shadow: 0 0 8px rgba(209,135,74,0.4); }
+    .data-table .val-highlight {
+        color: #00e5ff;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    .data-table .val-avg {
+        font-size: 10px;
+        display: block;
+        margin-top: 2px;
+        font-weight: 500;
+    }
+
     /* ===== 响应式 ===== */
     @media (max-width: 1180px) {
         .container { padding: 20px; }
@@ -1116,7 +1295,7 @@
         .scatter-legend-overlay, .radar-legend { display: none !important; }
         .avg-note { font-size: 9px; padding: 3px 8px; right: 8px; top: 8px; }
 
-        /* 弹窗移动端 */
+        /* 单项排行榜弹窗移动端 */
         .stat-modal-overlay { padding: 12px; align-items: flex-end; }
         .stat-modal { max-width: 100%; max-height: 88vh; border-radius: 20px 20px 16px 16px; }
         .stat-modal-header { padding: 16px 48px 14px 18px; }
@@ -1132,6 +1311,19 @@
         .rank-num { font-size: 13px; }
         .rank-delta { font-size: 9px; }
         .stat-modal-footer { font-size: 10px; gap: 10px; }
+
+        /* 全量表格弹窗移动端 */
+        .full-stats-modal-overlay { padding: 10px; align-items: flex-end; }
+        .full-stats-modal { max-height: 90vh; border-radius: 20px 20px 16px 16px; }
+        .full-stats-header { padding: 14px 44px 12px 16px; }
+        .full-stats-title { font-size: 15px; }
+        .full-stats-body { padding: 8px 8px 12px; }
+        .data-table { min-width: 750px; font-size: 11px; }
+        .data-table th, .data-table td { padding: 6px 6px; }
+        .data-table .player-cell img { width: 24px; height: 24px; }
+        .data-table .player-cell span { font-size: 11px; }
+        .data-table .val-highlight { font-size: 12px; }
+        .data-table .val-avg { font-size: 9px; }
     }
 </style>
 </head>
@@ -1180,7 +1372,7 @@
 
         <!-- 中：选手信息 -->
         <div class="player-info">
-            <div class="player-avatar-wrap">
+            <div class="player-avatar-wrap" id="playerAvatarWrap" title="点击查看全量数据排行榜">
                 <img class="player-avatar" id="playerAvatar" src=""
                      onerror="this.src='https://via.placeholder.com/160'"
                      alt="avatar" crossorigin="anonymous" />
@@ -1241,7 +1433,7 @@
     </div>
 </div>
 
-<!-- ===== 数据标签弹窗 ===== -->
+<!-- ===== 数据标签弹窗（单项排行榜） ===== -->
 <div class="stat-modal-overlay" id="statModalOverlay" aria-hidden="true">
     <div class="stat-modal" role="dialog" aria-modal="true" aria-labelledby="statModalTitle">
         <div class="stat-modal-header" id="statModalHeader"></div>
@@ -1250,6 +1442,22 @@
             <span><span class="dot purple"></span>当前选手</span>
             <span><span class="dot cyan"></span>对比选手</span>
             <span><span class="dot orange"></span>点击行可切换</span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 全量数据表格弹窗（新增） ===== -->
+<div class="full-stats-modal-overlay" id="fullStatsModalOverlay" aria-hidden="true">
+    <div class="full-stats-modal" role="dialog" aria-modal="true">
+        <div class="full-stats-header">
+            <div class="full-stats-title">
+                <span class="accent-icon"></span>
+                <span id="fullStatsTitle">位置数据排行榜</span>
+            </div>
+            <button class="full-stats-close" type="button" id="fullStatsCloseBtn" aria-label="关闭">✕</button>
+        </div>
+        <div class="full-stats-body" id="fullStatsBody">
+            <!-- 表格动态生成 -->
         </div>
     </div>
 </div>
@@ -1361,7 +1569,7 @@ function getDimValue(player, key) {
 }
 
 // ============================================================
-//  数据标签弹窗
+//  单项排行榜弹窗（点击雷达图标签触发）
 // ============================================================
 function closeStatModal() {
     if (statModalOverlay.classList.contains('show')) {
@@ -1379,14 +1587,12 @@ function openStatModal(key, index) {
     const rankKey = config.ranks[index];
     const avgVal = safeVal(avgStats[avgKey]);
 
-    // 按该指标降序排列
     const sorted = currentFilteredPlayers
         .map((p, origIndex) => ({ p, origIndex }))
         .sort((a, b) => getDimValue(b.p, key) - getDimValue(a.p, key));
 
     const maxVal = sorted.length ? getDimValue(sorted[0].p, key) : 0;
 
-    // 头部
     const posNameMap = { TOP: '上单', JUNGLE: '打野', MIDDLE: '中单', BOTTOM: '下路', UTILITY: '辅助' };
     statModalHeader.innerHTML = `
         <div class="stat-modal-title" id="statModalTitle">
@@ -1404,7 +1610,6 @@ function openStatModal(key, index) {
         <button class="stat-modal-close" type="button" aria-label="关闭" id="statModalCloseBtn">✕</button>
     `;
 
-    // 列表
     const rowsHtml = sorted.map((item, i) => {
         const p = item.p;
         const val = getDimValue(p, key);
@@ -1453,10 +1658,8 @@ function openStatModal(key, index) {
 
     statModalBody.innerHTML = rowsHtml;
 
-    // 关闭按钮
     document.getElementById('statModalCloseBtn').addEventListener('click', closeStatModal);
 
-    // 行点击 → 切换当前选手
     statModalBody.querySelectorAll('.rank-row').forEach(row => {
         row.addEventListener('click', () => {
             const idx = parseInt(row.dataset.index, 10);
@@ -1471,12 +1674,10 @@ function openStatModal(key, index) {
         });
     });
 
-    // 显示
     statModalOverlay.classList.add('show');
     statModalOverlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
 
-    // 滚动到当前选手所在行
     requestAnimationFrame(() => {
         const curRow = statModalBody.querySelector('.rank-row.is-current');
         if (curRow) {
@@ -1489,10 +1690,111 @@ function openStatModal(key, index) {
     });
 }
 
-// 遮罩点击关闭
 statModalOverlay.addEventListener('click', (e) => {
     if (e.target === statModalOverlay) closeStatModal();
 });
+
+// ============================================================
+//  全量数据表格弹窗（点击头像触发）
+// ============================================================
+const fullStatsModalOverlay = document.getElementById('fullStatsModalOverlay');
+const fullStatsBody = document.getElementById('fullStatsBody');
+const fullStatsTitle = document.getElementById('fullStatsTitle');
+
+function openFullStatsModal() {
+    if (!currentFilteredPlayers.length) return;
+    const posNameMap = { TOP: '上单', JUNGLE: '打野', MIDDLE: '中单', BOTTOM: '下路', UTILITY: '辅助' };
+    fullStatsTitle.textContent = `${posNameMap[currentPosition] || currentPosition} · 全量数据排行榜`;
+
+    const config = positionConfigs[currentPosition];
+    
+    // 按照当前排序方式降序排列
+    const sortedPlayers = [...currentFilteredPlayers].sort((a, b) => getDimValue(b, currentSortKey) - getDimValue(a, currentSortKey));
+
+    // 构建表头
+    let tableHtml = `
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th style="width:50px;">名次</th>
+                    <th style="text-align:left; padding-left:20px;">选手</th>
+                    <th>场次</th>
+                    ${config.labels.map(l => `<th>${l}</th>`).join('')}
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    // 构建表格内容
+    sortedPlayers.forEach((p, index) => {
+        const originalIndex = currentFilteredPlayers.indexOf(p);
+        const isCur = originalIndex === currentPlayerIndex;
+        const rank = index + 1;
+        let rankClass = '';
+        if (rank === 1) rankClass = 'gold';
+        else if (rank === 2) rankClass = 'silver';
+        else if (rank === 3) rankClass = 'bronze';
+
+        const avatar = proxyImageUrl(`https://q.qlogo.cn/headimg_dl?dst_uin=${p.qq}&spec=640`);
+        
+        tableHtml += `<tr class="${isCur ? 'is-current' : ''}" data-index="${originalIndex}" style="cursor:pointer;">`;
+        tableHtml += `<td><span class="rank-tag ${rankClass}">#${rank}</span></td>`;
+        tableHtml += `<td><div class="player-cell"><img src="${avatar}" onerror="this.src='https://via.placeholder.com/28'"><span>${p.player}</span></div></td>`;
+        tableHtml += `<td>${p.games || '-'}</td>`;
+
+        // 填充各项数据
+        config.keys.forEach((key, idx) => {
+            const val = getDimValue(p, key);
+            const avgKey = config.avgs[idx];
+            const avgVal = safeVal(avgStats[avgKey]);
+            const delta = val - avgVal;
+            const arrow = delta > 0.001 ? '▲' : (delta < -0.001 ? '▼' : '—');
+            const color = delta > 0.001 ? '#4ade80' : (delta < -0.001 ? '#ff7b7b' : '#666');
+            
+            tableHtml += `
+                <td>
+                    <span class="val-highlight">${fmtVal(key, val)}</span>
+                    <span class="val-avg" style="color:${color}">${fmtVal(key, avgVal)} ${arrow}</span>
+                </td>
+            `;
+        });
+
+        tableHtml += `</tr>`;
+    });
+
+    tableHtml += `</tbody></table>`;
+    fullStatsBody.innerHTML = tableHtml;
+
+    // 点击行切换当前选手
+    fullStatsBody.querySelectorAll('.data-table tbody tr').forEach(row => {
+        row.addEventListener('click', () => {
+            const idx = parseInt(row.dataset.index, 10);
+            if (!isNaN(idx) && idx !== currentPlayerIndex) {
+                currentPlayerIndex = idx;
+                comparePlayers = comparePlayers.filter(i => i !== idx);
+                updateView();
+                closeFullStatsModal(); // 切换后关闭表格，回到主界面
+            }
+        });
+    });
+
+    fullStatsModalOverlay.classList.add('show');
+    fullStatsModalOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeFullStatsModal() {
+    fullStatsModalOverlay.classList.remove('show');
+    fullStatsModalOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+}
+
+// 绑定关闭事件
+fullStatsModalOverlay.addEventListener('click', (e) => {
+    if (e.target === fullStatsModalOverlay) closeFullStatsModal();
+});
+document.getElementById('fullStatsCloseBtn').addEventListener('click', closeFullStatsModal);
+
 
 // ============================================================
 //  加载数据
@@ -1556,12 +1858,12 @@ async function loadData() {
 
         // 键盘导航
         document.addEventListener('keydown', (e) => {
-            // 优先处理弹窗关闭
+            if (fullStatsModalOverlay.classList.contains('show')) {
+                if (e.key === 'Escape') { e.preventDefault(); closeFullStatsModal(); }
+                return;
+            }
             if (statModalOverlay.classList.contains('show')) {
-                if (e.key === 'Escape') {
-                    e.preventDefault();
-                    closeStatModal();
-                }
+                if (e.key === 'Escape') { e.preventDefault(); closeStatModal(); }
                 return;
             }
             const tag = (e.target.tagName || '').toLowerCase();
@@ -1621,7 +1923,7 @@ function renderPlayerChips(players) {
             ${compareNames.map(n => `<span class="tag">${n}</span>`).join('<span class="vs">vs</span>')}
         </span>`;
     } else {
-        rightContent = `<span class="hint">← → 切换选手 · Ctrl/⌘+点击对比</span>`;
+        rightContent = `<span class="hint">← → 切换选手 · Ctrl/⌘+点击对比 · 点击头像看数据</span>`;
     }
 
     let html = `
@@ -1651,6 +1953,7 @@ function renderPlayerChips(players) {
     });
     container.innerHTML = html;
 
+    // 点击整个 chip 切换选手
     container.querySelectorAll('.player-chip').forEach(el => {
         el.addEventListener('click', (e) => {
             const idx = parseInt(el.dataset.index, 10);
@@ -1669,6 +1972,15 @@ function renderPlayerChips(players) {
                     updateView();
                 }
             }
+        });
+    });
+
+    // 新增：点击选手头像弹出全量数据表格
+    container.querySelectorAll('.player-chip img').forEach(img => {
+        img.style.cursor = 'pointer'; // 提示可点击
+        img.addEventListener('click', (e) => {
+            e.stopPropagation(); // 阻止触发切换选手
+            openFullStatsModal();
         });
     });
 
@@ -1734,6 +2046,12 @@ function updateView() {
     avatarImg.crossOrigin = "anonymous";
     avatarImg.onerror = function () { this.onerror = null; this.src = 'https://via.placeholder.com/160'; };
 
+    // 绑定大图头像点击事件
+    document.getElementById('playerAvatarWrap').onclick = (e) => {
+        e.stopPropagation();
+        openFullStatsModal();
+    };
+
     document.getElementById('playerName').textContent = player.player;
     document.getElementById('totalKda').innerHTML =
         `<span class="k">${player.kills}</span>/<span class="d">${player.deaths}</span>/<span class="a">${player.assists}</span>`;
@@ -1771,19 +2089,22 @@ function updateViewVisibility() {
     });
 }
 
-// 英雄池渲染
+// 英雄池渲染（支持 KDA 与胜率，参考图1）
 function renderHeroPool(player) {
     const poolEl = document.getElementById('heroPool');
-    const heroes = player.heroes || [{ champion: player.champion || 'Unknown', games: 1, wins: 1 }];
+    const heroes = player.heroes || [{ champion: player.champion || 'Unknown', games: 1, wins: 1, kills: 0, deaths: 0, assists: 0 }];
     document.getElementById('heroCount').textContent = heroes.length;
     poolEl.innerHTML = heroes.map(h => {
-        const winRate = Math.round((h.wins / h.games) * 100);
+        const winRate = h.games > 0 ? Math.round((h.wins / h.games) * 100) : 0;
         const champName = h.champion || 'Unknown';
         const champIconUrl = proxyImageUrl(
             `https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/${champName}.png`);
-        const kdaLine = (h.kills !== undefined)
-            ? `${h.kills}/${h.deaths}/${h.assists}`
+        
+        // 如果有 KDA 数据则展示，否则展示局数
+        const kdaLine = (h.kills !== undefined && h.deaths !== undefined && h.assists !== undefined)
+            ? `<span class="k">${h.kills}</span>/<span class="d">${h.deaths}</span>/<span class="a">${h.assists}</span>`
             : `${h.games}局`;
+            
         return `
             <div class="hero-item">
                 <div class="hero-games">${h.games}</div>
@@ -1824,7 +2145,6 @@ function renderStatsWrapper(player) {
             </div>`;
     }).join('');
 
-    // 点击数据标签 → 打开弹窗
     wrapper.querySelectorAll('.stat-item').forEach(el => {
         el.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1863,7 +2183,7 @@ function buildRadarTooltip(player, config, isPlayerSeries) {
 }
 
 // ============================================================
-//  雷达图渲染（美化版）
+//  雷达图渲染
 // ============================================================
 function renderRadar(player) {
     const chartDom = document.getElementById('radarChart');
